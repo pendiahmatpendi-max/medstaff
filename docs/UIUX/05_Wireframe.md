@@ -1,8 +1,18 @@
 # Wireframe
 
-## 1. Authentication
+> Dokumen ini mendefinisikan rancangan struktur layar aplikasi MedStaff untuk pengguna Staff/Pegawai dan Administrator.
+>
+> Wireframe menjadi acuan sebelum masuk ke tahap UI Design dan implementasi aplikasi.
 
-### AUTH-01 — Splash Screen
+---
+
+# 1. Authentication
+
+Bagian Authentication digunakan untuk proses awal pengguna sebelum masuk ke aplikasi.
+
+---
+
+## AUTH-01 — Splash Screen
 
 ```text
 ┌──────────────────────────────┐
@@ -13,28 +23,32 @@
 │     Employee Management      │
 │                              │
 │                              │
-│            ● ● ●             │
+│             ○ ○ ○            │
 │                              │
 └──────────────────────────────┘
 ```
 
-#### Komponen
+### Komponen
 
 - Logo MedStaff
 - Nama aplikasi
 - Tagline
 - Loading indicator
 
+### Keterangan
+
+Splash Screen ditampilkan ketika aplikasi pertama kali dibuka sebelum pengguna diarahkan ke halaman berikutnya.
+
 ---
 
-### AUTH-02 — Onboarding
+## AUTH-02 — Onboarding
 
 ```text
 ┌──────────────────────────────┐
 │                              │
-│          [Illustration]      │
+│        [Illustration]        │
 │                              │
-│      Kelola Kehadiran       │
+│     Kelola Kehadiran        │
 │        Lebih Mudah           │
 │                              │
 │  Absensi dengan selfie,      │
@@ -45,10 +59,11 @@
 │          [Lanjut]             │
 │                              │
 │            Lewati             │
+│                              │
 └──────────────────────────────┘
 ```
 
-#### Komponen
+### Komponen
 
 - Illustration
 - Judul
@@ -57,26 +72,30 @@
 - Tombol Lanjut
 - Tombol Lewati
 
+### Keterangan
+
+Onboarding menjelaskan fungsi utama MedStaff kepada pengguna sebelum login.
+
 ---
 
-### AUTH-03 — Login
+## AUTH-03 — Login
 
 ```text
 ┌──────────────────────────────┐
 │                              │
-│          [Logo]              │
+│            [Logo]            │
 │                              │
 │       Selamat Datang         │
 │       di MedStaff            │
 │                              │
 │  Email                       │
 │  ┌────────────────────────┐  │
-│  │ email@example.com      │  │
+│  │ email@example.com       │  │
 │  └────────────────────────┘  │
 │                              │
 │  Password                    │
 │  ┌────────────────────────┐  │
-│  │ ••••••••••        👁    │  │
+│  │ ••••••••••          👁  │  │
 │  └────────────────────────┘  │
 │                              │
 │       Lupa Password?         │
@@ -91,23 +110,32 @@
 └──────────────────────────────┘
 ```
 
-#### Komponen
+### Komponen
 
 - Logo
 - Email input
 - Password input
 - Show/hide password
-- Lupa password
+- Lupa Password
 - Login button
 - Register link
 
+### Keterangan
+
+Pengguna memasukkan email dan password untuk masuk ke aplikasi.
+
+Setelah login, sistem menentukan apakah pengguna merupakan:
+
+- Staff/Pegawai
+- Administrator
+
 ---
 
-### AUTH-04 — Register
+## AUTH-04 — Register
 
 ```text
 ┌──────────────────────────────┐
-│ ←       Buat Akun            │
+│ ←        Daftar Akun         │
 │                              │
 │ Nama Lengkap                 │
 │ ┌──────────────────────────┐ │
@@ -153,14 +181,13 @@
 │ └──────────────────────────┘ │
 │                              │
 │ ┌──────────────────────────┐ │
-│ │        DAFTAR            │ │
+│ │          DAFTAR          │ │
 │ └──────────────────────────┘ │
+│                              │
 └──────────────────────────────┘
 ```
 
-#### Komponen
-
-Data wajib:
+### Data wajib
 
 - Nama lengkap
 - Email
@@ -172,21 +199,24 @@ Data wajib:
 - Nomor kontak darurat
 - Password
 
+### Keterangan
+
+Data tambahan seperti data pekerjaan dan identitas pegawai dapat dilengkapi setelah akun dibuat atau melalui proses administrasi pegawai.
+
 ---
 
-### AUTH-05 — Forgot Password
+## AUTH-05 — Forgot Password
 
 ```text
 ┌──────────────────────────────┐
 │ ←      Lupa Password         │
 │                              │
-│          [Icon]              │
+│            [Icon]            │
 │                              │
-│    Atur Ulang Password       │
+│     Lupa password Anda?      │
 │                              │
-│ Masukkan email yang terdaftar│
-│ untuk mendapatkan instruksi  │
-│ pengaturan ulang password.   │
+│ Masukkan email yang          │
+│ terdaftar pada MedStaff.     │
 │                              │
 │ Email                        │
 │ ┌──────────────────────────┐ │
@@ -194,13 +224,16 @@ Data wajib:
 │ └──────────────────────────┘ │
 │                              │
 │ ┌──────────────────────────┐ │
-│ │     KIRIM INSTRUKSI      │ │
+│ │    KIRIM INSTRUKSI       │ │
 │ └──────────────────────────┘ │
+│                              │
+│ Instruksi reset password     │
+│ akan dikirim ke email.       │
 │                              │
 └──────────────────────────────┘
 ```
 
-#### Komponen
+### Komponen
 
 - Back button
 - Icon
@@ -208,595 +241,150 @@ Data wajib:
 - Submit button
 - Informasi reset password
 
----
+### Keterangan
 
-# 2. Dashboard
-
-### DASH-01 — Dashboard
-
-```text
-┌──────────────────────────────┐
-│                              │
-│  Selamat pagi, Pendi 👋      │
-│  Senin, 10 Agustus 2026     │
-│                              │
-│  ┌────────────────────────┐  │
-│  │     STATUS ABSENSI     │  │
-│  │                        │  │
-│  │      Belum Absen       │  │
-│  │                        │  │
-│  │   [      CLOCK IN     ]│  │
-│  └────────────────────────┘  │
-│                              │
-│  ──────────────────────────  │
-│                              │
-│  📢 Pengumuman Terbaru       │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ Informasi Klinik       │  │
-│  │ Pengumuman terbaru...  │  │
-│  │                  >     │  │
-│  └────────────────────────┘  │
-│                              │
-│  Akses Cepat                 │
-│                              │
-│  ┌──────────┐ ┌──────────┐  │
-│  │ 📷       │ │ 📋       │  │
-│  │ Absensi  │ │ Riwayat  │  │
-│  └──────────┘ └──────────┘  │
-│                              │
-│  ┌──────────┐ ┌──────────┐  │
-│  │ 👥       │ │ 🔔       │  │
-│  │ Pegawai  │ │ Notifikasi│ │
-│  └──────────┘ └──────────┘  │
-│                              │
-│ ──────────────────────────── │
-│ 🏠       🕘       👥   🔔  👤│
-│ Home   Attendance Employee  │
-│                    Profile  │
-└──────────────────────────────┘
+Digunakan ketika pengguna lupa password.
 
 ---
 
-# 3. Attendance
+# 2. Main Navigation — Staff/Pegawai
 
-## ATT-01 — Attendance Home
-
-```text
-┌──────────────────────────────┐
-│ ←       Attendance           │
-│                              │
-│  Senin, 10 Agustus 2026      │
-│                              │
-│  ┌────────────────────────┐  │
-│  │       STATUS HARI INI  │  │
-│  │                        │  │
-│  │     Belum Clock In     │  │
-│  │                        │  │
-│  │   [     CLOCK IN     ] │  │
-│  └────────────────────────┘  │
-│                              │
-│  Riwayat Hari Ini            │
-│                              │
-│  Clock In                    │
-│  --:-- WIB                   │
-│                              │
-│  Clock Out                   │
-│  --:-- WIB                   │
-│                              │
-│  [ Lihat Riwayat Absensi ]   │
-│                              │
-└──────────────────────────────┘
-```
-
-### Kondisi setelah Clock In
+Navigasi utama pengguna Staff/Pegawai menggunakan **5 menu tetap**.
 
 ```text
 ┌──────────────────────────────┐
-│       STATUS HARI INI        │
 │                              │
-│       Sudah Clock In         │
+│          CONTENT             │
 │                              │
-│       08:01 WIB              │
 │                              │
-│   [      CLOCK OUT       ]   │
+├──────────────────────────────┤
+│ 🏠     👥      📋      🔔    👤 │
+│Home   Pegawai Pengajuan Notif Profil
 └──────────────────────────────┘
 ```
+
+### Menu utama
+
+1. Home
+2. Pegawai
+3. Pengajuan
+4. Notifikasi
+5. Profil
+
+### Keterangan
+
+**Attendance tidak menjadi menu bottom navigation.**
+
+Attendance diakses melalui:
+
+- Home
+- Akses cepat
+- Tombol Clock In / Clock Out
 
 ---
 
-# ATT-02 — Clock In
+# 3. Home
+
+## HOME-01 — Dashboard Staff
 
 ```text
 ┌──────────────────────────────┐
-│ ←          Clock In          │
+│ Selamat pagi, Pendi 👋       │
+│ Senin, 10 Agustus 2026       │
 │                              │
-│      Ambil Foto Selfie       │
+│ ┌──────────────────────────┐ │
+│ │     STATUS ABSENSI       │ │
+│ │                          │ │
+│ │       Belum Absen        │ │
+│ │                          │ │
+│ │   [     CLOCK IN     ]   │ │
+│ └──────────────────────────┘ │
 │                              │
-│  ┌────────────────────────┐  │
-│  │                        │  │
-│  │                        │  │
-│  │       CAMERA           │  │
-│  │                        │  │
-│  │         ○              │  │
-│  │                        │  │
-│  └────────────────────────┘  │
+│ 📢 Pengumuman Terbaru        │
 │                              │
-│  Pastikan wajah terlihat     │
-│  jelas di dalam kamera.      │
+│ ┌──────────────────────────┐ │
+│ │ Informasi Klinik         │ │
+│ │ Pengumuman terbaru...    │ │
+│ │                      >   │ │
+│ └──────────────────────────┘ │
 │                              │
-│        [ AMBIL FOTO ]        │
+│ Akses Cepat                  │
 │                              │
+│ ┌────────────┐ ┌───────────┐ │
+│ │     📷     │ │    📋     │ │
+│ │  Absensi   │ │  Riwayat  │ │
+│ └────────────┘ └───────────┘ │
+│                              │
+│ ┌────────────┐ ┌───────────┐ │
+│ │     👥     │ │    🔔     │ │
+│ │  Pegawai   │ │Notifikasi │ │
+│ └────────────┘ └───────────┘ │
+│                              │
+├──────────────────────────────┤
+│ 🏠    👥    📋    🔔    👤  │
+│Home Pegawai Pengajuan Notif Profil
 └──────────────────────────────┘
 ```
 
-### Proses
+### Komponen
+
+- Greeting
+- Tanggal
+- Status absensi
+- Tombol Clock In / Clock Out
+- Pengumuman
+- Akses cepat Absensi
+- Akses cepat Riwayat
+- Akses cepat Pegawai
+- Akses cepat Notifikasi
+- Bottom navigation
+
+### Keterangan
+
+Home merupakan halaman utama Staff/Pegawai.
+
+Status absensi berubah sesuai kondisi:
 
 ```text
+Belum Absen
+     ↓
 Clock In
-   ↓
-Meminta izin kamera
-   ↓
-Meminta izin lokasi
-   ↓
-Membuka kamera
-   ↓
-Selfie
-   ↓
-Preview
+     ↓
+Sudah Clock In
+     ↓
+Clock Out
+     ↓
+Absensi Selesai
 ```
 
 ---
 
-# ATT-03 — Selfie Camera
+# 4. Attendance
+
+Attendance bukan menu bottom navigation, tetapi merupakan fitur utama yang dapat diakses dari Home.
+
+---
+
+## ATT-01 — Attendance Verification
 
 ```text
 ┌──────────────────────────────┐
-│ ←        Ambil Selfie       │
+│ ←        Absensi             │
 │                              │
+│        Ambil Selfie         │
 │                              │
 │      ┌──────────────┐        │
 │      │              │        │
-│      │              │        │
-│      │    WAJAH     │        │
-│      │              │        │
+│      │    CAMERA    │        │
 │      │              │        │
 │      └──────────────┘        │
 │                              │
-│                              │
-│             ●                │
-│                              │
-│   Pastikan wajah berada      │
-│   di dalam area kamera.      │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ATT-04 — Selfie Preview & Confirmation
-
-```text
-┌──────────────────────────────┐
-│ ←      Konfirmasi Foto       │
-│                              │
-│  ┌────────────────────────┐  │
-│  │                        │  │
-│  │                        │  │
-│  │     FOTO SELFIE       │  │
-│  │                        │  │
-│  │                        │  │
-│  └────────────────────────┘  │
-│                              │
-│  Foto sudah sesuai?          │
-│                              │
-│  [ Ambil Ulang ] [ Gunakan ] │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ATT-05 — Attendance Result
-
-Setelah pengguna mengonfirmasi foto, sistem mengambil waktu dan lokasi lalu menyimpan data absensi.
-
-```text
-┌──────────────────────────────┐
-│        Absensi Berhasil      │
-│                              │
-│  ┌────────────────────────┐  │
-│  │                        │  │
-│  │     FOTO SELFIE       │  │
-│  │                        │  │
-│  └────────────────────────┘  │
-│                              │
-│  ✓ Clock In                  │
-│                              │
-│  Senin, 10 Agustus 2026      │
-│  08:01:32 WIB                │
-│                              │
-│  📍 Lokasi                   │
-│  Klinik Pratama Unimus       │
-│                              │
-│  Koordinat                   │
-│  -6.xxxxx, 110.xxxxx         │
-│                              │
-│  Status                      │
-│  ✓ Berhasil                  │
-│                              │
-│       [ SELESAI ]            │
-│                              │
-└──────────────────────────────┘
-```
-
-### Data yang ditampilkan
-
-- Foto selfie hasil absensi
-- Jenis absensi
-- Tanggal
-- Jam
-- Lokasi
-- Koordinat GPS
-- Status absensi
-
----
-
-# ATT-06 — Clock Out
-
-Alurnya sama seperti Clock In.
-
-```text
-Attendance
-   ↓
-Clock Out
-   ↓
-GPS
-   ↓
-Selfie Camera
-   ↓
-Preview Foto
-   ↓
-Konfirmasi
-   ↓
-Simpan Absensi
-   ↓
-Attendance Result
-```
-
-### Clock Out Screen
-
-```text
-┌──────────────────────────────┐
-│ ←         Clock Out          │
-│                              │
-│      Ambil Foto Selfie       │
-│                              │
-│  ┌────────────────────────┐  │
-│  │                        │  │
-│  │        CAMERA          │  │
-│  │                        │  │
-│  │          ○             │  │
-│  │                        │  │
-│  └────────────────────────┘  │
-│                              │
-│  Pastikan wajah terlihat     │
-│  jelas di dalam kamera.      │
-│                              │
-│        [ AMBIL FOTO ]        │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ATT-07 — Attendance History
-
-```text
-┌──────────────────────────────┐
-│ ←    Riwayat Absensi         │
-│                              │
-│ [ Agustus 2026 ▼ ]           │
+│ Pastikan wajah terlihat      │
+│ dengan jelas.                │
 │                              │
 │ ┌──────────────────────────┐ │
-│ │ Senin, 10 Agustus 2026   │ │
-│ │                          │ │
-│ │ Clock In    08:01 WIB    │ │
-│ │ Clock Out   17:02 WIB    │ │
-│ │                          │ │
-│ │ Status: Lengkap      >   │ │
+│ │      AMBIL FOTO          │ │
 │ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Jumat, 7 Agustus 2026    │ │
-│ │                          │ │
-│ │ Clock In    08:05 WIB    │ │
-│ │ Clock Out   17:10 WIB    │ │
-│ │                          │ │
-│ │ Status: Lengkap      >   │ │
-│ └──────────────────────────┘ │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ATT-08 — Attendance Detail
-
-```text
-┌──────────────────────────────┐
-│ ←      Detail Absensi        │
-│                              │
-│ Clock In                     │
-│ Senin, 10 Agustus 2026       │
-│ 08:01:32 WIB                 │
-│                              │
-│ ┌────────────────────────┐   │
-│ │                        │   │
-│ │     FOTO SELFIE        │   │
-│ │                        │   │
-│ └────────────────────────┘   │
-│                              │
-│ Lokasi                       │
-│ Klinik Pratama Unimus        │
-│                              │
-│ Koordinat                    │
-│ -6.xxxxx, 110.xxxxx          │
-│                              │
-│ Status                       │
-│ ✓ Valid                      │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# Attendance State
-
-## Belum Absen
-
-```text
-Clock In tersedia
-Clock Out tidak tersedia
-```
-
-## Sudah Clock In
-
-```text
-Clock In tersimpan
-Clock Out tersedia
-```
-
-## Sudah Clock Out
-
-```text
-Clock In tersimpan
-Clock Out tersimpan
-Absensi hari ini selesai
-```
-
-## Gagal Lokasi
-
-```text
-Lokasi tidak ditemukan
-
-[ Coba Lagi ]
-```
-
-## Gagal Kamera
-
-```text
-Kamera tidak dapat digunakan
-
-[ Coba Lagi ]
-```
-
-## Gagal Internet
-
-```text
-Tidak dapat terhubung ke server
-
-[ Coba Lagi ]
-```
-
----
-
-# 4. Employee
-
-## EMP-01 — Employee List
-
-```text
-┌──────────────────────────────┐
-│         Employee             │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ 🔍 Cari pegawai...     │  │
-│  └────────────────────────┘  │
-│                              │
-│  Daftar Pegawai              │
-│                              │
-│  ┌────────────────────────┐  │
-│  │  [Foto]  Ahmad Fauzan  │  │
-│  │          Perawat       │  │
-│  │          ID: EMP001    │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌────────────────────────┐  │
-│  │  [Foto]  Siti Aminah   │  │
-│  │          Administrasi  │  │
-│  │          ID: EMP002    │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌────────────────────────┐  │
-│  │  [Foto]  Budi Santoso  │  │
-│  │          Security      │  │
-│  │          ID: EMP003    │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-└──────────────────────────────┘
-```
-
-### Komponen
-
-- Search bar
-- Foto profil
-- Nama pegawai
-- Jabatan
-- ID karyawan
-- Tombol menuju detail pegawai
-
----
-
-## EMP-02 — Employee Detail
-
-```text
-┌──────────────────────────────┐
-│ ←      Profil Pegawai        │
-│                              │
-│          [ FOTO ]            │
-│                              │
-│       Ahmad Fauzan           │
-│       Perawat                │
-│       ID: EMP001             │
-│                              │
-│  ──────────────────────────  │
-│                              │
-│  Informasi Pegawai           │
-│                              │
-│  Nama                        │
-│  Ahmad Fauzan                │
-│                              │
-│  Jabatan                     │
-│  Perawat                     │
-│                              │
-│  ID Karyawan                 │
-│  EMP001                      │
-│                              │
-└──────────────────────────────┘
-```
-
-### Informasi yang ditampilkan
-
-Saat pengguna melihat profil pegawai lain, informasi yang ditampilkan adalah:
-
-- Foto profil
-- Nama
-- Jabatan
-- ID karyawan
-
-**Tidak menampilkan informasi pribadi sensitif seperti:**
-
-- Nomor HP
-- Alamat
-- Email pribadi
-- Identitas
-- Kontak darurat
-- Tanggal lahir
-
-Informasi tersebut tetap berada pada profil pribadi masing-masing pegawai.
-
----
-
-## Employee Search State
-
-### Tidak ada hasil
-
-```text
-┌──────────────────────────────┐
-│                              │
-│          [Icon]              │
-│                              │
-│    Pegawai tidak ditemukan   │
-│                              │
-│ Coba gunakan kata kunci lain │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-## Employee Loading State
-
-```text
-┌──────────────────────────────┐
-│                              │
-│      Memuat data pegawai     │
-│                              │
-│            ● ● ●             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# 5. Notification
-
-## NOTIF-01 — Notification List
-
-```text
-┌──────────────────────────────┐
-│        Notification          │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ 🔔  Pengumuman Baru    │  │
-│  │     Informasi dari HRD │  │
-│  │     10 Agustus 2026    │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ 🕐  Absensi Berhasil   │  │
-│  │     Clock In 08:01 WIB │  │
-│  │     Hari ini           │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ 📢  Informasi Klinik   │  │
-│  │     Pengumuman baru    │  │
-│  │     8 Agustus 2026     │  │
-│  │                    >   │  │
-│  └────────────────────────┘  │
-│                              │
-└──────────────────────────────┘
-```
-
-### Komponen
-
-- Judul halaman
-- Icon notifikasi
-- Judul notifikasi
-- Ringkasan
-- Tanggal/waktu
-- Status sudah/belum dibaca
-- Tombol menuju detail
-
----
-
-## NOTIF-02 — Notification Detail
-
-```text
-┌──────────────────────────────┐
-│ ←      Detail Notifikasi     │
-│                              │
-│ 🔔                           │
-│                              │
-│ Pengumuman Baru              │
-│                              │
-│ Dari: HRD                    │
-│ 10 Agustus 2026              │
-│                              │
-│ ──────────────────────────   │
-│                              │
-│ Informasi                    │
-│                              │
-│ Isi informasi atau           │
-│ pengumuman ditampilkan       │
-│ secara lengkap di halaman    │
-│ ini.                         │
 │                              │
 └──────────────────────────────┘
 ```
@@ -804,152 +392,782 @@ Informasi tersebut tetap berada pada profil pribadi masing-masing pegawai.
 ### Komponen
 
 - Back button
-- Icon
-- Judul
-- Pengirim
-- Tanggal
-- Isi notifikasi
+- Camera preview
+- Instruksi selfie
+- Capture button
+
+### Keterangan
+
+Pengguna wajib melakukan selfie sebelum absensi dicatat.
 
 ---
 
-## Notification Categories
-
-Notifikasi dapat berasal dari:
-
-### 1. Attendance
-
-Contoh:
+## ATT-02 — Attendance Confirmation
 
 ```text
-Clock In berhasil
-Clock Out berhasil
-Absensi gagal
+┌──────────────────────────────┐
+│ ←     Konfirmasi Absensi     │
+│                              │
+│        [Foto Selfie]         │
+│                              │
+│ Waktu                        │
+│ 08:01 WIB                    │
+│                              │
+│ Lokasi                       │
+│ Klinik Pratama Unimus        │
+│                              │
+│ GPS                          │
+│ ✓ Lokasi terdeteksi          │
+│                              │
+│ Jenis Absensi                │
+│ Clock In                     │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │     KONFIRMASI ABSEN     │ │
+│ └──────────────────────────┘ │
+│                              │
+│ [Batal]                      │
+└──────────────────────────────┘
 ```
 
-### 2. Announcement
+### Data yang ditampilkan
 
-Contoh:
+- Foto selfie
+- Waktu
+- Lokasi
+- GPS
+- Jenis absensi
+- Status verifikasi
 
-```text
-Pengumuman dari HRD
-Informasi dari pimpinan
-Informasi klinik
-```
+### Keterangan
 
-### 3. Account
+Sistem mengambil:
 
-Contoh:
+- Foto
+- Waktu server
+- Lokasi GPS
 
-```text
-Perubahan password
-Perubahan PIN
-Aktivitas akun
-```
+Data tersebut disimpan sebagai data absensi.
 
 ---
 
-## Notification State
-
-### Belum Dibaca
-
-```text
-● Pengumuman Baru
-```
-
-Ditampilkan dengan indikator unread.
-
-### Sudah Dibaca
-
-```text
-Pengumuman Baru
-```
-
-Tidak memiliki indikator unread.
-
----
-
-## Empty State
-
-Jika tidak ada notifikasi:
+## ATT-03 — Attendance Success
 
 ```text
 ┌──────────────────────────────┐
 │                              │
-│          [ Bell ]            │
+│             ✓                │
 │                              │
-│     Belum ada notifikasi     │
+│      Absensi Berhasil        │
 │                              │
-│     Notifikasi terbaru       │
-│     akan muncul di sini.     │
+│      Clock In 08:01 WIB      │
+│                              │
+│      Lokasi terverifikasi    │
+│                              │
+│        [SELESAI]             │
 │                              │
 └──────────────────────────────┘
 ```
 
+### Keterangan
+
+Ditampilkan setelah proses absensi berhasil.
+
 ---
 
-# 6. Profile
-
-## PROF-01 — My Profile
+## ATT-04 — Clock Out
 
 ```text
 ┌──────────────────────────────┐
-│            Profile           │
+│ ←       Clock Out            │
 │                              │
-│          [ FOTO ]            │
+│ Status                       │
+│ ✓ Sudah Clock In             │
+│                              │
+│ Clock In                     │
+│ 08:01 WIB                    │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │       CLOCK OUT          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Sistem akan meminta selfie   │
+│ dan lokasi kembali.          │
+│                              │
+└──────────────────────────────┘
+```
+
+### Keterangan
+
+Clock Out menggunakan proses verifikasi yang sama:
+
+```text
+Clock Out
+   ↓
+Selfie
+   ↓
+GPS
+   ↓
+Waktu
+   ↓
+Konfirmasi
+   ↓
+Absensi selesai
+```
+
+---
+
+## ATT-05 — Attendance History
+
+```text
+┌──────────────────────────────┐
+│ ←    Riwayat Absensi         │
+│                              │
+│ [ Bulan ] [ Tahun ]          │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 10 Agustus 2026          │ │
+│ │ Clock In   08:01         │ │
+│ │ Clock Out  16:05         │ │
+│ │ Status     Hadir         │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 09 Agustus 2026          │ │
+│ │ Clock In   08:00         │ │
+│ │ Clock Out  16:00         │ │
+│ │ Status     Hadir         │ │
+│ └──────────────────────────┘ │
+│                              │
+└──────────────────────────────┘
+```
+
+### Komponen
+
+- Filter bulan
+- Filter tahun
+- Daftar riwayat
+- Clock In
+- Clock Out
+- Status
+
+---
+
+# 5. Pegawai
+
+## PEGAWAI-01 — Daftar Pegawai
+
+```text
+┌──────────────────────────────┐
+│ Pegawai                      │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 🔍 Cari pegawai...       │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ [Foto]  Nama Pegawai     │ │
+│ │         Staff            │ │
+│ │         ID: EMP001    >  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ [Foto]  Nama Pegawai     │ │
+│ │         Security         │ │
+│ │         ID: EMP002    >  │ │
+│ └──────────────────────────┘ │
+│                              │
+├──────────────────────────────┤
+│ 🏠    👥    📋    🔔    👤  │
+└──────────────────────────────┘
+```
+
+### Komponen
+
+- Search
+- Foto pegawai
+- Nama
+- Posisi
+- Employee ID
+- Detail pegawai
+
+### Keterangan
+
+Pengguna dapat melihat daftar pegawai dan informasi dasar pegawai lain.
+
+---
+
+## PEGAWAI-02 — Detail Pegawai
+
+```text
+┌──────────────────────────────┐
+│ ←      Detail Pegawai        │
+│                              │
+│          [Foto]              │
 │                              │
 │       Nama Pegawai           │
-│       Jabatan                │
-│       ID: EMP001             │
+│       Staff                  │
+│       EMP001                 │
 │                              │
-│  ┌────────────────────────┐  │
-│  │ Personal Information > │  │
-│  └────────────────────────┘  │
+│ Informasi                    │
+│ ──────────────────────────── │
+│ Nama                         │
+│ Nama Pegawai                 │
 │                              │
-│  ┌────────────────────────┐  │
-│  │ Job Information      > │  │
-│  └────────────────────────┘  │
+│ Posisi                       │
+│ Staff                        │
 │                              │
-│  ┌────────────────────────┐  │
-│  │ Emergency Contact     >│  │
-│  └────────────────────────┘  │
+│ Employee ID                  │
+│ EMP001                       │
 │                              │
-│  ┌────────────────────────┐  │
-│  │ Education             >│  │
-│  └────────────────────────┘  │
+│ Nomor HP                     │
+│ 08xxxxxxxxxx                │
 │                              │
-│  ┌────────────────────────┐  │
-│  │ Experience            >│  │
-│  └────────────────────────┘  │
+└──────────────────────────────┘
+```
+
+### Keterangan
+
+Profil pegawai lain hanya menampilkan informasi yang memang diperbolehkan untuk dilihat oleh pegawai lain.
+
+---
+
+# 6. Pengajuan
+
+Menu Pengajuan menjadi pusat seluruh pengajuan yang dilakukan oleh Staff/Pegawai.
+
+```text
+┌──────────────────────────────┐
+│ Pengajuan                    │
 │                              │
-│  Security                    │
-│  ┌────────────────────────┐  │
-│  │ Change Password       >│  │
-│  ├────────────────────────┤  │
-│  │ Change PIN            >│  │
-│  └────────────────────────┘  │
+│ ┌──────────────────────────┐ │
+│ │ 📅 Pengajuan Cuti        │ │
+│ │ Ajukan cuti          >    │ │
+│ └──────────────────────────┘ │
 │                              │
-│  Settings                    │
-│  ┌────────────────────────┐  │
-│  │ Language              >│  │
-│  │ Help Center            >│  │
-│  │ About Application     >│  │
-│  └────────────────────────┘  │
+│ ┌──────────────────────────┐ │
+│ │ 📄 Perubahan Berkas      │ │
+│ │ Ubah data/dokumen    >   │ │
+│ └──────────────────────────┘ │
 │                              │
-│          [ Logout ]           │
+│ ┌──────────────────────────┐ │
+│ │ 📋 Pengajuan Lainnya     │ │
+│ │ Pengajuan administrasi > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Riwayat Pengajuan            │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Cuti 10-12 Agustus       │ │
+│ │ Status: Menunggu         │ │
+│ └──────────────────────────┘ │
+│                              │
+├──────────────────────────────┤
+│ 🏠    👥    📋    🔔    👤  │
+└──────────────────────────────┘
+```
+
+### Jenis pengajuan
+
+- Pengajuan cuti
+- Pengajuan perubahan berkas/data
+- Pengajuan administrasi lainnya
+
+### Status pengajuan
+
+- Menunggu
+- Disetujui
+- Ditolak
+
+---
+
+# 7. Pengajuan Cuti
+
+## CUTI-01 — Form Pengajuan Cuti
+
+```text
+┌──────────────────────────────┐
+│ ←     Pengajuan Cuti         │
+│                              │
+│ Jenis Cuti                   │
+│ ┌──────────────────────────┐ │
+│ │ Pilih jenis cuti      ▼  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Tanggal Mulai                │
+│ ┌──────────────────────────┐ │
+│ │ DD / MM / YYYY        📅 │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Tanggal Selesai              │
+│ ┌──────────────────────────┐ │
+│ │ DD / MM / YYYY        📅 │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Alasan                       │
+│ ┌──────────────────────────┐ │
+│ │ Tulis alasan...          │ │
+│ │                          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Lampiran                     │
+│ [+ Tambah Lampiran]          │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │      AJUKAN CUTI         │ │
+│ └──────────────────────────┘ │
+│                              │
+└──────────────────────────────┘
+```
+
+### Komponen
+
+- Jenis cuti
+- Tanggal mulai
+- Tanggal selesai
+- Alasan
+- Lampiran
+- Tombol Ajukan
+
+---
+
+## CUTI-02 — Detail Pengajuan Cuti
+
+```text
+┌──────────────────────────────┐
+│ ←    Detail Pengajuan        │
+│                              │
+│ Pengajuan Cuti               │
+│                              │
+│ Jenis       Cuti Tahunan     │
+│ Mulai       10/08/2026       │
+│ Selesai     12/08/2026       │
+│ Durasi      3 Hari           │
+│                              │
+│ Alasan                       │
+│ Keperluan pribadi...         │
+│                              │
+│ Status                       │
+│ 🟡 Menunggu Persetujuan      │
+│                              │
+│ Riwayat Persetujuan          │
+│                              │
+│ Staff → Admin/HRD            │
+│        Menunggu              │
+│                              │
+└──────────────────────────────┘
+```
+
+### Keterangan
+
+Staff dapat melihat status pengajuan cuti secara lengkap.
+
+---
+
+# 8. Persetujuan Cuti — Admin
+
+## CUTI-03 — Daftar Pengajuan Cuti Admin
+
+```text
+┌──────────────────────────────┐
+│ Persetujuan Cuti             │
+│                              │
+│ Filter                       │
+│ [Menunggu ▼] [Tanggal ▼]     │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Nama Pegawai             │ │
+│ │ Cuti Tahunan             │ │
+│ │ 10 - 12 Agustus 2026     │ │
+│ │ Status: Menunggu         │ │
+│ │                      >   │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Nama Pegawai             │ │
+│ │ Cuti Sakit               │ │
+│ │ 15 Agustus 2026          │ │
+│ │ Status: Menunggu         │ │
+│ │                      >   │ │
+│ └──────────────────────────┘ │
 │                              │
 └──────────────────────────────┘
 ```
 
 ---
 
-# PROF-02 — Personal Information
+## CUTI-04 — Detail Persetujuan Cuti Admin
 
 ```text
 ┌──────────────────────────────┐
-│ ←   Personal Information     │
+│ ←   Persetujuan Cuti         │
+│                              │
+│ [Foto Pegawai]               │
+│ Nama Pegawai                 │
+│ EMP001                       │
+│ Staff                        │
+│                              │
+│ Jenis Cuti                   │
+│ Cuti Tahunan                 │
+│                              │
+│ Periode                      │
+│ 10 - 12 Agustus 2026        │
+│                              │
+│ Durasi                       │
+│ 3 Hari                       │
+│                              │
+│ Alasan                       │
+│ Keperluan pribadi...         │
+│                              │
+│ Lampiran                     │
+│ [Lihat Lampiran]             │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │         SETUJUI          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │          TOLAK           │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Catatan Admin                │
+│ [Opsional]                   │
+│                              │
+└──────────────────────────────┘
+```
+
+### Keputusan Admin
+
+Admin wajib memilih:
+
+- **Setujui**
+- **Tolak**
+
+Jika memilih **Tolak**, Admin mengisi alasan penolakan.
+
+### Status setelah keputusan
+
+```text
+Menunggu
+   ├── Setujui → Disetujui
+   │
+   └── Tolak   → Ditolak
+```
+
+---
+
+# 9. Perubahan Berkas/Data Pegawai
+
+Pengajuan perubahan berkas digunakan ketika pegawai ingin mengubah data atau dokumen yang membutuhkan pemeriksaan Admin.
+
+---
+
+## BERKAS-01 — Form Perubahan Berkas
+
+```text
+┌──────────────────────────────┐
+│ ←   Perubahan Berkas         │
+│                              │
+│ Pilih Data                   │
+│ ┌──────────────────────────┐ │
+│ │ Pilih data yang diubah ▼ │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Data Lama                    │
+│ ┌──────────────────────────┐ │
+│ │ Data sebelumnya          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Data Baru                    │
+│ ┌──────────────────────────┐ │
+│ │ Data yang baru           │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Dokumen Pendukung            │
+│ [+ Tambah Dokumen]           │
+│                              │
+│ Alasan Perubahan             │
+│ ┌──────────────────────────┐ │
+│ │ Tulis alasan...          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │      AJUKAN PERUBAHAN    │ │
+│ └──────────────────────────┘ │
+│                              │
+└──────────────────────────────┘
+```
+
+### Contoh perubahan
+
+- Nomor HP
+- Alamat
+- Data identitas
+- Data pendidikan
+- Data pengalaman
+- Data lainnya yang membutuhkan verifikasi
+
+---
+
+## BERKAS-02 — Detail Pengajuan Perubahan
+
+```text
+┌──────────────────────────────┐
+│ ←  Detail Perubahan Berkas   │
+│                              │
+│ Jenis Perubahan              │
+│ Alamat                       │
+│                              │
+│ Data Lama                    │
+│ Alamat sebelumnya...         │
+│                              │
+│ Data Baru                    │
+│ Alamat baru...               │
+│                              │
+│ Dokumen Pendukung            │
+│ [Lihat Dokumen]              │
+│                              │
+│ Alasan                       │
+│ Perubahan data...            │
+│                              │
+│ Status                       │
+│ 🟡 Menunggu Persetujuan      │
+│                              │
+└──────────────────────────────┘
+```
+
+---
+
+# 10. Persetujuan Perubahan Berkas — Admin
+
+## BERKAS-03 — Daftar Perubahan Berkas
+
+```text
+┌──────────────────────────────┐
+│ Persetujuan Perubahan        │
+│                              │
+│ [Menunggu ▼]                 │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Nama Pegawai             │ │
+│ │ Perubahan Alamat         │ │
+│ │ Status: Menunggu         │ │
+│ │                      >   │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Nama Pegawai             │ │
+│ │ Perubahan Nomor HP       │ │
+│ │ Status: Menunggu         │ │
+│ │                      >   │ │
+│ └──────────────────────────┘ │
+│                              │
+└──────────────────────────────┘
+```
+
+---
+
+## BERKAS-04 — Detail Persetujuan Perubahan
+
+```text
+┌──────────────────────────────┐
+│ ←  Persetujuan Perubahan     │
+│                              │
+│ [Foto Pegawai]               │
+│ Nama Pegawai                 │
+│ EMP001                       │
+│                              │
+│ Jenis Perubahan              │
+│ Alamat                       │
+│                              │
+│ DATA LAMA                    │
+│ Alamat sebelumnya...         │
+│                              │
+│ DATA BARU                    │
+│ Alamat baru...               │
+│                              │
+│ Dokumen Pendukung            │
+│ [Lihat Dokumen]              │
+│                              │
+│ Alasan                       │
+│ Perubahan data...            │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │         SETUJUI          │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │          TOLAK           │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Catatan Admin                │
+│ [Tulis catatan...]          │
+│                              │
+└──────────────────────────────┘
+```
+
+### Keputusan Admin
+
+Admin wajib memilih:
+
+- Setujui
+- Tolak
+
+Jika ditolak, alasan penolakan dicatat.
+
+---
+
+# 11. Pengajuan Lainnya
+
+## PENGAJUAN-01 — Daftar Pengajuan Lainnya
+
+```text
+┌──────────────────────────────┐
+│ ←   Pengajuan Lainnya        │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Jenis Pengajuan           │
+│ │ Administrasi          >   │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Status                   │
+│ │ Menunggu                 │
+│ └──────────────────────────┘ │
+│                              │
+│ Riwayat                      │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ Pengajuan Administrasi   │ │
+│ │ Status: Disetujui        │ │
+│ └──────────────────────────┘ │
+│                              │
+└──────────────────────────────┘
+```
+
+### Keterangan
+
+Jenis pengajuan tambahan dapat dikelola oleh Admin sesuai kebutuhan operasional Klinik.
+
+Setiap pengajuan yang membutuhkan persetujuan tetap memiliki:
+
+- Menunggu
+- Disetujui
+- Ditolak
+
+---
+
+# 12. Notifikasi
+
+## NOTIF-01 — Daftar Notifikasi
+
+```text
+┌──────────────────────────────┐
+│ Notifikasi                   │
+│                              │
+│ Hari Ini                     │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ ✓ Pengajuan Cuti         │ │
+│ │ Pengajuan Anda disetujui │ │
+│ │ 10 menit lalu             │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 📄 Perubahan Berkas      │ │
+│ │ Menunggu persetujuan     │ │
+│ │ 1 jam lalu               │ │
+│ └──────────────────────────┘ │
+│                              │
+│ Sebelumnya                   │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 📢 Pengumuman Klinik     │ │
+│ │ Informasi terbaru...     │ │
+│ └──────────────────────────┘ │
+│                              │
+├──────────────────────────────┤
+│ 🏠    👥    📋    🔔    👤  │
+└──────────────────────────────┘
+```
+
+### Jenis notifikasi
+
+- Hasil persetujuan cuti
+- Hasil persetujuan perubahan berkas
+- Status pengajuan lainnya
+- Pengumuman
+- Informasi sistem
+
+---
+
+# 13. Profil Staff
+
+## PROFIL-01 — Profil
+
+```text
+┌──────────────────────────────┐
+│ Profil                       │
+│                              │
+│          [Foto]              │
+│                              │
+│       Nama Pegawai           │
+│       Staff                  │
+│       EMP001                 │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 👤 Data Pribadi       >  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 💼 Data Pekerjaan     >  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 🆘 Kontak Darurat      > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 🎓 Pendidikan         >  │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 💼 Pengalaman          > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 🔐 Password & PIN      > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ 🌐 Bahasa              > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ ❓ Pusat Bantuan        > │ │
+│ └──────────────────────────┘ │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │        KELUAR            │ │
+│ └──────────────────────────┘ │
+│                              │
+├──────────────────────────────┤
+│ 🏠    👥    📋    🔔    👤  │
+└──────────────────────────────┘
+```
+
+---
+
+# 14. Data Pribadi
+
+## PROFIL-02 — Data Pribadi
+
+```text
+┌──────────────────────────────┐
+│ ←       Data Pribadi         │
 │                              │
 │ Nama Lengkap                 │
-│ Ahmad Fauzan                 │
+│ Nama Pegawai                 │
 │                              │
 │ Nomor HP                     │
 │ 08xxxxxxxxxx                 │
@@ -967,881 +1185,846 @@ Jika tidak ada notifikasi:
 │ Laki-laki                    │
 │                              │
 │ Identitas                    │
-│ [ Data Identitas ]           │
+│ [Lihat Dokumen]              │
 │                              │
 │ Alamat                       │
-│ [ Alamat lengkap ]           │
+│ Alamat lengkap...            │
 │                              │
-│       [ EDIT PROFIL ]        │
+│ [Ajukan Perubahan]           │
 │                              │
 └──────────────────────────────┘
 ```
 
----
+### Keterangan
 
-# PROF-03 — Edit Personal Information
+Data yang membutuhkan perubahan administratif diarahkan ke:
 
-```text
-┌──────────────────────────────┐
-│ ←    Edit Personal           │
-│                              │
-│ Nama Lengkap                 │
-│ ┌──────────────────────────┐ │
-│ │ Ahmad Fauzan             │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Nomor HP                     │
-│ ┌──────────────────────────┐ │
-│ │ 08xxxxxxxxxx             │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Email                        │
-│ ┌──────────────────────────┐ │
-│ │ email@example.com        │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tempat Lahir                 │
-│ ┌──────────────────────────┐ │
-│ │ Semarang                 │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tanggal Lahir                │
-│ ┌──────────────────────────┐ │
-│ │ 01 / 01 / 2000           │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Jenis Kelamin                │
-│ ○ Laki-laki  ○ Perempuan    │
-│                              │
-│ Identitas                    │
-│ ┌──────────────────────────┐ │
-│ │ Nomor identitas          │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Alamat                       │
-│ ┌──────────────────────────┐ │
-│ │ Alamat lengkap           │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN ]             │
-│                              │
-└──────────────────────────────┘
-```
+**Pengajuan → Perubahan Berkas**
+
+Perubahan tidak langsung mengubah data utama sebelum mendapatkan persetujuan.
 
 ---
 
-# PROF-04 — Job Information
+# 15. Data Pekerjaan
+
+## PROFIL-03 — Data Pekerjaan
 
 ```text
 ┌──────────────────────────────┐
-│ ←     Job Information        │
+│ ←      Data Pekerjaan        │
 │                              │
-│ ID Karyawan                  │
+│ Employee ID                  │
 │ EMP001                       │
 │                              │
-│ Nama Perusahaan              │
+│ Perusahaan                   │
 │ Klinik Pratama Unimus        │
 │                              │
 │ Posisi / Jabatan             │
-│ Perawat                      │
+│ Staff                        │
+│                              │
+│ Status Pegawai               │
+│ Aktif                        │
 │                              │
 └──────────────────────────────┘
 ```
 
-Informasi pekerjaan:
+### Data
 
-- ID karyawan
+- Employee ID
 - Nama perusahaan
 - Posisi/jabatan
+- Status pegawai
 
 ---
 
-# PROF-05 — Emergency Contact
+# 16. Kontak Darurat
+
+## PROFIL-04 — Kontak Darurat
 
 ```text
 ┌──────────────────────────────┐
-│ ←    Emergency Contact       │
+│ ←      Kontak Darurat        │
 │                              │
 │ Nama                         │
-│ Ahmad Fauzi                 │
+│ Nama Kontak                  │
 │                              │
-│ Hubungan Keluarga            │
-│ Ayah                         │
+│ Hubungan                     │
+│ Orang Tua                    │
 │                              │
-│ Nomor HP                     │
+│ Nomor Telepon                │
 │ 08xxxxxxxxxx                 │
 │                              │
-│       [ EDIT ]               │
+└──────────────────────────────┘
+```
+
+### Data
+
+- Nama
+- Hubungan
+- Nomor telepon
+
+---
+
+# 17. Pendidikan
+
+## PROFIL-05 — Pendidikan
+
+```text
+┌──────────────────────────────┐
+│ ←       Pendidikan           │
+│                              │
+│ ┌──────────────────────────┐ │
+│ │ S1 Informatika            │ │
+│ │ Universitas               │ │
+│ │ 2023 - Sekarang       >   │ │
+│ └──────────────────────────┘ │
+│                              │
+│ [+ Tambah Pendidikan]        │
 │                              │
 └──────────────────────────────┘
 ```
 
+### Keterangan
+
+Pegawai dapat menambahkan riwayat pendidikan.
+
 ---
 
-# PROF-06 — Edit Emergency Contact
+# 18. Pengalaman
+
+## PROFIL-06 — Pengalaman
 
 ```text
 ┌──────────────────────────────┐
-│ ←   Edit Emergency Contact   │
+│ ←       Pengalaman           │
 │                              │
-│ Nama                         │
 │ ┌──────────────────────────┐ │
-│ │ Nama kontak              │ │
+│ │ Social Media Marketer     │ │
+│ │ Nama Perusahaan           │ │
+│ │ 2024 - 2025          >    │ │
 │ └──────────────────────────┘ │
 │                              │
-│ Hubungan Keluarga             │
-│ ┌──────────────────────────┐ │
-│ │ Pilih hubungan        ▼  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Nomor HP                     │
-│ ┌──────────────────────────┐ │
-│ │ 08xxxxxxxxxx             │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN ]             │
+│ [+ Tambah Pengalaman]        │
 │                              │
 └──────────────────────────────┘
 ```
 
+### Keterangan
+
+Pegawai dapat menambahkan pengalaman kerja.
+
 ---
 
-# PROF-07 — Education List
+# 19. Password & PIN
+
+## PROFIL-07 — Keamanan
 
 ```text
 ┌──────────────────────────────┐
-│ ←        Education           │
+│ ←       Keamanan             │
 │                              │
-│  Pendidikan                  │
-│                              │
+│ Password                     │
 │ ┌──────────────────────────┐ │
-│ │ S1 Informatika           │ │
-│ │ Universitas ABC          │ │
-│ │ 2022 - 2026          >   │ │
+│ │ Ubah Password          >  │ │
 │ └──────────────────────────┘ │
 │                              │
+│ PIN                          │
 │ ┌──────────────────────────┐ │
-│ │ SMA                       │ │
-│ │ SMA Negeri 1              │ │
-│ │ 2019 - 2022          >   │ │
+│ │ Kelola PIN             >  │ │
 │ └──────────────────────────┘ │
-│                              │
-│       [ + TAMBAH ]           │
 │                              │
 └──────────────────────────────┘
 ```
 
+### Keterangan
+
+Pengguna dapat:
+
+- Mengubah password
+- Membuat/mengubah PIN
+
 ---
 
-# PROF-08 — Add Education
+# 20. Bahasa
+
+## PROFIL-08 — Bahasa
 
 ```text
 ┌──────────────────────────────┐
-│ ←     Add Education          │
+│ ←         Bahasa             │
 │                              │
-│ Jenjang Pendidikan           │
-│ ┌──────────────────────────┐ │
-│ │ Pilih jenjang         ▼  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Institusi                    │
-│ ┌──────────────────────────┐ │
-│ │ Nama sekolah/universitas │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tahun Mulai                  │
-│ ┌──────────────────────────┐ │
-│ │ YYYY                     │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tahun Selesai                │
-│ ┌──────────────────────────┐ │
-│ │ YYYY                     │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN ]             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-09 — Edit Education
-
-Struktur sama dengan Add Education, tetapi field telah berisi data yang dapat diubah.
-
-```text
-Education
-↓
-Pilih Data
-↓
-Edit
-↓
-Simpan
-↓
-Education List
-```
-
----
-
-# PROF-10 — Experience List
-
-```text
-┌──────────────────────────────┐
-│ ←       Experience           │
-│                              │
-│  Pengalaman Kerja            │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Perawat                  │ │
-│ │ Klinik ABC               │ │
-│ │ 2023 - 2026          >   │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Asisten Perawat          │ │
-│ │ Klinik XYZ               │ │
-│ │ 2022 - 2023          >   │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ + TAMBAH ]           │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-11 — Add Experience
-
-```text
-┌──────────────────────────────┐
-│ ←     Add Experience         │
-│                              │
-│ Posisi / Jabatan             │
-│ ┌──────────────────────────┐ │
-│ │ Nama posisi              │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Nama Perusahaan              │
-│ ┌──────────────────────────┐ │
-│ │ Nama perusahaan          │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tahun Mulai                  │
-│ ┌──────────────────────────┐ │
-│ │ YYYY                     │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Tahun Selesai                │
-│ ┌──────────────────────────┐ │
-│ │ YYYY                     │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN ]             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-12 — Edit Experience
-
-Struktur sama dengan Add Experience.
-
-```text
-Experience
-↓
-Pilih Data
-↓
-Edit
-↓
-Simpan
-↓
-Experience List
-```
-
----
-
-# PROF-13 — Change Password
-
-```text
-┌──────────────────────────────┐
-│ ←     Change Password        │
-│                              │
-│ Password Lama                │
-│ ┌──────────────────────────┐ │
-│ │ ••••••••••           👁   │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Password Baru                │
-│ ┌──────────────────────────┐ │
-│ │ ••••••••••           👁   │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Konfirmasi Password          │
-│ ┌──────────────────────────┐ │
-│ │ ••••••••••           👁   │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN ]             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-14 — Change PIN
-
-```text
-┌──────────────────────────────┐
-│ ←        Change PIN          │
-│                              │
-│          Ubah PIN            │
-│                              │
-│ PIN Lama                     │
-│                              │
-│       ● ● ● ● ● ●            │
-│                              │
-│ PIN Baru                     │
-│                              │
-│       ○ ○ ○ ○ ○ ○            │
-│                              │
-│ Konfirmasi PIN               │
-│                              │
-│       ○ ○ ○ ○ ○ ○            │
-│                              │
-│      [ SIMPAN PIN ]          │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-15 — Language
-
-```text
-┌──────────────────────────────┐
-│ ←         Language           │
-│                              │
-│ Bahasa                       │
+│ Bahasa Aplikasi              │
 │                              │
 │ ● Bahasa Indonesia           │
-│                              │
 │ ○ English                    │
-│                              │
 │                              │
 └──────────────────────────────┘
 ```
 
 ---
 
-# PROF-16 — Help Center
+# 21. Pusat Bantuan
+
+## PROFIL-09 — Pusat Bantuan
 
 ```text
 ┌──────────────────────────────┐
-│ ←       Help Center          │
+│ ←      Pusat Bantuan         │
 │                              │
-│ Pusat Bantuan                │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ 🔍 Cari bantuan...       │ │
-│ └──────────────────────────┘ │
+│ 🔍 Cari bantuan...           │
 │                              │
 │ FAQ                          │
 │                              │
-│ ▼ Bagaimana cara Clock In?  │
+│ ┌──────────────────────────┐ │
+│ │ Bagaimana cara Clock In? │ │
+│ │                       >  │ │
+│ └──────────────────────────┘ │
 │                              │
-│ ▼ Bagaimana cara Clock Out? │
+│ ┌──────────────────────────┐ │
+│ │ Bagaimana mengajukan cuti│ │
+│ │                       >  │ │
+│ └──────────────────────────┘ │
 │                              │
-│ ▼ Mengapa lokasi tidak valid?│
-│                              │
-│ ▼ Bagaimana mengubah PIN?   │
-│                              │
-│ ▼ Bagaimana mengubah profil?│
-│                              │
-│                              │
-│ Butuh bantuan lebih lanjut?  │
-│                              │
-│       [ HUBUNGI ADMIN ]      │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# PROF-17 — About Application
-
-```text
-┌──────────────────────────────┐
-│ ←    About Application       │
-│                              │
-│          [ LOGO ]            │
-│                              │
-│          MedStaff            │
-│                              │
-│ Employee Management          │
-│ Application                  │
-│                              │
-│ Version 1.0.0                │
-│                              │
-│ Klinik Pratama Unimus        │
-│                              │
-│ © 2026 MedStaff              │
+│ ┌──────────────────────────┐ │
+│ │ Bagaimana mengubah data? │ │
+│ │                       >  │ │
+│ └──────────────────────────┘ │
 │                              │
 └──────────────────────────────┘
 ```
 
 ---
 
-# 7. Administrator
+# 22. Administrator
 
-Administrator digunakan oleh **HRD atau pimpinan** untuk mengelola data pegawai, absensi, dan informasi yang berkaitan dengan operasional karyawan.
+Administrator memiliki akses yang lebih luas dibanding Staff/Pegawai.
+
+Administrator digunakan oleh:
+
+- HRD
+- Pimpinan
+- Admin yang ditunjuk
+
+Administrator dapat mengelola:
+
+- Pegawai
+- Absensi
+- Pengajuan
+- Cuti
+- Perubahan berkas
+- Pengajuan lainnya
+- Persetujuan
+- Pengumuman
+- Notifikasi
+- Data administrasi pegawai
 
 ---
 
-## ADMIN-01 — Admin Dashboard
+# 23. Admin Dashboard
+
+## ADMIN-01 — Dashboard Administrator
 
 ```text
-┌──────────────────────────────┐
-│                              │
-│  Selamat datang, Admin       │
-│  Klinik Pratama Unimus       │
-│                              │
-│  ┌────────────────────────┐  │
-│  │ Total Pegawai          │  │
-│  │          45            │  │
-│  └────────────────────────┘  │
-│                              │
-│  ┌────────────┐ ┌──────────┐ │
-│  │ Hadir      │ │ Belum    │ │
-│  │    38      │ │    7     │ │
-│  └────────────┘ └──────────┘ │
-│                              │
-│  ┌────────────┐ ┌──────────┐ │
-│  │ Terlambat  │ │ Izin     │ │
-│  │     3      │ │    4     │ │
-│  └────────────┘ └──────────┘ │
-│                              │
-│  Aktivitas Terbaru           │
-│                              │
-│  Ahmad Fauzan                │
-│  Clock In — 08:01 WIB        │
-│                              │
-│  Siti Aminah                 │
-│  Clock In — 08:05 WIB        │
-│                              │
-│  ──────────────────────────  │
-│  Dashboard  Pegawai  Absen  │
-│             Laporan  Lainnya│
-└──────────────────────────────┘
+┌────────────────────────────────┐
+│ Dashboard Admin                │
+│                                │
+│ Selamat datang, Admin          │
+│ Senin, 10 Agustus 2026         │
+│                                │
+│ ┌───────────┐ ┌──────────────┐ │
+│ │ Pegawai   │ │ Hadir Hari Ini│ │
+│ │   125     │ │      112      │ │
+│ └───────────┘ └──────────────┘ │
+│                                │
+│ ┌───────────┐ ┌──────────────┐ │
+│ │ Cuti      │ │ Pengajuan    │ │
+│ │ Menunggu  │ │ Menunggu     │ │
+│ │     8     │ │      12      │ │
+│ └───────────┘ └──────────────┘ │
+│                                │
+│ Persetujuan Menunggu           │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 📅 Cuti              5     │ │
+│ │ 📄 Perubahan Berkas  4     │ │
+│ │ 📋 Lainnya           3     │ │
+│ └────────────────────────────┘ │
+│                                │
+│ Aktivitas Terbaru              │
+│ ┌────────────────────────────┐ │
+│ │ Pengajuan baru...           │ │
+│ │ Pegawai baru...             │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
 ```
 
 ### Komponen
 
 - Total pegawai
-- Jumlah hadir
-- Jumlah belum hadir
-- Jumlah terlambat
-- Jumlah izin
-- Aktivitas absensi terbaru
-- Navigasi administrator
+- Kehadiran hari ini
+- Cuti menunggu
+- Pengajuan menunggu
+- Ringkasan persetujuan
+- Aktivitas terbaru
 
 ---
 
-# ADMIN-02 — Employee Management
+# 24. Admin — Manajemen Pegawai
+
+## ADMIN-02 — Daftar Pegawai
 
 ```text
-┌──────────────────────────────┐
-│ ←    Employee Management     │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ 🔍 Cari pegawai...       │ │
-│ └──────────────────────────┘ │
-│                              │
-│ [+ Tambah Pegawai]           │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ [Foto] Ahmad Fauzan      │ │
-│ │ Perawat                 │ │
-│ │ EMP001                  │ │
-│ │ Status: Aktif        >  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ [Foto] Siti Aminah       │ │
-│ │ Administrasi            │ │
-│ │ EMP002                  │ │
-│ │ Status: Aktif        >  │ │
-│ └──────────────────────────┘ │
-│                              │
-└──────────────────────────────┘
+┌────────────────────────────────┐
+│ Manajemen Pegawai              │
+│                                │
+│ 🔍 Cari pegawai...             │
+│                                │
+│ [Semua ▼] [Status ▼]           │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ [Foto] Nama Pegawai        │ │
+│ │        EMP001              │ │
+│ │        Staff               │ │
+│ │        Aktif            >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ [Foto] Nama Pegawai        │ │
+│ │        EMP002              │ │
+│ │        Security            │ │
+│ │        Aktif            >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ [+ Tambah Pegawai]             │
+│                                │
+└────────────────────────────────┘
 ```
 
-### Fungsi
-
-Admin dapat:
-
-- Melihat daftar pegawai
-- Mencari pegawai
-- Menambahkan pegawai
-- Melihat detail pegawai
-- Mengubah data pegawai
-- Mengaktifkan pegawai
-- Menonaktifkan pegawai
-
----
-
-# ADMIN-03 — Add Employee
-
-```text
-┌──────────────────────────────┐
-│ ←       Tambah Pegawai       │
-│                              │
-│ Nama Lengkap                 │
-│ ┌──────────────────────────┐ │
-│ │ Nama lengkap             │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Email                        │
-│ ┌──────────────────────────┐ │
-│ │ Email                    │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Nomor HP                     │
-│ ┌──────────────────────────┐ │
-│ │ 08xxxxxxxxxx             │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ID Karyawan                  │
-│ ┌──────────────────────────┐ │
-│ │ EMPXXX                   │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Jabatan                      │
-│ ┌──────────────────────────┐ │
-│ │ Pilih jabatan         ▼  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Status                       │
-│ ● Aktif   ○ Tidak Aktif     │
-│                              │
-│       [ SIMPAN ]             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ADMIN-04 — Employee Detail
-
-```text
-┌──────────────────────────────┐
-│ ←      Detail Pegawai        │
-│                              │
-│          [ FOTO ]            │
-│                              │
-│       Ahmad Fauzan           │
-│       Perawat                │
-│       EMP001                 │
-│                              │
-│ Status                       │
-│ ● Aktif                      │
-│                              │
-│ ──────────────────────────   │
-│                              │
-│ Informasi Personal           │
-│                              │
-│ Nomor HP                     │
-│ 08xxxxxxxxxx                 │
-│                              │
-│ Email                        │
-│ email@example.com            │
-│                              │
-│ Alamat                       │
-│ [Alamat pegawai]             │
-│                              │
-│                              │
-│ [ EDIT ]   [ NONAKTIFKAN ]   │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ADMIN-05 — Attendance Management
-
-```text
-┌──────────────────────────────┐
-│      Attendance Management   │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ 📅 10 Agustus 2026    ▼  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ 🔍 Cari pegawai...       │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Filter                       │
-│ [Semua ▼]                   │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Ahmad Fauzan             │ │
-│ │ Clock In  08:01          │ │
-│ │ Clock Out 17:02          │ │
-│ │ Status: Lengkap       >  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Siti Aminah              │ │
-│ │ Clock In  08:05          │ │
-│ │ Clock Out --:--          │ │
-│ │ Status: Belum Clock Out  │ │
-│ └──────────────────────────┘ │
-│                              │
-└──────────────────────────────┘
-```
-
-### Filter
-
-Admin dapat memfilter:
-
-- Semua
-- Hadir
-- Belum hadir
-- Terlambat
-- Izin
-- Tidak hadir
-
----
-
-# ADMIN-06 — Attendance Detail
-
-```text
-┌──────────────────────────────┐
-│ ←     Detail Absensi         │
-│                              │
-│ Ahmad Fauzan                 │
-│ EMP001                       │
-│                              │
-│ Clock In                     │
-│                              │
-│ ┌────────────────────────┐   │
-│ │                        │   │
-│ │     FOTO SELFIE        │   │
-│ │                        │   │
-│ └────────────────────────┘   │
-│                              │
-│ Waktu                        │
-│ 08:01:32 WIB                 │
-│                              │
-│ Lokasi                       │
-│ Klinik Pratama Unimus        │
-│                              │
-│ Koordinat                    │
-│ -6.xxxxx, 110.xxxxx          │
-│                              │
-│ Status                       │
-│ ✓ Valid                      │
-│                              │
-└──────────────────────────────┘
-```
-
-Admin dapat melihat bukti absensi berupa:
-
-- Foto selfie
-- Tanggal
-- Jam
-- Lokasi
-- Koordinat
-- Status
-
----
-
-# ADMIN-07 — Attendance Correction
-
-Jika diperlukan koreksi absensi, admin dapat mengakses fitur koreksi berdasarkan hak akses yang diberikan.
-
-```text
-┌──────────────────────────────┐
-│ ←     Koreksi Absensi        │
-│                              │
-│ Pegawai                      │
-│ Ahmad Fauzan                 │
-│                              │
-│ Tanggal                      │
-│ 10 Agustus 2026              │
-│                              │
-│ Jenis                        │
-│ Clock In                     │
-│                              │
-│ Waktu Sebelumnya             │
-│ 08:01 WIB                    │
-│                              │
-│ Waktu Baru                   │
-│ ┌──────────────────────────┐ │
-│ │ 08:00                   │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Alasan Koreksi               │
-│ ┌──────────────────────────┐ │
-│ │ Masukkan alasan...       │ │
-│ └──────────────────────────┘ │
-│                              │
-│       [ SIMPAN KOREKSI ]     │
-│                              │
-└──────────────────────────────┘
-```
-
-Setiap koreksi harus memiliki:
-
-- Admin yang melakukan koreksi
-- Waktu koreksi
-- Data sebelum koreksi
-- Data setelah koreksi
-- Alasan koreksi
-
----
-
-# ADMIN-08 — Announcement Management
-
-```text
-┌──────────────────────────────┐
-│   Announcement Management    │
-│                              │
-│ [+ Buat Pengumuman]          │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Informasi Klinik         │ │
-│ │ 10 Agustus 2026          │ │
-│ │ Status: Published     >  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Jadwal Rapat             │ │
-│ │ 8 Agustus 2026           │ │
-│ │ Status: Published     >  │ │
-│ └──────────────────────────┘ │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ADMIN-09 — Create Announcement
-
-```text
-┌──────────────────────────────┐
-│ ←     Buat Pengumuman        │
-│                              │
-│ Judul                        │
-│ ┌──────────────────────────┐ │
-│ │ Judul pengumuman         │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Isi                          │
-│ ┌──────────────────────────┐ │
-│ │                          │ │
-│ │ Tulis pengumuman...      │ │
-│ │                          │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Target                       │
-│ ● Semua Pegawai              │
-│ ○ Pegawai Tertentu           │
-│                              │
-│       [ PUBLIKASIKAN ]       │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ADMIN-10 — Reports
-
-```text
-┌──────────────────────────────┐
-│          Reports             │
-│                              │
-│ Periode                     │
-│ ┌──────────────────────────┐ │
-│ │ Agustus 2026          ▼  │ │
-│ └──────────────────────────┘ │
-│                              │
-│ Ringkasan                    │
-│                              │
-│ Total Kehadiran              │
-│ 850                          │
-│                              │
-│ Terlambat                    │
-│ 32                           │
-│                              │
-│ Izin                         │
-│ 18                           │
-│                              │
-│ Tidak Hadir                  │
-│ 10                           │
-│                              │
-│ [ Lihat Detail ]             │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# ADMIN-11 — Admin Profile
-
-```text
-┌──────────────────────────────┐
-│         Admin Profile        │
-│                              │
-│          [ FOTO ]            │
-│                              │
-│       Nama Admin             │
-│       HRD                    │
-│                              │
-│ ┌──────────────────────────┐ │
-│ │ Informasi Akun         > │ │
-│ ├──────────────────────────┤ │
-│ │ Change Password        > │ │
-│ ├──────────────────────────┤ │
-│ │ Change PIN             > │ │
-│ ├──────────────────────────┤ │
-│ │ Language               > │ │
-│ └──────────────────────────┘ │
-│                              │
-│          [ Logout ]          │
-│                              │
-└──────────────────────────────┘
-```
-
----
-
-# Administrator Access
-
-Hak akses administrator ditentukan berdasarkan role.
-
-## HRD
-
-Dapat:
+### Fitur Admin
 
 - Melihat pegawai
 - Menambah pegawai
-- Mengubah data pegawai
-- Mengaktifkan/nonaktifkan pegawai
-- Melihat absensi
-- Melakukan koreksi sesuai kewenangan
+- Melihat detail pegawai
+- Mengelola status pegawai
+- Melihat data pekerjaan
+- Melihat data administrasi
+
+---
+
+# 25. Admin — Detail Pegawai
+
+## ADMIN-03 — Detail Pegawai Admin
+
+```text
+┌────────────────────────────────┐
+│ ←       Detail Pegawai         │
+│                                │
+│           [Foto]               │
+│                                │
+│        Nama Pegawai            │
+│        EMP001                  │
+│        Staff                   │
+│                                │
+│ Data Pribadi                   │
+│ ────────────────────────────── │
+│ Nama                           │
+│ Nomor HP                       │
+│ Email                          │
+│ Tempat/Tanggal Lahir           │
+│ Jenis Kelamin                  │
+│ Alamat                         │
+│                                │
+│ Data Pekerjaan                 │
+│ ────────────────────────────── │
+│ Employee ID                    │
+│ Perusahaan                     │
+│ Jabatan                        │
+│ Status                         │
+│                                │
+│ Dokumen                        │
+│ ────────────────────────────── │
+│ [Lihat Dokumen]                │
+│                                │
+│ Riwayat                        │
+│ ────────────────────────────── │
+│ [Riwayat Absensi]              │
+│ [Riwayat Cuti]                 │
+│ [Riwayat Pengajuan]            │
+│                                │
+└────────────────────────────────┘
+```
+
+---
+
+# 26. Admin — Monitoring Absensi
+
+## ADMIN-04 — Monitoring Absensi
+
+```text
+┌────────────────────────────────┐
+│ Monitoring Absensi             │
+│                                │
+│ [Tanggal 📅] [Status ▼]        │
+│                                │
+│ Total Hadir       112          │
+│ Belum Absen       8            │
+│ Terlambat         5            │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Nama Pegawai               │ │
+│ │ Clock In   08:01           │ │
+│ │ Clock Out  16:05           │ │
+│ │ Status     Hadir            │ │
+│ │                        >   │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Nama Pegawai               │ │
+│ │ Clock In   08:15           │ │
+│ │ Clock Out  -               │ │
+│ │ Status     Hadir            │ │
+│ │                        >   │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
+```
+
+### Keterangan
+
+Admin dapat memonitor kehadiran seluruh pegawai.
+
+---
+
+# 27. Admin — Detail Absensi
+
+## ADMIN-05 — Detail Absensi Pegawai
+
+```text
+┌────────────────────────────────┐
+│ ←       Detail Absensi         │
+│                                │
+│ [Foto Pegawai]                 │
+│ Nama Pegawai                   │
+│ EMP001                         │
+│                                │
+│ Tanggal                        │
+│ 10 Agustus 2026                │
+│                                │
+│ CLOCK IN                       │
+│ 08:01 WIB                      │
+│                                │
+│ Foto Selfie                    │
+│ [Lihat Foto]                   │
+│                                │
+│ Lokasi                         │
+│ Klinik Pratama Unimus          │
+│                                │
+│ CLOCK OUT                      │
+│ 16:05 WIB                      │
+│                                │
+│ Status                         │
+│ Hadir                          │
+│                                │
+└────────────────────────────────┘
+```
+
+---
+
+# 28. Admin — Persetujuan Terpusat
+
+## ADMIN-06 — Pusat Persetujuan
+
+```text
+┌────────────────────────────────┐
+│ Pusat Persetujuan              │
+│                                │
+│ [Semua ▼]                      │
+│                                │
+│ Menunggu Persetujuan           │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 📅 Pengajuan Cuti           │ │
+│ │ Nama Pegawai               │ │
+│ │ Menunggu                >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 📄 Perubahan Berkas         │ │
+│ │ Nama Pegawai               │ │
+│ │ Menunggu                >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 📋 Pengajuan Lainnya        │ │
+│ │ Nama Pegawai               │ │
+│ │ Menunggu                >  │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
+```
+
+### Keterangan
+
+Ini merupakan pusat seluruh proses approval.
+
+Admin tidak perlu mencari pengajuan dari banyak tempat.
+
+Semua pengajuan yang membutuhkan tindakan ditampilkan di sini.
+
+---
+
+# 29. Admin — Keputusan Persetujuan
+
+Setiap pengajuan yang membutuhkan approval memiliki pola yang sama.
+
+```text
+┌────────────────────────────────┐
+│ Detail Pengajuan               │
+│                                │
+│ Data Pemohon                   │
+│ Nama Pegawai                   │
+│ Employee ID                    │
+│ Jabatan                        │
+│                                │
+│ Detail Pengajuan               │
+│ ................................│
+│                                │
+│ Lampiran                       │
+│ [Lihat Lampiran]               │
+│                                │
+│ Catatan Admin                  │
+│ ┌────────────────────────────┐ │
+│ │ Tulis catatan...           │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │          SETUJUI           │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │           TOLAK            │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
+```
+
+### Aturan approval
+
+Semua pengajuan yang membutuhkan persetujuan memiliki tiga status utama:
+
+```text
+MENUNGGU
+   │
+   ├───────────────┐
+   ↓               ↓
+SETUJUI           TOLAK
+   │               │
+   ↓               ↓
+DISETUJUI          DITOLAK
+```
+
+### Jika Ditolak
+
+Admin wajib memberikan alasan penolakan.
+
+### Jika Disetujui
+
+Data pengajuan diproses dan status berubah menjadi Disetujui.
+
+---
+
+# 30. Admin — Pengumuman
+
+## ADMIN-07 — Manajemen Pengumuman
+
+```text
+┌────────────────────────────────┐
+│ Pengumuman                     │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Informasi Klinik            │ │
+│ │ Pengumuman terbaru...       │ │
+│ │ Aktif                    >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Jadwal Operasional          │ │
+│ │ Informasi jadwal...         │ │
+│ │ Aktif                    >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ [+ Buat Pengumuman]            │
+│                                │
+└────────────────────────────────┘
+```
+
+### Fitur
+
 - Membuat pengumuman
-- Melihat laporan
+- Mengubah pengumuman
+- Menghapus/nonaktifkan pengumuman
+- Melihat pengumuman aktif
 
-## Pimpinan
+---
 
-Dapat:
+# 31. Admin — Notifikasi
 
-- Melihat pegawai
-- Melihat absensi
-- Melihat laporan
-- Melihat pengumuman
-- Mengelola pengumuman sesuai kewenangan
+## ADMIN-08 — Notifikasi Admin
 
-Hak akses akan diterapkan melalui sistem role dan permission pada backend.
+```text
+┌────────────────────────────────┐
+│ Notifikasi                     │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 🔔 Pengajuan Cuti Baru     │ │
+│ │ Membutuhkan persetujuan    │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 📄 Perubahan Berkas Baru   │ │
+│ │ Membutuhkan pemeriksaan    │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ 👤 Pegawai Baru             │ │
+│ │ Data pegawai tersedia      │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
+```
+
+---
+
+# 32. Admin — Profil & Pengaturan
+
+## ADMIN-09 — Profil Admin
+
+```text
+┌────────────────────────────────┐
+│ Profil Admin                   │
+│                                │
+│           [Foto]               │
+│                                │
+│        Nama Admin              │
+│        HRD / Pimpinan          │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Data Akun               >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Keamanan                >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Bahasa                  >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │ Pusat Bantuan           >  │ │
+│ └────────────────────────────┘ │
+│                                │
+│ ┌────────────────────────────┐ │
+│ │          KELUAR             │ │
+│ └────────────────────────────┘ │
+│                                │
+└────────────────────────────────┘
+```
+
+---
+
+# 33. Struktur Navigasi Staff
+
+```text
+LOGIN
+  │
+  ↓
+HOME
+  │
+  ├── Attendance
+  │     ├── Selfie
+  │     ├── GPS
+  │     ├── Waktu
+  │     ├── Konfirmasi
+  │     └── Berhasil
+  │
+  ├── Pegawai
+  │     ├── Daftar Pegawai
+  │     └── Detail Pegawai
+  │
+  ├── Pengajuan
+  │     ├── Pengajuan Cuti
+  │     │     ├── Form
+  │     │     └── Detail/Status
+  │     │
+  │     ├── Perubahan Berkas
+  │     │     ├── Form
+  │     │     └── Detail/Status
+  │     │
+  │     └── Pengajuan Lainnya
+  │
+  ├── Notifikasi
+  │
+  └── Profil
+        ├── Data Pribadi
+        ├── Data Pekerjaan
+        ├── Kontak Darurat
+        ├── Pendidikan
+        ├── Pengalaman
+        ├── Password & PIN
+        ├── Bahasa
+        └── Pusat Bantuan
+```
+
+---
+
+# 34. Struktur Navigasi Administrator
+
+```text
+LOGIN
+  │
+  ↓
+ADMIN DASHBOARD
+  │
+  ├── Manajemen Pegawai
+  │     ├── Daftar Pegawai
+  │     ├── Tambah Pegawai
+  │     └── Detail Pegawai
+  │
+  ├── Monitoring Absensi
+  │     ├── Daftar Absensi
+  │     └── Detail Absensi
+  │
+  ├── Pusat Persetujuan
+  │     ├── Cuti
+  │     ├── Perubahan Berkas
+  │     └── Pengajuan Lainnya
+  │
+  ├── Pengumuman
+  │     ├── Daftar
+  │     └── Buat/Edit
+  │
+  ├── Notifikasi
+  │
+  └── Profil Admin
+        ├── Data Akun
+        ├── Keamanan
+        ├── Bahasa
+        └── Pusat Bantuan
+```
+
+---
+
+# 35. Status Sistem Pengajuan
+
+Semua pengajuan menggunakan standar status yang konsisten.
+
+```text
+┌───────────────┐
+│   MENUNGGU    │
+└───────┬───────┘
+        │
+   ┌────┴────┐
+   ↓         ↓
+┌───────┐ ┌────────┐
+│SETUJUI│ │ TOLAK  │
+└───┬───┘ └───┬────┘
+    ↓         ↓
+┌─────────┐ ┌────────┐
+│DISETUJUI│ │DITOLAK │
+└─────────┘ └────────┘
+```
+
+### Berlaku untuk
+
+- Pengajuan cuti
+- Perubahan berkas
+- Pengajuan administrasi lainnya
+- Pengajuan lain yang membutuhkan persetujuan
+
+---
+
+# 36. Ringkasan Hak Akses
+
+| Fitur | Staff | Admin |
+|---|---|---|
+| Home | ✓ | ✓ |
+| Attendance | ✓ | Monitoring |
+| Selfie Absensi | ✓ | Melihat |
+| GPS Absensi | ✓ | Melihat |
+| Riwayat Absensi | ✓ | ✓ |
+| Daftar Pegawai | ✓ | ✓ |
+| Detail Pegawai | ✓ | ✓ |
+| Pengajuan Cuti | ✓ | ✓ |
+| Persetujuan Cuti | - | ✓ |
+| Perubahan Berkas | ✓ | ✓ |
+| Persetujuan Berkas | - | ✓ |
+| Pengajuan Lainnya | ✓ | ✓ |
+| Persetujuan Pengajuan | - | ✓ |
+| Notifikasi | ✓ | ✓ |
+| Profil | ✓ | ✓ |
+| Pendidikan | ✓ | Melihat |
+| Pengalaman | ✓ | Melihat |
+| Pengumuman | Melihat | Kelola |
+| Manajemen Pegawai | - | ✓ |
+| Monitoring Absensi | - | ✓ |
+| Pusat Persetujuan | - | ✓ |
+
+---
+
+# 37. Prinsip Wireframe MedStaff
+
+Wireframe MedStaff menggunakan prinsip berikut:
+
+1. Bottom navigation Staff terdiri dari:
+   - Home
+   - Pegawai
+   - Pengajuan
+   - Notifikasi
+   - Profil
+
+2. Attendance bukan menu bottom navigation.
+
+3. Attendance menggunakan:
+   - Selfie
+   - Waktu
+   - GPS
+   - Clock In
+   - Clock Out
+
+4. Semua pengajuan yang membutuhkan persetujuan Admin memiliki:
+   - Menunggu
+   - Setujui
+   - Tolak
+   - Disetujui
+   - Ditolak
+
+5. Penolakan pengajuan harus memiliki alasan/catatan Admin.
+
+6. Perubahan data penting pegawai tidak langsung mengubah data utama sebelum melalui proses persetujuan.
+
+7. Admin memiliki akses yang lebih luas daripada Staff.
+
+8. Admin dapat melihat dan mengelola:
+   - Pegawai
+   - Absensi
+   - Cuti
+   - Perubahan berkas
+   - Pengajuan lainnya
+   - Persetujuan
+   - Pengumuman
+   - Notifikasi
+
+9. Profil Staff mencakup:
+   - Data pribadi
+   - Data pekerjaan
+   - Kontak darurat
+   - Pendidikan
+   - Pengalaman
+   - Password
+   - PIN
+   - Bahasa
+   - Pusat bantuan
+
+10. Struktur wireframe ini menjadi acuan untuk tahap UI Design dan implementasi aplikasi.
