@@ -1,0 +1,271 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  STAFF
+  ADMIN
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DocumentRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AttendanceStatus {
+  HADIR
+  TERLAMBAT
+  IZIN
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(STAFF)
+  pinHash      String?  @map("pin_hash")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  employeeProfile       EmployeeProfile?
+  notifications         Notification[]
+  notificationPreference NotificationPreference?
+  userLanguage          UserLanguage?
+  approvals             LeaveRequest[] @relation("LeaveReviewer")
+  documentReviews       DocumentChangeRequest[] @relation("DocumentReviewer")
+  announcements         Announcement[]
+  helpArticles          HelpArticle[] @relation("HelpArticleCreator")
+
+  @@map("users")
+}
+
+model EmployeeProfile {
+  id             String   @id @default(uuid()) @db.Uuid
+  userId         String   @unique @map("user_id") @db.Uuid
+  employeeId     String   @unique @map("employee_id")
+  fullName       String   @map("full_name")
+  phone          String
+  birthPlace     String   @map("birth_place")
+  birthDate      DateTime @map("birth_date") @db.Date
+  gender         String
+  identityNumber String?  @map("identity_number")
+  address        String?
+  companyName    String   @map("company_name")
+  position       String
+  profilePhoto   String?  @map("profile_photo")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emergencyContacts EmergencyContact[]
+  educations        Education[]
+  experiences       Experience[]
+  attendances       Attendance[]
+  leaveRequests     LeaveRequest[]
+  documentRequests  DocumentChangeRequest[]
+
+  @@map("employee_profiles")
+}
+
+model EmergencyContact {
+  id         String   @id @default(uuid()) @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  name       String
+  relationship String
+  phone      String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("emergency_contacts")
+}
+
+model Education {
+  id           String   @id @default(uuid()) @db.Uuid
+  employeeId   String   @map("employee_id") @db.Uuid
+  institution  String
+  level        String
+  major        String?
+  startYear   Int?     @map("start_year")
+  endYear      Int?     @map("end_year")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("educations")
+}
+
+model Experience {
+  id          String   @id @default(uuid()) @db.Uuid
+  employeeId  String   @map("employee_id") @db.Uuid
+  companyName String   @map("company_name")
+  position    String
+  startDate   DateTime? @map("start_date") @db.Date
+  endDate     DateTime? @map("end_date") @db.Date
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@map("experiences")
+}
+
+model Attendance {
+  id                String           @id @default(uuid()) @db.Uuid
+  employeeId        String           @map("employee_id") @db.Uuid
+  attendanceDate    DateTime         @map("attendance_date") @db.Date
+  clockIn           DateTime?        @map("clock_in")
+  clockOut          DateTime?        @map("clock_out")
+  clockInPhoto      String?          @map("clock_in_photo")
+  clockOutPhoto     String?          @map("clock_out_photo")
+  clockInLatitude   Decimal?         @map("clock_in_latitude") @db.Decimal(10, 7)
+  clockInLongitude  Decimal?         @map("clock_in_longitude") @db.Decimal(10, 7)
+  clockOutLatitude  Decimal?         @map("clock_out_latitude") @db.Decimal(10, 7)
+  clockOutLongitude Decimal?         @map("clock_out_longitude") @db.Decimal(10, 7)
+  status            AttendanceStatus
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, attendanceDate])
+  @@map("attendances")
+}
+
+model LeaveRequest {
+  id           String       @id @default(uuid()) @db.Uuid
+  employeeId   String       @map("employee_id") @db.Uuid
+  leaveType    String       @map("leave_type")
+  startDate    DateTime     @map("start_date") @db.Date
+  endDate      DateTime     @map("end_date") @db.Date
+  reason       String
+  attachment   String?
+  status       LeaveStatus  @default(PENDING)
+  reviewedBy   String?      @map("reviewed_by") @db.Uuid
+  reviewedAt   DateTime?    @map("reviewed_at")
+  adminNote    String?      @map("admin_note")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User?            @relation("LeaveReviewer", fields: [reviewedBy], references: [id])
+
+  @@map("leave_requests")
+}
+
+model DocumentChangeRequest {
+  id           String                  @id @default(uuid()) @db.Uuid
+  employeeId   String                  @map("employee_id") @db.Uuid
+  requestType  String                  @map("request_type")
+  description  String
+  oldData      Json?                   @map("old_data")
+  newData      Json?                   @map("new_data")
+  attachment   String?
+  status       DocumentRequestStatus   @default(PENDING)
+  reviewedBy   String?                 @map("reviewed_by") @db.Uuid
+  reviewedAt   DateTime?               @map("reviewed_at")
+  adminNote    String?                 @map("admin_note")
+  createdAt    DateTime                @default(now()) @map("created_at")
+  updatedAt    DateTime                @updatedAt @map("updated_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  reviewer User?           @relation("DocumentReviewer", fields: [reviewedBy], references: [id])
+
+  @@map("document_change_requests")
+}
+
+model Announcement {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String
+  content     String
+  image       String?
+  createdBy   String    @map("created_by") @db.Uuid
+  publishedAt DateTime? @map("published_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  creator User @relation(fields: [createdBy], references: [id])
+
+  @@map("announcements")
+}
+
+model Notification {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  title        String
+  message      String
+  type         String
+  referenceId  String?  @map("reference_id") @db.Uuid
+  isRead       Boolean  @default(false) @map("is_read")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id                       String   @id @default(uuid()) @db.Uuid
+  userId                   String   @unique @map("user_id") @db.Uuid
+  attendanceNotification   Boolean  @default(true) @map("attendance_notification")
+  leaveNotification        Boolean  @default(true) @map("leave_notification")
+  documentNotification     Boolean  @default(true) @map("document_notification")
+  announcementNotification Boolean  @default(true) @map("announcement_notification")
+  createdAt                DateTime @default(now()) @map("created_at")
+  updatedAt                DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
+}
+
+model Language {
+  id        String @id @default(uuid()) @db.Uuid
+  code      String @unique
+  name      String
+
+  userLanguages UserLanguage[]
+
+  @@map("languages")
+}
+
+model UserLanguage {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @unique @map("user_id") @db.Uuid
+  languageId String   @map("language_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language Language @relation(fields: [languageId], references: [id])
+
+  @@map("user_languages")
+}
+
+model HelpArticle {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String
+  content   String
+  category  String
+  createdBy String   @map("created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  creator User @relation("HelpArticleCreator", fields: [createdBy], references: [id])
+
+  @@map("help_articles")
+}
