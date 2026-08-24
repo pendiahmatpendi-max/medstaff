@@ -3,14 +3,28 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { useState } from 'react'
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
-type LoginScreenProps = { onBackPress: () => void }
+// 1. TAMBAHKAN onLoginSuccess DI SINI
+type LoginScreenProps = { 
+  onBackPress: () => void;
+  onLoginSuccess?: () => void; 
+}
 
 const GOOGLE_ICON_URI = 'https://img.icons8.com/color/96/google-logo.png'
 const APPLE_ICON_URI = 'https://img.icons8.com/ios-glyphs/90/000000/mac-os.png'
 
-export default function LoginScreen({ onBackPress }: LoginScreenProps) {
+// 2. TERIMA onLoginSuccess SEBAGAI PROP
+export default function LoginScreen({ onBackPress, onLoginSuccess }: LoginScreenProps) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
+  // 3. BUAT FUNGSI HANDLE LOGIN
+  const handleLogin = () => {
+    // Di sini nanti bisa ditambahkan logic validasi email/password ke API
+    // Untuk sekarang, kita langsung sukseskan agar bisa masuk ke Beranda
+    if (onLoginSuccess) {
+      onLoginSuccess();
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,26 +33,44 @@ export default function LoginScreen({ onBackPress }: LoginScreenProps) {
         <View pointerEvents="none" style={styles.bubbleOne} />
         <View pointerEvents="none" style={styles.bubbleTwo} />
       </LinearGradient>
+      
       <TouchableOpacity onPress={onBackPress} style={styles.backButton} accessibilityRole="button" accessibilityLabel="Kembali">
         <Text style={styles.backText}>{'\u2190'}</Text>
       </TouchableOpacity>
+      
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.card}>
           <Text style={styles.title}>Selamat Datang</Text>
           <Text style={styles.subtitle}>Masuk ke akun MedStaff Anda</Text>
+          
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Email</Text>
             <TextInput style={styles.input} placeholder="Masukkan Email" keyboardType="email-address" autoCapitalize="none" value={email} onChangeText={setEmail} />
           </View>
+          
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Password</Text>
             <TextInput style={styles.input} placeholder="Masukkan Password" secureTextEntry value={password} onChangeText={setPassword} />
           </View>
-          <TouchableOpacity style={styles.loginButton}><Text style={styles.loginButtonText}>Masuk</Text></TouchableOpacity>
-          <View style={styles.dividerContainer}><View style={styles.divider} /><Text style={styles.dividerText}>Atau masuk dengan</Text><View style={styles.divider} /></View>
+          
+          {/* 4. PASANGKAN handleLogin DI TOMBOL INI */}
+          <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>Masuk</Text>
+          </TouchableOpacity>
+          
+          <View style={styles.dividerContainer}>
+            <View style={styles.divider} />
+            <Text style={styles.dividerText}>Atau masuk dengan</Text>
+            <View style={styles.divider} />
+          </View>
+          
           <View style={styles.socialContainer}>
-            <TouchableOpacity style={styles.socialButton} accessibilityLabel="Masuk dengan Google"><Image source={{ uri: GOOGLE_ICON_URI }} style={styles.socialIcon} /></TouchableOpacity>
-            <TouchableOpacity style={styles.socialButton} accessibilityLabel="Masuk dengan Apple"><Image source={{ uri: APPLE_ICON_URI }} style={styles.socialIcon} /></TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} accessibilityLabel="Masuk dengan Google">
+              <Image source={{ uri: GOOGLE_ICON_URI }} style={styles.socialIcon} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialButton} accessibilityLabel="Masuk dengan Apple">
+              <Image source={{ uri: APPLE_ICON_URI }} style={styles.socialIcon} />
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

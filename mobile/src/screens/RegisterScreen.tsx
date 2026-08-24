@@ -13,7 +13,8 @@ import {
 } from 'react-native'
 
 type RegisterScreenProps = {
-  onBackPress: () => void
+  onBackPress: () => void,
+   onRegisterSuccess?: () => void;
 }
 
 const GOOGLE_ICON_URI = 'https://img.icons8.com/color/96/google-logo.png'
