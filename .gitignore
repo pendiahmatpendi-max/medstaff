@@ -147,6 +147,11 @@ backend/node_modules/
 backend/.env
 backend/dist/
 
+# Prisma generated config
+backend/prisma.config.js
+backend/prisma.config.js.map
+backend/prisma.config.d.ts
+
 # Expo / React Native
 mobile/.expo/
 mobile/web-build/
