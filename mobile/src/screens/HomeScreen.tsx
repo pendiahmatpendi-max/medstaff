@@ -35,7 +35,7 @@ export default function HomeScreen() {
           <View style={styles.logoSection}>
             <Image 
               // Ini URL logo MedStaff yang ada di desain HTML awal Anda
-              source={require('../../assets/logo.png')} 
+              source={require('../assets/logo.png')} 
               style={styles.logoImage} 
             />
             <Text style={styles.logoText}>MedStaff</Text>
