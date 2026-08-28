@@ -48,7 +48,7 @@ medstaff/
         └── types/
 ```
 
-## Status
+##  Objest Storage Supabase untuk menyimpan foto
 
 
 
