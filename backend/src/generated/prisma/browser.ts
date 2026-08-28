@@ -87,3 +87,23 @@ export type UserLanguage = Prisma.UserLanguageModel
  * 
  */
 export type HelpArticle = Prisma.HelpArticleModel
+/**
+ * Model Shift
+ * 
+ */
+export type Shift = Prisma.ShiftModel
+/**
+ * Model WorkSchedule
+ * 
+ */
+export type WorkSchedule = Prisma.WorkScheduleModel
+/**
+ * Model Activity
+ * 
+ */
+export type Activity = Prisma.ActivityModel
+/**
+ * Model ActivityAttendance
+ * 
+ */
+export type ActivityAttendance = Prisma.ActivityAttendanceModel

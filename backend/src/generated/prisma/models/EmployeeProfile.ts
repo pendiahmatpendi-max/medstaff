@@ -269,6 +269,8 @@ export type EmployeeProfileWhereInput = {
   attendances?: Prisma.AttendanceListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
   documentRequests?: Prisma.DocumentChangeRequestListRelationFilter
+  workSchedules?: Prisma.WorkScheduleListRelationFilter
+  activityAttendances?: Prisma.ActivityAttendanceListRelationFilter
 }
 
 export type EmployeeProfileOrderByWithRelationInput = {
@@ -294,6 +296,8 @@ export type EmployeeProfileOrderByWithRelationInput = {
   attendances?: Prisma.AttendanceOrderByRelationAggregateInput
   leaveRequests?: Prisma.LeaveRequestOrderByRelationAggregateInput
   documentRequests?: Prisma.DocumentChangeRequestOrderByRelationAggregateInput
+  workSchedules?: Prisma.WorkScheduleOrderByRelationAggregateInput
+  activityAttendances?: Prisma.ActivityAttendanceOrderByRelationAggregateInput
 }
 
 export type EmployeeProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -322,6 +326,8 @@ export type EmployeeProfileWhereUniqueInput = Prisma.AtLeast<{
   attendances?: Prisma.AttendanceListRelationFilter
   leaveRequests?: Prisma.LeaveRequestListRelationFilter
   documentRequests?: Prisma.DocumentChangeRequestListRelationFilter
+  workSchedules?: Prisma.WorkScheduleListRelationFilter
+  activityAttendances?: Prisma.ActivityAttendanceListRelationFilter
 }, "id" | "userId" | "employeeId">
 
 export type EmployeeProfileOrderByWithAggregationInput = {
@@ -388,6 +394,8 @@ export type EmployeeProfileCreateInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateInput = {
@@ -412,6 +420,8 @@ export type EmployeeProfileUncheckedCreateInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUpdateInput = {
@@ -436,6 +446,8 @@ export type EmployeeProfileUpdateInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateInput = {
@@ -460,6 +472,8 @@ export type EmployeeProfileUncheckedUpdateInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateManyInput = {
@@ -695,6 +709,34 @@ export type EmployeeProfileUpdateOneRequiredWithoutDocumentRequestsNestedInput =
   update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeProfileUpdateToOneWithWhereWithoutDocumentRequestsInput, Prisma.EmployeeProfileUpdateWithoutDocumentRequestsInput>, Prisma.EmployeeProfileUncheckedUpdateWithoutDocumentRequestsInput>
 }
 
+export type EmployeeProfileCreateNestedOneWithoutWorkSchedulesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedCreateWithoutWorkSchedulesInput>
+  connectOrCreate?: Prisma.EmployeeProfileCreateOrConnectWithoutWorkSchedulesInput
+  connect?: Prisma.EmployeeProfileWhereUniqueInput
+}
+
+export type EmployeeProfileUpdateOneRequiredWithoutWorkSchedulesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedCreateWithoutWorkSchedulesInput>
+  connectOrCreate?: Prisma.EmployeeProfileCreateOrConnectWithoutWorkSchedulesInput
+  upsert?: Prisma.EmployeeProfileUpsertWithoutWorkSchedulesInput
+  connect?: Prisma.EmployeeProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeProfileUpdateToOneWithWhereWithoutWorkSchedulesInput, Prisma.EmployeeProfileUpdateWithoutWorkSchedulesInput>, Prisma.EmployeeProfileUncheckedUpdateWithoutWorkSchedulesInput>
+}
+
+export type EmployeeProfileCreateNestedOneWithoutActivityAttendancesInput = {
+  create?: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedCreateWithoutActivityAttendancesInput>
+  connectOrCreate?: Prisma.EmployeeProfileCreateOrConnectWithoutActivityAttendancesInput
+  connect?: Prisma.EmployeeProfileWhereUniqueInput
+}
+
+export type EmployeeProfileUpdateOneRequiredWithoutActivityAttendancesNestedInput = {
+  create?: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedCreateWithoutActivityAttendancesInput>
+  connectOrCreate?: Prisma.EmployeeProfileCreateOrConnectWithoutActivityAttendancesInput
+  upsert?: Prisma.EmployeeProfileUpsertWithoutActivityAttendancesInput
+  connect?: Prisma.EmployeeProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EmployeeProfileUpdateToOneWithWhereWithoutActivityAttendancesInput, Prisma.EmployeeProfileUpdateWithoutActivityAttendancesInput>, Prisma.EmployeeProfileUncheckedUpdateWithoutActivityAttendancesInput>
+}
+
 export type EmployeeProfileCreateWithoutUserInput = {
   id?: string
   employeeId: string
@@ -716,6 +758,8 @@ export type EmployeeProfileCreateWithoutUserInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutUserInput = {
@@ -739,6 +783,8 @@ export type EmployeeProfileUncheckedCreateWithoutUserInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutUserInput = {
@@ -778,6 +824,8 @@ export type EmployeeProfileUpdateWithoutUserInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutUserInput = {
@@ -801,6 +849,8 @@ export type EmployeeProfileUncheckedUpdateWithoutUserInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutEmergencyContactsInput = {
@@ -824,6 +874,8 @@ export type EmployeeProfileCreateWithoutEmergencyContactsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutEmergencyContactsInput = {
@@ -847,6 +899,8 @@ export type EmployeeProfileUncheckedCreateWithoutEmergencyContactsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutEmergencyContactsInput = {
@@ -886,6 +940,8 @@ export type EmployeeProfileUpdateWithoutEmergencyContactsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutEmergencyContactsInput = {
@@ -909,6 +965,8 @@ export type EmployeeProfileUncheckedUpdateWithoutEmergencyContactsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutEducationsInput = {
@@ -932,6 +990,8 @@ export type EmployeeProfileCreateWithoutEducationsInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutEducationsInput = {
@@ -955,6 +1015,8 @@ export type EmployeeProfileUncheckedCreateWithoutEducationsInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutEducationsInput = {
@@ -994,6 +1056,8 @@ export type EmployeeProfileUpdateWithoutEducationsInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutEducationsInput = {
@@ -1017,6 +1081,8 @@ export type EmployeeProfileUncheckedUpdateWithoutEducationsInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutExperiencesInput = {
@@ -1040,6 +1106,8 @@ export type EmployeeProfileCreateWithoutExperiencesInput = {
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutExperiencesInput = {
@@ -1063,6 +1131,8 @@ export type EmployeeProfileUncheckedCreateWithoutExperiencesInput = {
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutExperiencesInput = {
@@ -1102,6 +1172,8 @@ export type EmployeeProfileUpdateWithoutExperiencesInput = {
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutExperiencesInput = {
@@ -1125,6 +1197,8 @@ export type EmployeeProfileUncheckedUpdateWithoutExperiencesInput = {
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutAttendancesInput = {
@@ -1148,6 +1222,8 @@ export type EmployeeProfileCreateWithoutAttendancesInput = {
   experiences?: Prisma.ExperienceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutAttendancesInput = {
@@ -1171,6 +1247,8 @@ export type EmployeeProfileUncheckedCreateWithoutAttendancesInput = {
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutAttendancesInput = {
@@ -1210,6 +1288,8 @@ export type EmployeeProfileUpdateWithoutAttendancesInput = {
   experiences?: Prisma.ExperienceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutAttendancesInput = {
@@ -1233,6 +1313,8 @@ export type EmployeeProfileUncheckedUpdateWithoutAttendancesInput = {
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutLeaveRequestsInput = {
@@ -1256,6 +1338,8 @@ export type EmployeeProfileCreateWithoutLeaveRequestsInput = {
   experiences?: Prisma.ExperienceCreateNestedManyWithoutEmployeeInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutLeaveRequestsInput = {
@@ -1279,6 +1363,8 @@ export type EmployeeProfileUncheckedCreateWithoutLeaveRequestsInput = {
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutEmployeeInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutLeaveRequestsInput = {
@@ -1318,6 +1404,8 @@ export type EmployeeProfileUpdateWithoutLeaveRequestsInput = {
   experiences?: Prisma.ExperienceUpdateManyWithoutEmployeeNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutLeaveRequestsInput = {
@@ -1341,6 +1429,8 @@ export type EmployeeProfileUncheckedUpdateWithoutLeaveRequestsInput = {
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutEmployeeNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileCreateWithoutDocumentRequestsInput = {
@@ -1364,6 +1454,8 @@ export type EmployeeProfileCreateWithoutDocumentRequestsInput = {
   experiences?: Prisma.ExperienceCreateNestedManyWithoutEmployeeInput
   attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileUncheckedCreateWithoutDocumentRequestsInput = {
@@ -1387,6 +1479,8 @@ export type EmployeeProfileUncheckedCreateWithoutDocumentRequestsInput = {
   experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutEmployeeInput
   attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
   leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
 }
 
 export type EmployeeProfileCreateOrConnectWithoutDocumentRequestsInput = {
@@ -1426,6 +1520,8 @@ export type EmployeeProfileUpdateWithoutDocumentRequestsInput = {
   experiences?: Prisma.ExperienceUpdateManyWithoutEmployeeNestedInput
   attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
 }
 
 export type EmployeeProfileUncheckedUpdateWithoutDocumentRequestsInput = {
@@ -1449,6 +1545,240 @@ export type EmployeeProfileUncheckedUpdateWithoutDocumentRequestsInput = {
   experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutEmployeeNestedInput
   attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
   leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeProfileCreateWithoutWorkSchedulesInput = {
+  id?: string
+  employeeId: string
+  fullName: string
+  phone: string
+  birthPlace: string
+  birthDate: Date | string
+  gender: string
+  identityNumber?: string | null
+  address?: string | null
+  companyName: string
+  position: string
+  profilePhoto?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeProfileInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutEmployeeInput
+  educations?: Prisma.EducationCreateNestedManyWithoutEmployeeInput
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutEmployeeInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeProfileUncheckedCreateWithoutWorkSchedulesInput = {
+  id?: string
+  userId: string
+  employeeId: string
+  fullName: string
+  phone: string
+  birthPlace: string
+  birthDate: Date | string
+  gender: string
+  identityNumber?: string | null
+  address?: string | null
+  companyName: string
+  position: string
+  profilePhoto?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutEmployeeInput
+  educations?: Prisma.EducationUncheckedCreateNestedManyWithoutEmployeeInput
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutEmployeeInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeProfileCreateOrConnectWithoutWorkSchedulesInput = {
+  where: Prisma.EmployeeProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedCreateWithoutWorkSchedulesInput>
+}
+
+export type EmployeeProfileUpsertWithoutWorkSchedulesInput = {
+  update: Prisma.XOR<Prisma.EmployeeProfileUpdateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedUpdateWithoutWorkSchedulesInput>
+  create: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedCreateWithoutWorkSchedulesInput>
+  where?: Prisma.EmployeeProfileWhereInput
+}
+
+export type EmployeeProfileUpdateToOneWithWhereWithoutWorkSchedulesInput = {
+  where?: Prisma.EmployeeProfileWhereInput
+  data: Prisma.XOR<Prisma.EmployeeProfileUpdateWithoutWorkSchedulesInput, Prisma.EmployeeProfileUncheckedUpdateWithoutWorkSchedulesInput>
+}
+
+export type EmployeeProfileUpdateWithoutWorkSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  identityNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeProfileNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutEmployeeNestedInput
+  educations?: Prisma.EducationUpdateManyWithoutEmployeeNestedInput
+  experiences?: Prisma.ExperienceUpdateManyWithoutEmployeeNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeProfileUncheckedUpdateWithoutWorkSchedulesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  identityNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutEmployeeNestedInput
+  educations?: Prisma.EducationUncheckedUpdateManyWithoutEmployeeNestedInput
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  activityAttendances?: Prisma.ActivityAttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeProfileCreateWithoutActivityAttendancesInput = {
+  id?: string
+  employeeId: string
+  fullName: string
+  phone: string
+  birthPlace: string
+  birthDate: Date | string
+  gender: string
+  identityNumber?: string | null
+  address?: string | null
+  companyName: string
+  position: string
+  profilePhoto?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutEmployeeProfileInput
+  emergencyContacts?: Prisma.EmergencyContactCreateNestedManyWithoutEmployeeInput
+  educations?: Prisma.EducationCreateNestedManyWithoutEmployeeInput
+  experiences?: Prisma.ExperienceCreateNestedManyWithoutEmployeeInput
+  attendances?: Prisma.AttendanceCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestCreateNestedManyWithoutEmployeeInput
+  documentRequests?: Prisma.DocumentChangeRequestCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeProfileUncheckedCreateWithoutActivityAttendancesInput = {
+  id?: string
+  userId: string
+  employeeId: string
+  fullName: string
+  phone: string
+  birthPlace: string
+  birthDate: Date | string
+  gender: string
+  identityNumber?: string | null
+  address?: string | null
+  companyName: string
+  position: string
+  profilePhoto?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  emergencyContacts?: Prisma.EmergencyContactUncheckedCreateNestedManyWithoutEmployeeInput
+  educations?: Prisma.EducationUncheckedCreateNestedManyWithoutEmployeeInput
+  experiences?: Prisma.ExperienceUncheckedCreateNestedManyWithoutEmployeeInput
+  attendances?: Prisma.AttendanceUncheckedCreateNestedManyWithoutEmployeeInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  documentRequests?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutEmployeeInput
+  workSchedules?: Prisma.WorkScheduleUncheckedCreateNestedManyWithoutEmployeeInput
+}
+
+export type EmployeeProfileCreateOrConnectWithoutActivityAttendancesInput = {
+  where: Prisma.EmployeeProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedCreateWithoutActivityAttendancesInput>
+}
+
+export type EmployeeProfileUpsertWithoutActivityAttendancesInput = {
+  update: Prisma.XOR<Prisma.EmployeeProfileUpdateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedUpdateWithoutActivityAttendancesInput>
+  create: Prisma.XOR<Prisma.EmployeeProfileCreateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedCreateWithoutActivityAttendancesInput>
+  where?: Prisma.EmployeeProfileWhereInput
+}
+
+export type EmployeeProfileUpdateToOneWithWhereWithoutActivityAttendancesInput = {
+  where?: Prisma.EmployeeProfileWhereInput
+  data: Prisma.XOR<Prisma.EmployeeProfileUpdateWithoutActivityAttendancesInput, Prisma.EmployeeProfileUncheckedUpdateWithoutActivityAttendancesInput>
+}
+
+export type EmployeeProfileUpdateWithoutActivityAttendancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  identityNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutEmployeeProfileNestedInput
+  emergencyContacts?: Prisma.EmergencyContactUpdateManyWithoutEmployeeNestedInput
+  educations?: Prisma.EducationUpdateManyWithoutEmployeeNestedInput
+  experiences?: Prisma.ExperienceUpdateManyWithoutEmployeeNestedInput
+  attendances?: Prisma.AttendanceUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUpdateManyWithoutEmployeeNestedInput
+  documentRequests?: Prisma.DocumentChangeRequestUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUpdateManyWithoutEmployeeNestedInput
+}
+
+export type EmployeeProfileUncheckedUpdateWithoutActivityAttendancesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  fullName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  birthPlace?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  gender?: Prisma.StringFieldUpdateOperationsInput | string
+  identityNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.StringFieldUpdateOperationsInput | string
+  profilePhoto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  emergencyContacts?: Prisma.EmergencyContactUncheckedUpdateManyWithoutEmployeeNestedInput
+  educations?: Prisma.EducationUncheckedUpdateManyWithoutEmployeeNestedInput
+  experiences?: Prisma.ExperienceUncheckedUpdateManyWithoutEmployeeNestedInput
+  attendances?: Prisma.AttendanceUncheckedUpdateManyWithoutEmployeeNestedInput
+  leaveRequests?: Prisma.LeaveRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  documentRequests?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutEmployeeNestedInput
+  workSchedules?: Prisma.WorkScheduleUncheckedUpdateManyWithoutEmployeeNestedInput
 }
 
 
@@ -1463,6 +1793,8 @@ export type EmployeeProfileCountOutputType = {
   attendances: number
   leaveRequests: number
   documentRequests: number
+  workSchedules: number
+  activityAttendances: number
 }
 
 export type EmployeeProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1472,6 +1804,8 @@ export type EmployeeProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.E
   attendances?: boolean | EmployeeProfileCountOutputTypeCountAttendancesArgs
   leaveRequests?: boolean | EmployeeProfileCountOutputTypeCountLeaveRequestsArgs
   documentRequests?: boolean | EmployeeProfileCountOutputTypeCountDocumentRequestsArgs
+  workSchedules?: boolean | EmployeeProfileCountOutputTypeCountWorkSchedulesArgs
+  activityAttendances?: boolean | EmployeeProfileCountOutputTypeCountActivityAttendancesArgs
 }
 
 /**
@@ -1526,6 +1860,20 @@ export type EmployeeProfileCountOutputTypeCountDocumentRequestsArgs<ExtArgs exte
   where?: Prisma.DocumentChangeRequestWhereInput
 }
 
+/**
+ * EmployeeProfileCountOutputType without action
+ */
+export type EmployeeProfileCountOutputTypeCountWorkSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.WorkScheduleWhereInput
+}
+
+/**
+ * EmployeeProfileCountOutputType without action
+ */
+export type EmployeeProfileCountOutputTypeCountActivityAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityAttendanceWhereInput
+}
+
 
 export type EmployeeProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1550,6 +1898,8 @@ export type EmployeeProfileSelect<ExtArgs extends runtime.Types.Extensions.Inter
   attendances?: boolean | Prisma.EmployeeProfile$attendancesArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.EmployeeProfile$leaveRequestsArgs<ExtArgs>
   documentRequests?: boolean | Prisma.EmployeeProfile$documentRequestsArgs<ExtArgs>
+  workSchedules?: boolean | Prisma.EmployeeProfile$workSchedulesArgs<ExtArgs>
+  activityAttendances?: boolean | Prisma.EmployeeProfile$activityAttendancesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeProfileCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["employeeProfile"]>
 
@@ -1618,6 +1968,8 @@ export type EmployeeProfileInclude<ExtArgs extends runtime.Types.Extensions.Inte
   attendances?: boolean | Prisma.EmployeeProfile$attendancesArgs<ExtArgs>
   leaveRequests?: boolean | Prisma.EmployeeProfile$leaveRequestsArgs<ExtArgs>
   documentRequests?: boolean | Prisma.EmployeeProfile$documentRequestsArgs<ExtArgs>
+  workSchedules?: boolean | Prisma.EmployeeProfile$workSchedulesArgs<ExtArgs>
+  activityAttendances?: boolean | Prisma.EmployeeProfile$activityAttendancesArgs<ExtArgs>
   _count?: boolean | Prisma.EmployeeProfileCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EmployeeProfileIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1637,6 +1989,8 @@ export type $EmployeeProfilePayload<ExtArgs extends runtime.Types.Extensions.Int
     attendances: Prisma.$AttendancePayload<ExtArgs>[]
     leaveRequests: Prisma.$LeaveRequestPayload<ExtArgs>[]
     documentRequests: Prisma.$DocumentChangeRequestPayload<ExtArgs>[]
+    workSchedules: Prisma.$WorkSchedulePayload<ExtArgs>[]
+    activityAttendances: Prisma.$ActivityAttendancePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2055,6 +2409,8 @@ export interface Prisma__EmployeeProfileClient<T, Null = never, ExtArgs extends 
   attendances<T extends Prisma.EmployeeProfile$attendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeProfile$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leaveRequests<T extends Prisma.EmployeeProfile$leaveRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeProfile$leaveRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LeaveRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   documentRequests<T extends Prisma.EmployeeProfile$documentRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeProfile$documentRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  workSchedules<T extends Prisma.EmployeeProfile$workSchedulesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeProfile$workSchedulesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WorkSchedulePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activityAttendances<T extends Prisma.EmployeeProfile$activityAttendancesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeProfile$activityAttendancesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityAttendancePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2641,6 +2997,54 @@ export type EmployeeProfile$documentRequestsArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   distinct?: Prisma.DocumentChangeRequestScalarFieldEnum | Prisma.DocumentChangeRequestScalarFieldEnum[]
+}
+
+/**
+ * EmployeeProfile.workSchedules
+ */
+export type EmployeeProfile$workSchedulesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the WorkSchedule
+   */
+  select?: Prisma.WorkScheduleSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the WorkSchedule
+   */
+  omit?: Prisma.WorkScheduleOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.WorkScheduleInclude<ExtArgs> | null
+  where?: Prisma.WorkScheduleWhereInput
+  orderBy?: Prisma.WorkScheduleOrderByWithRelationInput | Prisma.WorkScheduleOrderByWithRelationInput[]
+  cursor?: Prisma.WorkScheduleWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.WorkScheduleScalarFieldEnum | Prisma.WorkScheduleScalarFieldEnum[]
+}
+
+/**
+ * EmployeeProfile.activityAttendances
+ */
+export type EmployeeProfile$activityAttendancesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ActivityAttendance
+   */
+  select?: Prisma.ActivityAttendanceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ActivityAttendance
+   */
+  omit?: Prisma.ActivityAttendanceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityAttendanceInclude<ExtArgs> | null
+  where?: Prisma.ActivityAttendanceWhereInput
+  orderBy?: Prisma.ActivityAttendanceOrderByWithRelationInput | Prisma.ActivityAttendanceOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityAttendanceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityAttendanceScalarFieldEnum | Prisma.ActivityAttendanceScalarFieldEnum[]
 }
 
 /**

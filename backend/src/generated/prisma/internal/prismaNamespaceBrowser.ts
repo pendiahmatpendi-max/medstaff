@@ -64,7 +64,11 @@ export const ModelName = {
   NotificationPreference: 'NotificationPreference',
   Language: 'Language',
   UserLanguage: 'UserLanguage',
-  HelpArticle: 'HelpArticle'
+  HelpArticle: 'HelpArticle',
+  Shift: 'Shift',
+  WorkSchedule: 'WorkSchedule',
+  Activity: 'Activity',
+  ActivityAttendance: 'ActivityAttendance'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -290,6 +294,66 @@ export const HelpArticleScalarFieldEnum = {
 } as const
 
 export type HelpArticleScalarFieldEnum = (typeof HelpArticleScalarFieldEnum)[keyof typeof HelpArticleScalarFieldEnum]
+
+
+export const ShiftScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  category: 'category',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  crossesMidnight: 'crossesMidnight',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ShiftScalarFieldEnum = (typeof ShiftScalarFieldEnum)[keyof typeof ShiftScalarFieldEnum]
+
+
+export const WorkScheduleScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  shiftId: 'shiftId',
+  scheduleDate: 'scheduleDate',
+  dayType: 'dayType',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type WorkScheduleScalarFieldEnum = (typeof WorkScheduleScalarFieldEnum)[keyof typeof WorkScheduleScalarFieldEnum]
+
+
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  activityDate: 'activityDate',
+  startTime: 'startTime',
+  endTime: 'endTime',
+  isActive: 'isActive',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
+export const ActivityAttendanceScalarFieldEnum = {
+  id: 'id',
+  activityId: 'activityId',
+  employeeId: 'employeeId',
+  attendedAt: 'attendedAt',
+  photo: 'photo',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  status: 'status',
+  createdAt: 'createdAt'
+} as const
+
+export type ActivityAttendanceScalarFieldEnum = (typeof ActivityAttendanceScalarFieldEnum)[keyof typeof ActivityAttendanceScalarFieldEnum]
 
 
 export const SortOrder = {

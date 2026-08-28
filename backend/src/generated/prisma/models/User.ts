@@ -214,6 +214,7 @@ export type UserWhereInput = {
   documentReviews?: Prisma.DocumentChangeRequestListRelationFilter
   announcements?: Prisma.AnnouncementListRelationFilter
   helpArticles?: Prisma.HelpArticleListRelationFilter
+  activities?: Prisma.ActivityListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -233,6 +234,7 @@ export type UserOrderByWithRelationInput = {
   documentReviews?: Prisma.DocumentChangeRequestOrderByRelationAggregateInput
   announcements?: Prisma.AnnouncementOrderByRelationAggregateInput
   helpArticles?: Prisma.HelpArticleOrderByRelationAggregateInput
+  activities?: Prisma.ActivityOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -255,6 +257,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   documentReviews?: Prisma.DocumentChangeRequestListRelationFilter
   announcements?: Prisma.AnnouncementListRelationFilter
   helpArticles?: Prisma.HelpArticleListRelationFilter
+  activities?: Prisma.ActivityListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -302,6 +305,7 @@ export type UserCreateInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -321,6 +325,7 @@ export type UserUncheckedCreateInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUpdateInput = {
@@ -340,6 +345,7 @@ export type UserUpdateInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -359,6 +365,7 @@ export type UserUncheckedUpdateInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -573,6 +580,20 @@ export type UserUpdateOneRequiredWithoutHelpArticlesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutHelpArticlesInput, Prisma.UserUpdateWithoutHelpArticlesInput>, Prisma.UserUncheckedUpdateWithoutHelpArticlesInput>
 }
 
+export type UserCreateNestedOneWithoutActivitiesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivitiesInput, Prisma.UserUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutActivitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutActivitiesInput, Prisma.UserUncheckedCreateWithoutActivitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutActivitiesInput
+  upsert?: Prisma.UserUpsertWithoutActivitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutActivitiesInput, Prisma.UserUpdateWithoutActivitiesInput>, Prisma.UserUncheckedUpdateWithoutActivitiesInput>
+}
+
 export type UserCreateWithoutEmployeeProfileInput = {
   id?: string
   email: string
@@ -589,6 +610,7 @@ export type UserCreateWithoutEmployeeProfileInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeProfileInput = {
@@ -607,6 +629,7 @@ export type UserUncheckedCreateWithoutEmployeeProfileInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeProfileInput = {
@@ -641,6 +664,7 @@ export type UserUpdateWithoutEmployeeProfileInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
@@ -659,6 +683,7 @@ export type UserUncheckedUpdateWithoutEmployeeProfileInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutApprovalsInput = {
@@ -677,6 +702,7 @@ export type UserCreateWithoutApprovalsInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutApprovalsInput = {
@@ -695,6 +721,7 @@ export type UserUncheckedCreateWithoutApprovalsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutApprovalsInput = {
@@ -729,6 +756,7 @@ export type UserUpdateWithoutApprovalsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovalsInput = {
@@ -747,6 +775,7 @@ export type UserUncheckedUpdateWithoutApprovalsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutDocumentReviewsInput = {
@@ -765,6 +794,7 @@ export type UserCreateWithoutDocumentReviewsInput = {
   approvals?: Prisma.LeaveRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutDocumentReviewsInput = {
@@ -783,6 +813,7 @@ export type UserUncheckedCreateWithoutDocumentReviewsInput = {
   approvals?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutDocumentReviewsInput = {
@@ -817,6 +848,7 @@ export type UserUpdateWithoutDocumentReviewsInput = {
   approvals?: Prisma.LeaveRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDocumentReviewsInput = {
@@ -835,6 +867,7 @@ export type UserUncheckedUpdateWithoutDocumentReviewsInput = {
   approvals?: Prisma.LeaveRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutAnnouncementsInput = {
@@ -853,6 +886,7 @@ export type UserCreateWithoutAnnouncementsInput = {
   approvals?: Prisma.LeaveRequestCreateNestedManyWithoutReviewerInput
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutAnnouncementsInput = {
@@ -871,6 +905,7 @@ export type UserUncheckedCreateWithoutAnnouncementsInput = {
   approvals?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutReviewerInput
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutAnnouncementsInput = {
@@ -905,6 +940,7 @@ export type UserUpdateWithoutAnnouncementsInput = {
   approvals?: Prisma.LeaveRequestUpdateManyWithoutReviewerNestedInput
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAnnouncementsInput = {
@@ -923,6 +959,7 @@ export type UserUncheckedUpdateWithoutAnnouncementsInput = {
   approvals?: Prisma.LeaveRequestUncheckedUpdateManyWithoutReviewerNestedInput
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -941,6 +978,7 @@ export type UserCreateWithoutNotificationsInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -959,6 +997,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -993,6 +1032,7 @@ export type UserUpdateWithoutNotificationsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -1011,6 +1051,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutNotificationPreferenceInput = {
@@ -1029,6 +1070,7 @@ export type UserCreateWithoutNotificationPreferenceInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
@@ -1047,6 +1089,7 @@ export type UserUncheckedCreateWithoutNotificationPreferenceInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutNotificationPreferenceInput = {
@@ -1081,6 +1124,7 @@ export type UserUpdateWithoutNotificationPreferenceInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
@@ -1099,6 +1143,7 @@ export type UserUncheckedUpdateWithoutNotificationPreferenceInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutUserLanguageInput = {
@@ -1117,6 +1162,7 @@ export type UserCreateWithoutUserLanguageInput = {
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutUserLanguageInput = {
@@ -1135,6 +1181,7 @@ export type UserUncheckedCreateWithoutUserLanguageInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
   helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutUserLanguageInput = {
@@ -1169,6 +1216,7 @@ export type UserUpdateWithoutUserLanguageInput = {
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserLanguageInput = {
@@ -1187,6 +1235,7 @@ export type UserUncheckedUpdateWithoutUserLanguageInput = {
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
   helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserCreateWithoutHelpArticlesInput = {
@@ -1205,6 +1254,7 @@ export type UserCreateWithoutHelpArticlesInput = {
   approvals?: Prisma.LeaveRequestCreateNestedManyWithoutReviewerInput
   documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityCreateNestedManyWithoutCreatorInput
 }
 
 export type UserUncheckedCreateWithoutHelpArticlesInput = {
@@ -1223,6 +1273,7 @@ export type UserUncheckedCreateWithoutHelpArticlesInput = {
   approvals?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutReviewerInput
   documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
   announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutCreatorInput
 }
 
 export type UserCreateOrConnectWithoutHelpArticlesInput = {
@@ -1257,6 +1308,7 @@ export type UserUpdateWithoutHelpArticlesInput = {
   approvals?: Prisma.LeaveRequestUpdateManyWithoutReviewerNestedInput
   documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUpdateManyWithoutCreatorNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHelpArticlesInput = {
@@ -1275,6 +1327,99 @@ export type UserUncheckedUpdateWithoutHelpArticlesInput = {
   approvals?: Prisma.LeaveRequestUncheckedUpdateManyWithoutReviewerNestedInput
   documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
   announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserCreateWithoutActivitiesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  pinHash?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employeeProfile?: Prisma.EmployeeProfileCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceCreateNestedOneWithoutUserInput
+  userLanguage?: Prisma.UserLanguageCreateNestedOneWithoutUserInput
+  approvals?: Prisma.LeaveRequestCreateNestedManyWithoutReviewerInput
+  documentReviews?: Prisma.DocumentChangeRequestCreateNestedManyWithoutReviewerInput
+  announcements?: Prisma.AnnouncementCreateNestedManyWithoutCreatorInput
+  helpArticles?: Prisma.HelpArticleCreateNestedManyWithoutCreatorInput
+}
+
+export type UserUncheckedCreateWithoutActivitiesInput = {
+  id?: string
+  email: string
+  passwordHash: string
+  role?: $Enums.UserRole
+  pinHash?: string | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employeeProfile?: Prisma.EmployeeProfileUncheckedCreateNestedOneWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedCreateNestedOneWithoutUserInput
+  userLanguage?: Prisma.UserLanguageUncheckedCreateNestedOneWithoutUserInput
+  approvals?: Prisma.LeaveRequestUncheckedCreateNestedManyWithoutReviewerInput
+  documentReviews?: Prisma.DocumentChangeRequestUncheckedCreateNestedManyWithoutReviewerInput
+  announcements?: Prisma.AnnouncementUncheckedCreateNestedManyWithoutCreatorInput
+  helpArticles?: Prisma.HelpArticleUncheckedCreateNestedManyWithoutCreatorInput
+}
+
+export type UserCreateOrConnectWithoutActivitiesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivitiesInput, Prisma.UserUncheckedCreateWithoutActivitiesInput>
+}
+
+export type UserUpsertWithoutActivitiesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutActivitiesInput, Prisma.UserUncheckedUpdateWithoutActivitiesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutActivitiesInput, Prisma.UserUncheckedCreateWithoutActivitiesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutActivitiesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutActivitiesInput, Prisma.UserUncheckedUpdateWithoutActivitiesInput>
+}
+
+export type UserUpdateWithoutActivitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  pinHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeProfile?: Prisma.EmployeeProfileUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUpdateOneWithoutUserNestedInput
+  userLanguage?: Prisma.UserLanguageUpdateOneWithoutUserNestedInput
+  approvals?: Prisma.LeaveRequestUpdateManyWithoutReviewerNestedInput
+  documentReviews?: Prisma.DocumentChangeRequestUpdateManyWithoutReviewerNestedInput
+  announcements?: Prisma.AnnouncementUpdateManyWithoutCreatorNestedInput
+  helpArticles?: Prisma.HelpArticleUpdateManyWithoutCreatorNestedInput
+}
+
+export type UserUncheckedUpdateWithoutActivitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  pinHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeProfile?: Prisma.EmployeeProfileUncheckedUpdateOneWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  notificationPreference?: Prisma.NotificationPreferenceUncheckedUpdateOneWithoutUserNestedInput
+  userLanguage?: Prisma.UserLanguageUncheckedUpdateOneWithoutUserNestedInput
+  approvals?: Prisma.LeaveRequestUncheckedUpdateManyWithoutReviewerNestedInput
+  documentReviews?: Prisma.DocumentChangeRequestUncheckedUpdateManyWithoutReviewerNestedInput
+  announcements?: Prisma.AnnouncementUncheckedUpdateManyWithoutCreatorNestedInput
+  helpArticles?: Prisma.HelpArticleUncheckedUpdateManyWithoutCreatorNestedInput
 }
 
 
@@ -1288,6 +1433,7 @@ export type UserCountOutputType = {
   documentReviews: number
   announcements: number
   helpArticles: number
+  activities: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1296,6 +1442,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   documentReviews?: boolean | UserCountOutputTypeCountDocumentReviewsArgs
   announcements?: boolean | UserCountOutputTypeCountAnnouncementsArgs
   helpArticles?: boolean | UserCountOutputTypeCountHelpArticlesArgs
+  activities?: boolean | UserCountOutputTypeCountActivitiesArgs
 }
 
 /**
@@ -1343,6 +1490,13 @@ export type UserCountOutputTypeCountHelpArticlesArgs<ExtArgs extends runtime.Typ
   where?: Prisma.HelpArticleWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ActivityWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1361,6 +1515,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   documentReviews?: boolean | Prisma.User$documentReviewsArgs<ExtArgs>
   announcements?: boolean | Prisma.User$announcementsArgs<ExtArgs>
   helpArticles?: boolean | Prisma.User$helpArticlesArgs<ExtArgs>
+  activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1407,6 +1562,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   documentReviews?: boolean | Prisma.User$documentReviewsArgs<ExtArgs>
   announcements?: boolean | Prisma.User$announcementsArgs<ExtArgs>
   helpArticles?: boolean | Prisma.User$helpArticlesArgs<ExtArgs>
+  activities?: boolean | Prisma.User$activitiesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1423,6 +1579,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     documentReviews: Prisma.$DocumentChangeRequestPayload<ExtArgs>[]
     announcements: Prisma.$AnnouncementPayload<ExtArgs>[]
     helpArticles: Prisma.$HelpArticlePayload<ExtArgs>[]
+    activities: Prisma.$ActivityPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1835,6 +1992,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   documentReviews<T extends Prisma.User$documentReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$documentReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentChangeRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   announcements<T extends Prisma.User$announcementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$announcementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnnouncementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   helpArticles<T extends Prisma.User$helpArticlesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$helpArticlesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$HelpArticlePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  activities<T extends Prisma.User$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2439,6 +2597,30 @@ export type User$helpArticlesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.HelpArticleScalarFieldEnum | Prisma.HelpArticleScalarFieldEnum[]
+}
+
+/**
+ * User.activities
+ */
+export type User$activitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Activity
+   */
+  select?: Prisma.ActivitySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Activity
+   */
+  omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  where?: Prisma.ActivityWhereInput
+  orderBy?: Prisma.ActivityOrderByWithRelationInput | Prisma.ActivityOrderByWithRelationInput[]
+  cursor?: Prisma.ActivityWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
 }
 
 /**

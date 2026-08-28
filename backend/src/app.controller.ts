@@ -1,32 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+﻿import { Controller, Get } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 
-@Controller()
+@Controller('health')
 export class AppController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get()
-  getHealth() {
-    return {
-      success: true,
-      message: 'MedStaff API is running',
-    };
-  }
+  async health() {
+    let database = 'disconnected';
 
-  @Get('health/database')
-  async getDatabaseHealth() {
     try {
       await this.prisma.$queryRaw`SELECT 1`;
-
-      return {
-        success: true,
-        message: 'Database connection is working',
-      };
+      database = 'connected';
     } catch {
-      return {
-        success: false,
-        message: 'Database connection failed',
-      };
+      database = 'disconnected';
     }
+
+    return {
+      success: database === 'connected',
+      service: 'MedStaff API',
+      status: 'ok',
+      database,
+      timestamp: new Date().toISOString(),
+    };
   }
 }

@@ -42,3 +42,11 @@ export const AttendanceStatus = {
 } as const
 
 export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof AttendanceStatus]
+
+
+export const ScheduleDayType = {
+  KERJA: 'KERJA',
+  LIBUR: 'LIBUR'
+} as const
+
+export type ScheduleDayType = (typeof ScheduleDayType)[keyof typeof ScheduleDayType]

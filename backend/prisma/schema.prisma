@@ -40,14 +40,15 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  employeeProfile       EmployeeProfile?
-  notifications         Notification[]
+  employeeProfile        EmployeeProfile?
+  notifications          Notification[]
   notificationPreference NotificationPreference?
-  userLanguage          UserLanguage?
-  approvals             LeaveRequest[] @relation("LeaveReviewer")
-  documentReviews       DocumentChangeRequest[] @relation("DocumentReviewer")
-  announcements         Announcement[]
-  helpArticles          HelpArticle[] @relation("HelpArticleCreator")
+  userLanguage           UserLanguage?
+  approvals              LeaveRequest[]          @relation("LeaveReviewer")
+  documentReviews        DocumentChangeRequest[] @relation("DocumentReviewer")
+  announcements          Announcement[]
+  helpArticles           HelpArticle[]           @relation("HelpArticleCreator")
+  activities             Activity[]
 
   @@map("users")
 }
@@ -69,25 +70,27 @@ model EmployeeProfile {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
-  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  emergencyContacts EmergencyContact[]
-  educations        Education[]
-  experiences       Experience[]
-  attendances       Attendance[]
-  leaveRequests     LeaveRequest[]
-  documentRequests  DocumentChangeRequest[]
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emergencyContacts   EmergencyContact[]
+  educations          Education[]
+  experiences         Experience[]
+  attendances         Attendance[]
+  leaveRequests       LeaveRequest[]
+  documentRequests    DocumentChangeRequest[]
+  workSchedules       WorkSchedule[]
+  activityAttendances ActivityAttendance[]
 
   @@map("employee_profiles")
 }
 
 model EmergencyContact {
-  id         String   @id @default(uuid()) @db.Uuid
-  employeeId String   @map("employee_id") @db.Uuid
-  name       String
+  id           String   @id @default(uuid()) @db.Uuid
+  employeeId   String   @map("employee_id") @db.Uuid
+  name         String
   relationship String
-  phone      String
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+  phone        String
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
@@ -95,13 +98,13 @@ model EmergencyContact {
 }
 
 model Education {
-  id           String   @id @default(uuid()) @db.Uuid
-  employeeId   String   @map("employee_id") @db.Uuid
-  institution  String
-  level        String
-  major        String?
+  id          String   @id @default(uuid()) @db.Uuid
+  employeeId  String   @map("employee_id") @db.Uuid
+  institution String
+  level       String
+  major       String?
   startYear   Int?     @map("start_year")
-  endYear      Int?     @map("end_year")
+  endYear     Int?     @map("end_year")
   createdAt   DateTime @default(now()) @map("created_at")
 
   employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
@@ -110,14 +113,14 @@ model Education {
 }
 
 model Experience {
-  id          String   @id @default(uuid()) @db.Uuid
-  employeeId  String   @map("employee_id") @db.Uuid
-  companyName String   @map("company_name")
+  id          String    @id @default(uuid()) @db.Uuid
+  employeeId  String    @map("employee_id") @db.Uuid
+  companyName String    @map("company_name")
   position    String
   startDate   DateTime? @map("start_date") @db.Date
   endDate     DateTime? @map("end_date") @db.Date
   description String?
-  createdAt   DateTime @default(now()) @map("created_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
 
   employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 
@@ -147,40 +150,40 @@ model Attendance {
 }
 
 model LeaveRequest {
-  id           String       @id @default(uuid()) @db.Uuid
-  employeeId   String       @map("employee_id") @db.Uuid
-  leaveType    String       @map("leave_type")
-  startDate    DateTime     @map("start_date") @db.Date
-  endDate      DateTime     @map("end_date") @db.Date
-  reason       String
-  attachment   String?
-  status       LeaveStatus  @default(PENDING)
-  reviewedBy   String?      @map("reviewed_by") @db.Uuid
-  reviewedAt   DateTime?    @map("reviewed_at")
-  adminNote    String?      @map("admin_note")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
+  id         String      @id @default(uuid()) @db.Uuid
+  employeeId String      @map("employee_id") @db.Uuid
+  leaveType  String      @map("leave_type")
+  startDate  DateTime    @map("start_date") @db.Date
+  endDate    DateTime    @map("end_date") @db.Date
+  reason     String
+  attachment String?
+  status     LeaveStatus @default(PENDING)
+  reviewedBy String?     @map("reviewed_by") @db.Uuid
+  reviewedAt DateTime?   @map("reviewed_at")
+  adminNote  String?     @map("admin_note")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
 
   employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  reviewer User?            @relation("LeaveReviewer", fields: [reviewedBy], references: [id])
+  reviewer User?           @relation("LeaveReviewer", fields: [reviewedBy], references: [id])
 
   @@map("leave_requests")
 }
 
 model DocumentChangeRequest {
-  id           String                  @id @default(uuid()) @db.Uuid
-  employeeId   String                  @map("employee_id") @db.Uuid
-  requestType  String                  @map("request_type")
-  description  String
-  oldData      Json?                   @map("old_data")
-  newData      Json?                   @map("new_data")
-  attachment   String?
-  status       DocumentRequestStatus   @default(PENDING)
-  reviewedBy   String?                 @map("reviewed_by") @db.Uuid
-  reviewedAt   DateTime?               @map("reviewed_at")
-  adminNote    String?                 @map("admin_note")
-  createdAt    DateTime                @default(now()) @map("created_at")
-  updatedAt    DateTime                @updatedAt @map("updated_at")
+  id          String                @id @default(uuid()) @db.Uuid
+  employeeId  String                @map("employee_id") @db.Uuid
+  requestType String                @map("request_type")
+  description String
+  oldData     Json?                 @map("old_data")
+  newData     Json?                 @map("new_data")
+  attachment  String?
+  status      DocumentRequestStatus @default(PENDING)
+  reviewedBy  String?               @map("reviewed_by") @db.Uuid
+  reviewedAt  DateTime?             @map("reviewed_at")
+  adminNote   String?               @map("admin_note")
+  createdAt   DateTime              @default(now()) @map("created_at")
+  updatedAt   DateTime              @updatedAt @map("updated_at")
 
   employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   reviewer User?           @relation("DocumentReviewer", fields: [reviewedBy], references: [id])
@@ -204,14 +207,14 @@ model Announcement {
 }
 
 model Notification {
-  id           String   @id @default(uuid()) @db.Uuid
-  userId       String   @map("user_id") @db.Uuid
-  title        String
-  message      String
-  type         String
-  referenceId  String?  @map("reference_id") @db.Uuid
-  isRead       Boolean  @default(false) @map("is_read")
-  createdAt    DateTime @default(now()) @map("created_at")
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  title       String
+  message     String
+  type        String
+  referenceId String?  @map("reference_id") @db.Uuid
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -234,9 +237,9 @@ model NotificationPreference {
 }
 
 model Language {
-  id        String @id @default(uuid()) @db.Uuid
-  code      String @unique
-  name      String
+  id   String @id @default(uuid()) @db.Uuid
+  code String @unique
+  name String
 
   userLanguages UserLanguage[]
 
@@ -268,4 +271,80 @@ model HelpArticle {
   creator User @relation("HelpArticleCreator", fields: [createdBy], references: [id])
 
   @@map("help_articles")
+}
+
+enum ScheduleDayType {
+  KERJA
+  LIBUR
+}
+
+model Shift {
+  id              String   @id @default(uuid()) @db.Uuid
+  name            String
+  category        String
+  startTime       String   @map("start_time")
+  endTime         String   @map("end_time")
+  crossesMidnight Boolean  @default(false) @map("crosses_midnight")
+  isActive        Boolean  @default(true) @map("is_active")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  schedules WorkSchedule[]
+
+  @@map("shifts")
+}
+
+model WorkSchedule {
+  id           String          @id @default(uuid()) @db.Uuid
+  employeeId   String          @map("employee_id") @db.Uuid
+  shiftId      String?         @map("shift_id") @db.Uuid
+  scheduleDate DateTime        @map("schedule_date") @db.Date
+  dayType      ScheduleDayType @default(KERJA) @map("day_type")
+  note         String?
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  shift    Shift?          @relation(fields: [shiftId], references: [id], onDelete: SetNull)
+
+  @@unique([employeeId, scheduleDate])
+  @@index([scheduleDate])
+  @@map("work_schedules")
+}
+
+model Activity {
+  id           String   @id @default(uuid()) @db.Uuid
+  title        String
+  description  String?
+  activityDate DateTime @map("activity_date") @db.Date
+  startTime    String?  @map("start_time")
+  endTime      String?  @map("end_time")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdBy    String   @map("created_by") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  creator     User                 @relation(fields: [createdBy], references: [id])
+  attendances ActivityAttendance[]
+
+  @@index([activityDate])
+  @@map("activities")
+}
+
+model ActivityAttendance {
+  id         String   @id @default(uuid()) @db.Uuid
+  activityId String   @map("activity_id") @db.Uuid
+  employeeId String   @map("employee_id") @db.Uuid
+  attendedAt DateTime @default(now()) @map("attended_at")
+  photo      String?
+  latitude   Decimal? @db.Decimal(10, 7)
+  longitude  Decimal? @db.Decimal(10, 7)
+  status     String   @default("HADIR")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  activity Activity        @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  employee EmployeeProfile @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@unique([activityId, employeeId])
+  @@map("activity_attendances")
 }
