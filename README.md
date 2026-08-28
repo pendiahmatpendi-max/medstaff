@@ -50,21 +50,28 @@ medstaff/
 
 ## Status
 
-# 📦 Supabase Object Storage — Implementation & Setup Guide (Expo React Native)
 
-Dokumentasi *end-to-end* konfigurasi dan implementasi **Supabase Object Storage** untuk mengunggah dan menyimpan foto pada aplikasi mobile React Native (Expo).
+
+
+## 🚨 Peringatan Keamanan Kredensial
+
+* **Secret Key (`sb_secret_...`)**: Memiliki izin bypass RLS penuh. **WAJIB** disimpan hanya di file `.env` pada server backend. Jangan pernah dimasukkan ke dalam kode aplikasi mobile/klien!
+* **Anon Key (`sb_publishable_...`)**: Kunci publik yang aman dipakai di sisi klien mobile jika menggunakan Supabase Auth / RLS standar.
 
 ---
 
-## 🛠️ 1. Environment Setup
+## ⚙️ 1. Backend Server Setup
 
-Buat file `.env` pada *root directory* proyek Expo Anda dan tambahkan kredensial berikut:
+### A. Environment Variables (`.env` di Server)
+
+Buat file `.env` di folder server backend Anda:
 
 ```env
-EXPO_PUBLIC_SUPABASE_URL=[https://bngpulbmaoglhlxexsiy.supabase.co](https://bngpulbmaoglhlxexsiy.supabase.co)
-EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZ3B1bGJtYW9nbGhseGV4c2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc4NzYzNDAsImV4cCI6MjEwMzQ1MjM0MH0.E1GgN6gj1CfJFwZNcuA75gQZmIcpf1P6B5oNNwrrJ08
+PORT=3000
+SUPABASE_URL=[https://bngpulbmaoglhlxexsiy.supabase.co](https://bngpulbmaoglhlxexsiy.supabase.co)
+SUPABASE_SECRET_KEY=sb_secret_1scl533WCtttHYlw9KFiQA_hUzWliY_
 
 ```Bash
-npx expo install @supabase/supabase-js react-native-url-polyfill expo-image-picker
+npm install express @supabase/supabase-js multer dotenv cors
 
 🚧 Sedang dalam tahap pengembangan UI/UX dan integrasi fitur absensi.
