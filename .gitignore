@@ -166,3 +166,5 @@ mobile/ios/build/
 
 # VS Code local settings
 .vscode/
+.vercel
+.env*
