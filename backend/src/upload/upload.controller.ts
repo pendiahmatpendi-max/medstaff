@@ -11,7 +11,7 @@ import {
   FileInterceptor,
 } from '@nestjs/platform-express';
 
-import { diskStorage } from 'multer';
+import { memoryStorage } from 'multer';
 
 import {
   extname,
@@ -19,11 +19,13 @@ import {
 
 import { randomUUID } from 'crypto';
 
-import { UploadService } from './upload.service';
-
 import {
   JwtAuthGuard,
 } from '../auth/guards/jwt-auth.guard';
+
+import {
+  UploadService,
+} from './upload.service';
 
 @Controller('upload')
 @UseGuards(JwtAuthGuard)
@@ -39,24 +41,7 @@ export class UploadController {
   @Post('profile')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './uploads/profiles',
-
-        filename: (
-          req,
-          file,
-          callback,
-        ) => {
-          const extension =
-            extname(file.originalname)
-              .toLowerCase();
-
-          callback(
-            null,
-            `${randomUUID()}${extension}`,
-          );
-        },
-      }),
+      storage: memoryStorage(),
 
       fileFilter: (
         req,
@@ -95,7 +80,7 @@ export class UploadController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    return this.createResponse(
+    return this.uploadFile(
       file,
       'profiles',
       'Foto profil berhasil diupload',
@@ -109,25 +94,7 @@ export class UploadController {
   @Post('attendance')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination:
-          './uploads/attendance',
-
-        filename: (
-          req,
-          file,
-          callback,
-        ) => {
-          const extension =
-            extname(file.originalname)
-              .toLowerCase();
-
-          callback(
-            null,
-            `${randomUUID()}${extension}`,
-          );
-        },
-      }),
+      storage: memoryStorage(),
 
       fileFilter: (
         req,
@@ -166,7 +133,7 @@ export class UploadController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    return this.createResponse(
+    return this.uploadFile(
       file,
       'attendance',
       'Foto absensi berhasil diupload',
@@ -180,25 +147,7 @@ export class UploadController {
   @Post('leave')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination:
-          './uploads/leave',
-
-        filename: (
-          req,
-          file,
-          callback,
-        ) => {
-          const extension =
-            extname(file.originalname)
-              .toLowerCase();
-
-          callback(
-            null,
-            `${randomUUID()}${extension}`,
-          );
-        },
-      }),
+      storage: memoryStorage(),
 
       fileFilter: (
         req,
@@ -238,7 +187,7 @@ export class UploadController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    return this.createResponse(
+    return this.uploadFile(
       file,
       'leave',
       'Lampiran izin berhasil diupload',
@@ -252,25 +201,7 @@ export class UploadController {
   @Post('document')
   @UseInterceptors(
     FileInterceptor('file', {
-      storage: diskStorage({
-        destination:
-          './uploads/documents',
-
-        filename: (
-          req,
-          file,
-          callback,
-        ) => {
-          const extension =
-            extname(file.originalname)
-              .toLowerCase();
-
-          callback(
-            null,
-            `${randomUUID()}${extension}`,
-          );
-        },
-      }),
+      storage: memoryStorage(),
 
       fileFilter: (
         req,
@@ -310,7 +241,7 @@ export class UploadController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    return this.createResponse(
+    return this.uploadFile(
       file,
       'documents',
       'Dokumen berhasil diupload',
@@ -318,10 +249,10 @@ export class UploadController {
   }
 
   // ==========================================
-  // RESPONSE HELPER
+  // UPLOAD HELPER
   // ==========================================
 
-  private createResponse(
+  private async uploadFile(
     file:
       | Express.Multer.File
       | undefined,
@@ -334,12 +265,28 @@ export class UploadController {
       );
     }
 
+    const extension =
+      extname(file.originalname)
+        .toLowerCase();
+
+    const filename =
+      `${randomUUID()}${extension}`;
+
+    const result =
+      await this.uploadService.uploadFile(
+        folder,
+        filename,
+        file.buffer,
+        file.mimetype,
+      );
+
     return {
       success: true,
+
       message,
 
       data: {
-        filename: file.filename,
+        filename: result.pathname,
 
         originalName:
           file.originalname,
@@ -351,10 +298,7 @@ export class UploadController {
           file.size,
 
         url:
-          this.uploadService.getFileUrl(
-            folder,
-            file.filename,
-          ),
+          result.url,
       },
     };
   }
