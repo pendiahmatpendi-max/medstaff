@@ -1,0 +1,27 @@
+# Project TODO
+
+- [x] Generate and configure the MEDSTAFF app icon and branding assets
+- [x] Apply MEDSTAFF color tokens and iOS-style visual system
+- [x] Build dashboard with summary cards, schedules, activity, approvals, and recent activity
+- [x] Add bottom navigation and operational menu navigation
+- [x] Build employee list, filters, detail, and edit flow
+- [x] Build shift list and create/edit shift flow
+- [x] Build monthly schedule view and assignment interaction
+- [x] Build attendance monitoring with date and status filters
+- [x] Build activities list, create form, participant picker, and detail flow
+- [x] Build activity attendance list and attendance detail flow
+- [x] Build approvals list, approval detail, admin note, approve, and reject interactions
+- [x] Build announcements list and create/edit flow
+- [x] Build notifications, profile, and settings screens
+- [x] Add deterministic local state and feedback for primary actions
+- [x] Run TypeScript, lint, and test validation
+- [x] Capture responsive preview screenshots and fix visual issues
+- [ ] Save a final project checkpoint for delivery
+- [x] Fix mobile metric card widths and remove duplicate native/custom tab bars found in visual verification
+- [x] Replace placeholder schedule, attendance, and announcement screens with functional list and filter views
+- [x] Add full employee detail and edit form flow
+- [x] Add full shift create/edit form flow
+- [x] Add activity create form, participant picker, detail, and attendance detail flow
+- [x] Add approval detail with admin note, approve, and reject state changes
+- [x] Add profile edit, notification preferences, and settings interactions
+- [x] Revalidate all newly completed flows and save an updated checkpoint
