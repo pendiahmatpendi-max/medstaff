@@ -1,9 +1,10 @@
-import {
+﻿import {
   Body,
   Controller,
   Get,
   Param,
   Patch,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,7 +17,8 @@ export class EmployeeController {
   constructor(private readonly prisma: PrismaService) {}
 
   // =========================================================
-  // STAFF / ADMIN
+  // GET PROFIL SENDIRI
+  // GET /api/employees/me
   // =========================================================
 
   @Get('me')
@@ -96,7 +98,98 @@ export class EmployeeController {
   }
 
   // =========================================================
-  // UPDATE PROFILE SENDIRI
+  // BUAT PROFIL SENDIRI
+  // POST /api/employees/me
+  // =========================================================
+
+  @Post('me')
+  @UseGuards(JwtAuthGuard)
+  async createMyProfile(
+    @Req() req: any,
+    @Body() body: any,
+  ) {
+    const userId = req.user.sub;
+
+    const existing =
+      await this.prisma.employeeProfile.findUnique({
+        where: {
+          userId,
+        },
+      });
+
+    if (existing) {
+      return {
+        success: true,
+        message: 'Profil karyawan sudah tersedia',
+        data: existing,
+      };
+    }
+
+    if (
+      !body.employeeId ||
+      !body.fullName ||
+      !body.phone ||
+      !body.birthPlace ||
+      !body.birthDate ||
+      !body.gender ||
+      !body.position
+    ) {
+      return {
+        success: false,
+        message:
+          'employeeId, fullName, phone, birthPlace, birthDate, gender, dan position wajib diisi',
+        data: null,
+      };
+    }
+
+    const employee =
+      await this.prisma.employeeProfile.create({
+        data: {
+          userId,
+          employeeId: body.employeeId,
+          fullName: body.fullName,
+          phone: body.phone,
+          birthPlace: body.birthPlace,
+          birthDate: new Date(body.birthDate),
+          gender: body.gender,
+          identityNumber:
+            body.identityNumber ?? null,
+          address:
+            body.address ?? null,
+          companyName:
+            body.companyName ?? 'Klinik Pratama Unimus',
+          position: body.position,
+          profilePhoto:
+            body.profilePhoto ?? null,
+        },
+        select: {
+          id: true,
+          employeeId: true,
+          fullName: true,
+          phone: true,
+          birthPlace: true,
+          birthDate: true,
+          gender: true,
+          identityNumber: true,
+          address: true,
+          companyName: true,
+          position: true,
+          profilePhoto: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+    return {
+      success: true,
+      message: 'Profil karyawan berhasil dibuat',
+      data: employee,
+    };
+  }
+
+  // =========================================================
+  // UPDATE PROFIL SENDIRI
+  // PATCH /api/employees/me
   // =========================================================
 
   @Patch('me')
@@ -116,7 +209,7 @@ export class EmployeeController {
 
     if (!employee) {
       return {
-        success: true,
+        success: false,
         message: 'Profil karyawan belum tersedia',
         data: null,
       };
@@ -180,6 +273,7 @@ export class EmployeeController {
 
   // =========================================================
   // ADMIN - SEMUA KARYAWAN
+  // GET /api/employees
   // =========================================================
 
   @Get()
@@ -216,7 +310,8 @@ export class EmployeeController {
   }
 
   // =========================================================
-  // ADMIN / USER - DETAIL KARYAWAN
+  // DETAIL KARYAWAN
+  // GET /api/employees/:id
   // =========================================================
 
   @Get(':id')
