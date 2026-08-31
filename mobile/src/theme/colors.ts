@@ -19,4 +19,19 @@ export const colors = {
   menuPresensi: { bg: '#dcfce7', text: '#16a34a' },
   menuGantiShift: { bg: '#ffedd5', text: '#ea580c' },
   menuRiwayat: { bg: '#dbeafe', text: '#2563eb' },
+
+  // ─── Icon System Colors (bold, tegas — bukan samar) ───
+  // Digunakan oleh MedStaffIconBox dan icon containers di seluruh app
+  iconColors: {
+    teal:    { bg: '#C2E6ED', icon: '#0B8FAC' },   // Home, Profile, Settings
+    blue:    { bg: '#C4D7F2', icon: '#2563EB' },   // Employee, Attendance, Riwayat
+    purple:  { bg: '#D9CDF0', icon: '#7C3AED' },   // Request, Security, Shift
+    orange:  { bg: '#FBD5AD', icon: '#EA580C' },   // Calendar, Cuti, Notification
+    green:   { bg: '#B8EACA', icon: '#16A34A' },   // Presensi, Success
+    red:     { bg: '#F9C4C4', icon: '#DC2626' },   // Emergency, Error
+    amber:   { bg: '#FADEA6', icon: '#D97706' },   // Overtime, Experience
+    emerald: { bg: '#B9E5D8', icon: '#059669' },   // Job, Location
+    rose:    { bg: '#F9C4D4', icon: '#E11D48' },   // About, Emergency Contact
+    slate:   { bg: '#CDD1D6', icon: '#475569' },   // Server, generic
+  },
 };

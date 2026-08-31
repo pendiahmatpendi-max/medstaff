@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Location from 'expo-location';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MedStaffIcon from '../components/MedStaffIcon';
 import { RootStackParamList } from '../../App'; // Sesuaikan path jika perlu
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -72,7 +72,7 @@ export default function AttendanceCameraScreen() {
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={24} color="#1f2937" />
+          <MedStaffIcon name="arrow-left" size={24} color="#1f2937" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Absensi</Text>
         <View style={{ width: 40 }} />
@@ -102,7 +102,7 @@ export default function AttendanceCameraScreen() {
                 </>
               ) : (
                 <>
-                  <MaterialIcons name={location ? "check-circle" : "error"} size={16} color={location ? "#059669" : "#dc2626"} style={{ marginRight: 6 }} />
+                  <MedStaffIcon name={location ? "success" : "error"} size={16} color={location ? "#059669" : "#dc2626"} style={{ marginRight: 6 }} />
                   <Text style={[styles.locationText, { color: location ? "#059669" : "#dc2626" }]}>
                     {location ? "Lokasi terverifikasi" : "Lokasi tidak ditemukan"}
                   </Text>
@@ -131,7 +131,7 @@ export default function AttendanceCameraScreen() {
           disabled={!location || isLocating} // Disable tombol jika GPS belum dapat
         >
           <View style={styles.captureBtnCore}>
-            <MaterialIcons name="photo-camera" size={32} color="#fff" />
+            <MedStaffIcon name="camera" size={32} color="#fff" />
           </View>
         </TouchableOpacity>
       </View>

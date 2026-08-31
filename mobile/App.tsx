@@ -14,6 +14,8 @@ import RiwayatScreen from './src/screens/RiwayatScreen';
 // Import Navigator Baru
 import MainTabNavigator from './src/navigation/MainTabNavigator';
 import AttendanceScreen from './src/screens/AttendanceScreen';
+import EmployeeDetailScreen from './src/screens/EmployeeDetailScreen';
+import NotificationDetailScreen from './src/screens/NotificationDetailScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -24,6 +26,8 @@ export type RootStackParamList = {
   AttendanceCamera: { type: 'in' | 'out' }; 
   AttendanceConfirmation: { photoUri: string; type: 'in' | 'out'; latitude: number; longitude: number }; 
   Riwayat: undefined; 
+  EmployeeDetail: { employee: any };
+  NotificationDetail: { notification: any };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -67,6 +71,8 @@ export default function App() {
           <Stack.Screen name="AttendanceCamera" component={AttendanceCameraScreen} />
           <Stack.Screen name="AttendanceConfirmation" component={AttendanceConfirmationScreen} />
           <Stack.Screen name="Riwayat" component={RiwayatScreen} />
+          <Stack.Screen name="EmployeeDetail" component={EmployeeDetailScreen} />
+          <Stack.Screen name="NotificationDetail" component={NotificationDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import MedStaffIcon from './MedStaffIcon';
 import { colors } from '../theme/colors';
 
 export default function AppHeader() {
@@ -14,7 +14,7 @@ export default function AppHeader() {
         <Text style={styles.title}>MedStaff</Text>
       </View>
       <TouchableOpacity style={styles.notifButton}>
-        <MaterialIcons name="notifications-none" size={24} color={colors.onSurfaceVariant} />
+        <MedStaffIcon name="notification" variant="filled" size={22} color={colors.primary} />
       </TouchableOpacity>
     </View>
   );
@@ -34,5 +34,5 @@ const styles = StyleSheet.create({
   headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   logo: { width: 32, height: 32, resizeMode: 'contain' },
   title: { fontSize: 20, fontWeight: 'bold', color: colors.primary },
-  notifButton: { padding: 8 },
+  notifButton: { width: 40, height: 40, borderRadius: 13, backgroundColor: '#e6f6f8', justifyContent: 'center', alignItems: 'center' },
 });
