@@ -1,4 +1,4 @@
-import {
+﻿import {
   ConflictException,
   Injectable,
   UnauthorizedException,
@@ -25,25 +25,68 @@ export class AuthService {
       throw new ConflictException('Email sudah terdaftar');
     }
 
+    const existingEmployee =
+      await this.prisma.employeeProfile.findUnique({
+        where: { employeeId: dto.employeeId },
+      });
+
+    if (existingEmployee) {
+      throw new ConflictException(
+        'ID karyawan sudah terdaftar',
+      );
+    }
+
     const passwordHash = await bcrypt.hash(dto.password, 10);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        passwordHash,
-        role: 'STAFF',
-      },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-      },
+    const result = await this.prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email: dto.email,
+          passwordHash,
+          role: 'STAFF',
+        },
+      });
+
+      const employee = await tx.employeeProfile.create({
+        data: {
+          userId: user.id,
+          employeeId: dto.employeeId,
+          fullName: dto.fullName,
+          phone: dto.phone,
+          birthPlace: dto.birthPlace,
+          birthDate: new Date(dto.birthDate),
+          gender: dto.gender,
+          identityNumber: dto.identityNumber || null,
+          address: dto.address || null,
+          companyName:
+            dto.companyName || 'Klinik Pratama Unimus',
+          position: dto.position,
+          profilePhoto: dto.profilePhoto || null,
+        },
+      });
+
+      return {
+        user,
+        employee,
+      };
     });
 
     return {
       success: true,
       message: 'Registrasi berhasil',
-      user,
+      data: {
+        user: {
+          id: result.user.id,
+          email: result.user.email,
+          role: result.user.role,
+        },
+        employee: {
+          id: result.employee.id,
+          employeeId: result.employee.employeeId,
+          fullName: result.employee.fullName,
+          position: result.employee.position,
+        },
+      },
     };
   }
 
@@ -53,7 +96,9 @@ export class AuthService {
     });
 
     if (!user || !user.isActive) {
-      throw new UnauthorizedException('Email atau password salah');
+      throw new UnauthorizedException(
+        'Email ataupassword salah',
+      );
     }
 
     const passwordValid = await bcrypt.compare(
@@ -62,7 +107,9 @@ export class AuthService {
     );
 
     if (!passwordValid) {
-      throw new UnauthorizedException('Email atau password salah');
+      throw new UnauthorizedException(
+        'Email ataupassword salah',
+      );
     }
 
     const payload = {
@@ -71,7 +118,8 @@ export class AuthService {
       role: user.role,
     };
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken =
+      await this.jwtService.signAsync(payload);
 
     return {
       success: true,
