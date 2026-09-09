@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+﻿import React, { useMemo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getTodayAttendance } from '../../api/api';
 import { useNavigation } from '@react-navigation/native';
 
 import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -125,7 +126,6 @@ const InteractiveDayCard = ({ item, index, activeIndexSV, touchX, isTouched }: a
 };
 
 // ==================================================
-// MOCK DATA PENGUMUMAN
 // ==================================================
 const ANNOUNCEMENTS: any[] = [];
 
@@ -198,6 +198,63 @@ const StackedAnnouncementCard = ({ item, index, carouselIndexSV, totalItems }: a
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
+  const [todayAttendance, setTodayAttendance] = useState<any>(null);
+  const [attendanceLoading, setAttendanceLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTodayAttendance = async () => {
+      try {
+        setAttendanceLoading(true);
+
+        const response = await getTodayAttendance();
+
+        if (mounted) {
+          setTodayAttendance(response?.data ?? null);
+        }
+      } catch (error) {
+        console.error('Gagal mengambil attendance hari ini:', error);
+
+        if (mounted) {
+          setTodayAttendance(null);
+        }
+      } finally {
+        if (mounted) {
+          setAttendanceLoading(false);
+        }
+      }
+    };
+
+    loadTodayAttendance();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const formatAttendanceTime = (value: string | null | undefined) => {
+    if (!value) return '--:--';
+
+    return new Date(value).toLocaleTimeString('id-ID', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Jakarta',
+    });
+  };
+
+  const clockInTime = formatAttendanceTime(todayAttendance?.clockIn);
+  const clockOutTime = formatAttendanceTime(todayAttendance?.clockOut);
+
+  const attendanceStatus =
+    todayAttendance?.status === 'TERLAMBAT'
+      ? 'Late'
+      : todayAttendance?.clockIn
+        ? todayAttendance?.clockOut
+          ? 'Completed'
+          : 'Active'
+        : 'Not Started';
 
   // --- Kalender Logic ---
   const { currentMonthYear, days, initialActiveIndex } = useMemo(() => {
@@ -284,7 +341,7 @@ export default function HomeScreen() {
           <View style={styles.logoSection}>
             <View style={styles.logoImageContainer}>
               <Image 
-                source={require('../../assets/logo.png')} 
+                source={require('../../../assets/logo.png')} 
                 style={{ width: 36, height: 36 }} 
                 resizeMode="contain"
               />
@@ -327,12 +384,9 @@ export default function HomeScreen() {
             <View style={styles.statusCardTop}>
               <View>
                 <Text style={styles.statusSubtitle}>Clock In</Text>
-                <Text style={styles.statusTitle}>07:45 <Text style={{fontSize: 14, fontWeight: 'normal'}}>WIB</Text></Text>
+                <Text style={styles.statusTitle}>{clockInTime} <Text style={{fontSize: 14, fontWeight: 'normal'}}>WIB</Text></Text>
               </View>
-              <View style={styles.activeBadge}>
-                <View style={styles.activeBadgeDot} />
-                <Text style={styles.activeBadgeText}>Active</Text>
-              </View>
+              <View style={styles.activeBadge}><View style={[styles.activeBadgeDot, attendanceStatus === 'Completed' && { backgroundColor: '#60a5fa' }, attendanceStatus === 'Late' && { backgroundColor: '#fbbf24' }, attendanceStatus === 'Not Started' && { backgroundColor: '#9CA3AF' }]} /><Text style={styles.activeBadgeText}>{attendanceStatus}</Text></View>
             </View>
 
             <View style={[styles.statusCardBottom, { width: '100%', gap: 12 }]}>
@@ -567,3 +621,5 @@ const styles = StyleSheet.create({
   newsTitle: { fontSize: 15, fontWeight: 'bold', color: '#1f2937', marginBottom: 4, lineHeight: 20 },
   newsDesc: { fontSize: 12, color: '#6b7280', lineHeight: 18 },
 });
+
+

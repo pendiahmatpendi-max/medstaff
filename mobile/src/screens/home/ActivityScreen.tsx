@@ -1,188 +1,510 @@
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  ScrollView, 
+﻿import React, { useEffect, useMemo, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
   Platform,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { getActivities, getMyProfile, getTodayActivities } from '../../api/api';
 
 const { width } = Dimensions.get('window');
 
-// --- MOCK DATA DATE ---
-const DATES: any[] = [];
+type Activity = {
+  id: string;
+  title?: string;
+  name?: string;
+  description?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  activityDate?: string | null;
+  date?: string | null;
+  location?: string | null;
+  status?: string | null;
+  isAttended?: boolean;
+  attended?: boolean;
+};
+
+const getActivityTitle = (item: Activity) =>
+  item.title || item.name || 'Activity';
+
+const getActivityDate = (item: Activity) =>
+  item.activityDate || item.date || new Date().toISOString();
+
+const formatDate = (value: string) => {
+  const date = new Date(value);
+
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
+};
+
+const formatHeaderDate = () => {
+  return new Date().toLocaleDateString('en-US', {
+    day: 'numeric',
+    month: 'short',
+  });
+};
+
+const formatTime = (value?: string | null) => {
+  if (!value) return '--:--';
+
+  if (/^\d{2}:\d{2}/.test(value)) {
+    return value.slice(0, 5);
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Asia/Jakarta',
+  });
+};
+
+const getTimeRange = (item: Activity) => {
+  const start = formatTime(item.startTime);
+  const end = formatTime(item.endTime);
+
+  if (start === '--:--' && end === '--:--') {
+    return 'Time not specified';
+  }
+
+  if (end === '--:--') {
+    return start;
+  }
+
+  return `${start} - ${end}`;
+};
+
+const getLocation = (item: Activity) =>
+  item.location || 'Klinik Pratama UNIMUS';
+
+const isAttended = (item: Activity) =>
+  item.isAttended === true ||
+  item.attended === true ||
+  item.status === 'ATTENDED' ||
+  item.status === 'HADIR' ||
+  item.status === 'CHECKED_IN';
+
+const getStatusText = (item: Activity) =>
+  isAttended(item) ? '✓ Checked In' : 'Not Checked In';
+
+const getIconName = (index: number) => {
+  const icons = ['running', 'users', 'book-open', 'trophy'];
+  return icons[index % icons.length];
+};
 
 export default function ActivityScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
-  const [activeDate, setActiveDate] = useState('8');
 
-  // Navigasi ke Activity Detail (jika ada)
-  const handleActivityPress = () => {
+  const [activities, setActivities] = useState<Activity[]>([]);
+  const [profileName, setProfileName] = useState('MedStaff');
+  const [activeDate, setActiveDate] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadActivities = async () => {
+      try {
+        setLoading(true);
+
+        const [activitiesResponse, todayResponse, profileResponse] =
+          await Promise.all([
+            getActivities(),
+            getTodayActivities(),
+            getMyProfile(),
+          ]);
+
+        if (!mounted) return;
+
+        const allData = Array.isArray(activitiesResponse?.data)
+          ? activitiesResponse.data
+          : [];
+
+        const todayData = Array.isArray(todayResponse?.data)
+          ? todayResponse.data
+          : [];
+
+        const merged = [...allData, ...todayData];
+
+        const unique = merged.filter(
+          (item: Activity, index: number, array: Activity[]) =>
+            array.findIndex((other) => other.id === item.id) === index,
+        );
+
+        setActivities(unique);
+
+        const name = profileResponse?.data?.fullName;
+        if (name) {
+          setProfileName(name);
+        }
+
+        if (unique.length > 0) {
+          setActiveDate(getActivityDate(unique[0]));
+        }
+      } catch (error) {
+        console.error('Gagal mengambil aktivitas:', error);
+
+        if (mounted) {
+          setActivities([]);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadActivities();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const dates = useMemo(() => {
+    const grouped = new Map<string, Activity>();
+
+    activities.forEach((item) => {
+      const date = getActivityDate(item);
+      const key = new Date(date).toISOString().slice(0, 10);
+
+      if (!grouped.has(key)) {
+        grouped.set(key, item);
+      }
+    });
+
+    return Array.from(grouped.values()).map((item) => ({
+      id: item.id,
+      date: getActivityDate(item),
+    }));
+  }, [activities]);
+
+  const selectedActivities = useMemo(() => {
+    if (!activeDate) return activities;
+
+    const selectedKey = new Date(activeDate).toISOString().slice(0, 10);
+
+    return activities.filter((item) => {
+      const itemKey = new Date(getActivityDate(item))
+        .toISOString()
+        .slice(0, 10);
+
+      return itemKey === selectedKey;
+    });
+  }, [activities, activeDate]);
+
+  const heroActivity = selectedActivities[0] || null;
+  const otherActivities = selectedActivities.slice(1, 4);
+
+  const handleActivityPress = (activity?: Activity | null) => {
+    if (!activity) return;
+
     if (navigation.getState().routeNames.includes('ActivityDetail')) {
-      navigation.navigate('ActivityDetail');
+      navigation.navigate('ActivityDetail', {
+        id: activity.id,
+      });
     }
   };
 
   return (
     <View style={styles.container}>
-      
-      <ScrollView 
-        showsVerticalScrollIndicator={false} 
-        contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top + 16 }]}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingTop: insets.top + 16 },
+        ]}
       >
-        
-        {/* --- HEADER --- */}
+        {/* HEADER */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}
+            activeOpacity={0.7}
+          >
             <Feather name="arrow-left" size={24} color="#1F2937" />
           </TouchableOpacity>
+
           <View>
-            <Text style={styles.greeting}>Hello, Sarah</Text>
-            <Text style={styles.dateSubtitle}>Today, 8 Sep</Text>
+            <Text style={styles.greeting}>Hello, {profileName}</Text>
+            <Text style={styles.dateSubtitle}>
+              Today, {formatHeaderDate()}
+            </Text>
           </View>
         </View>
 
-        {/* --- CARD 1: HERO BANNER (ACTIVITY 1) --- */}
+        {/* HERO ACTIVITY */}
         <View style={styles.heroSection}>
-          <TouchableOpacity activeOpacity={0.9} onPress={handleActivityPress}>
-            <LinearGradient
-              colors={['#7BC1B7', '#58AAA0']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.heroCard}
+          {loading ? (
+            <View style={styles.emptyHero}>
+              <Text style={styles.emptyText}>Loading activities...</Text>
+            </View>
+          ) : heroActivity ? (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => handleActivityPress(heroActivity)}
             >
-              <View style={styles.heroContent}>
-                <Text style={styles.heroTitle}>Morning Jogging</Text>
-                <Text style={styles.heroSubtitle}>06:00 - 07:00 • Clinic Courtyard</Text>
-                
-                <View style={styles.statusPillSuccess}>
-                  <Text style={styles.statusTextSuccess}>✓ Checked In</Text>
-                </View>
-              </View>
+              <LinearGradient
+                colors={['#7BC1B7', '#58AAA0']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.heroCard}
+              >
+                <View style={styles.heroContent}>
+                  <Text style={styles.heroTitle} numberOfLines={1}>
+                    {getActivityTitle(heroActivity)}
+                  </Text>
 
-              {/* 3D Icon Element */}
-              <View style={styles.abstract3DContainer}>
-                <View style={styles.abstractCircle} />
-                <View style={styles.abstractFloatingBox}>
-                  <FontAwesome5 name="running" size={28} color="#0B8FAC" />
+                  <Text style={styles.heroSubtitle} numberOfLines={2}>
+                    {getTimeRange(heroActivity)} •{' '}
+                    {getLocation(heroActivity)}
+                  </Text>
+
+                  <View
+                    style={
+                      isAttended(heroActivity)
+                        ? styles.statusPillSuccess
+                        : styles.statusPillPending
+                    }
+                  >
+                    <Text
+                      style={
+                        isAttended(heroActivity)
+                          ? styles.statusTextSuccess
+                          : styles.statusTextPending
+                      }
+                    >
+                      {getStatusText(heroActivity)}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
+
+                <View style={styles.abstract3DContainer}>
+                  <View style={styles.abstractCircle} />
+                  <View style={styles.abstractFloatingBox}>
+                    <FontAwesome5
+                      name={getIconName(0)}
+                      size={28}
+                      color="#0B8FAC"
+                    />
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.emptyHero}>
+              <FontAwesome5 name="calendar-times" size={30} color="#9CA3AF" />
+              <Text style={styles.emptyHeroTitle}>No activities available</Text>
+              <Text style={styles.emptyText}>
+                There are no activities scheduled.
+              </Text>
+            </View>
+          )}
         </View>
 
-        {/* --- HORIZONTAL DATE PICKER --- */}
+        {/* DATE PICKER */}
         <View style={styles.datePickerSection}>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.dateScrollContent}
           >
-            {DATES.length > 0 ? (
-              DATES.map((item) => {
-                const isActive = activeDate === item.date;
+            {dates.length > 0 ? (
+              dates.map((item) => {
+                const itemKey = new Date(item.date).toISOString().slice(0, 10);
+                const activeKey = activeDate
+                  ? new Date(activeDate).toISOString().slice(0, 10)
+                  : '';
+
+                const isActive = activeKey === itemKey;
+                const date = new Date(item.date);
+
                 return (
-                  <TouchableOpacity 
-                    key={item.id} 
-                    style={[styles.datePill, isActive && styles.datePillActive]}
+                  <TouchableOpacity
+                    key={item.id}
+                    style={[
+                      styles.datePill,
+                      isActive && styles.datePillActive,
+                    ]}
                     onPress={() => setActiveDate(item.date)}
                     activeOpacity={0.8}
                   >
-                    <Text style={[styles.dateDay, isActive && styles.dateDayActive]}>{item.day}</Text>
-                    <Text style={[styles.dateNum, isActive && styles.dateNumActive]}>{item.date}</Text>
+                    <Text
+                      style={[
+                        styles.dateDay,
+                        isActive && styles.dateDayActive,
+                      ]}
+                    >
+                      {date.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                      })}
+                    </Text>
+
+                    <Text
+                      style={[
+                        styles.dateNum,
+                        isActive && styles.dateNumActive,
+                      ]}
+                    >
+                      {date.getDate()}
+                    </Text>
+
                     {isActive && <View style={styles.activeDot} />}
                   </TouchableOpacity>
                 );
               })
             ) : (
-              <Text style={{ textAlign: 'center', width: '100%', color: '#9CA3AF' }}>No dates available</Text>
+              <Text style={styles.noDatesText}>No dates available</Text>
             )}
           </ScrollView>
         </View>
 
-        {/* --- BENTO GRID: OTHER ACTIVITIES --- */}
+        {/* BENTO GRID */}
         <View style={styles.scheduleSection}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Upcoming Activities</Text>
+
             <TouchableOpacity>
-              <Feather name="more-horizontal" size={24} color="#9CA3AF" />
+              <Feather
+                name="more-horizontal"
+                size={24}
+                color="#9CA3AF"
+              />
             </TouchableOpacity>
           </View>
 
-          <View style={styles.bentoGrid}>
-            
-            {/* CARD 2: LEFT TALL CARD */}
-            <TouchableOpacity style={[styles.bentoCard, styles.bentoLeft]} activeOpacity={0.8} onPress={handleActivityPress}>
-              <View style={styles.bentoHeader}>
-                <View style={styles.bentoIconLight}>
-                  <Feather name="users" size={18} color="#D97706" />
-                </View>
-                <Feather name="arrow-up-right" size={20} color="#1F2937" />
-              </View>
+          {otherActivities.length > 0 ? (
+            <View style={styles.bentoGrid}>
+              {otherActivities.map((activity, index) => (
+                <TouchableOpacity
+                  key={activity.id}
+                  style={[
+                    styles.bentoCard,
+                    index === 0
+                      ? styles.bentoLeft
+                      : index === 1
+                        ? styles.bentoRightTop
+                        : styles.bentoRightBottom,
+                  ]}
+                  activeOpacity={0.8}
+                  onPress={() => handleActivityPress(activity)}
+                >
+                  <View style={styles.bentoHeader}>
+                    <View
+                      style={
+                        index === 0
+                          ? styles.bentoIconLight
+                          : styles.bentoIconTeal
+                      }
+                    >
+                      {index === 0 ? (
+                        <Feather name="users" size={18} color="#D97706" />
+                      ) : index === 1 ? (
+                        <Feather name="book-open" size={18} color="#0B8FAC" />
+                      ) : (
+                        <FontAwesome5
+                          name="trophy"
+                          size={14}
+                          color="#0B8FAC"
+                        />
+                      )}
+                    </View>
 
-              <View style={styles.bentoLeftContent}>
-                <Text style={styles.shiftTitle}>Staff Meeting</Text>
-                <Text style={styles.shiftTime}>14:00 - 16:00</Text>
-                
-                <View style={styles.locationPill}>
-                  <Feather name="map-pin" size={12} color="#1F2937" />
-                  <Text style={styles.locationText} numberOfLines={1}>Meeting Room 2</Text>
-                </View>
-              </View>
-
-              <View style={styles.bentoLeftFooter}>
-                <View style={styles.statusPillPending}>
-                  <Text style={styles.statusTextPending}>Not Checked In</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-
-            {/* RIGHT COLUMN: STACKED CARDS */}
-            <View style={styles.bentoRightCol}>
-              
-              {/* CARD 3: RIGHT TOP SQUARE */}
-              <TouchableOpacity style={[styles.bentoCard, styles.bentoRightTop]} activeOpacity={0.8} onPress={handleActivityPress}>
-                <View style={styles.bentoHeader}>
-                  <View style={styles.bentoIconTeal}>
-                    <Feather name="book-open" size={18} color="#0B8FAC" />
+                    <Feather
+                      name="arrow-up-right"
+                      size={20}
+                      color="#1F2937"
+                    />
                   </View>
-                </View>
-                <View style={styles.bentoRightTopContent}>
-                  <Text style={styles.taskTitle}>Kajian</Text>
-                  <Text style={styles.taskTime}>16:00 - 17:00</Text>
-                  <Text style={styles.taskLoc} numberOfLines={1}>Meeting Hall</Text>
-                </View>
-                <View style={[styles.statusPillPending, styles.statusSmall]}>
-                  <Text style={styles.statusTextPendingSmall}>Not Checked In</Text>
-                </View>
-              </TouchableOpacity>
 
-              {/* CARD 4: RIGHT BOTTOM RECTANGLE */}
-              <TouchableOpacity style={[styles.bentoCard, styles.bentoRightBottom]} activeOpacity={0.8} onPress={handleActivityPress}>
-                <View style={styles.bentoIconSmallTeal}>
-                  <FontAwesome5 name="trophy" size={14} color="#0B8FAC" />
-                </View>
-                <View style={styles.smallCardTextWrapper}>
-                  <Text style={styles.smallCardTitle} numberOfLines={1}>Futsal Competition</Text>
-                  <Text style={styles.smallCardTime} numberOfLines={1}>18:30</Text>
-                  <Text style={styles.smallCardStatus} numberOfLines={1}>Pending</Text>
-                </View>
-              </TouchableOpacity>
+                  <View style={styles.bentoActivityContent}>
+                    <Text
+                      style={[
+                        index === 0
+                          ? styles.shiftTitle
+                          : index === 1
+                            ? styles.taskTitle
+                            : styles.smallCardTitle,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {getActivityTitle(activity)}
+                    </Text>
 
+                    <Text
+                      style={
+                        index === 0
+                          ? styles.shiftTime
+                          : index === 1
+                            ? styles.taskTime
+                            : styles.smallCardTime
+                      }
+                    >
+                      {getTimeRange(activity)}
+                    </Text>
+
+                    <View style={styles.locationPill}>
+                      <Feather
+                        name="map-pin"
+                        size={12}
+                        color="#1F2937"
+                      />
+                      <Text style={styles.locationText} numberOfLines={1}>
+                        {getLocation(activity)}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View
+                    style={
+                      isAttended(activity)
+                        ? styles.statusPillSuccess
+                        : styles.statusPillPending
+                    }
+                  >
+                    <Text
+                      style={
+                        isAttended(activity)
+                          ? styles.statusTextSuccess
+                          : styles.statusTextPending
+                      }
+                    >
+                      {getStatusText(activity)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
-
-          </View>
+          ) : (
+            <View style={styles.emptyActivities}>
+              <Feather name="calendar" size={28} color="#9CA3AF" />
+              <Text style={styles.emptyActivitiesTitle}>
+                No activities available
+              </Text>
+              <Text style={styles.emptyText}>
+                Activities from the clinic will appear here.
+              </Text>
+            </View>
+          )}
         </View>
-
       </ScrollView>
-
     </View>
   );
 }
@@ -190,13 +512,11 @@ export default function ActivityScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA', // Off-white
+    backgroundColor: '#F8F9FA',
   },
   scrollContent: {
     paddingBottom: 40,
   },
-
-  // --- HEADER ---
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -225,12 +545,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.05, shadowRadius: 8 },
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.05,
+        shadowRadius: 8,
+      },
       android: { elevation: 2 },
     }),
   },
-
-  // --- HERO BANNER (ACTIVITY 1) ---
   heroSection: {
     paddingHorizontal: 24,
     marginBottom: 28,
@@ -243,7 +566,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     overflow: 'hidden',
     ...Platform.select({
-      ios: { shadowColor: '#7BC1B7', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 16 },
+      ios: {
+        shadowColor: '#7BC1B7',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 16,
+      },
       android: { elevation: 8 },
     }),
   },
@@ -276,7 +604,18 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
-
+  statusPillPending: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  statusTextPending: {
+    color: '#D97706',
+    fontSize: 12,
+    fontWeight: '700',
+  },
   abstract3DContainer: {
     position: 'absolute',
     right: -10,
@@ -302,12 +641,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     transform: [{ rotate: '15deg' }],
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: -4, height: 8 }, shadowOpacity: 0.15, shadowRadius: 12 },
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: -4, height: 8 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+      },
       android: { elevation: 10 },
     }),
   },
-
-  // --- DATE PICKER PILLS ---
   datePickerSection: {
     marginBottom: 32,
   },
@@ -323,14 +665,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.03, shadowRadius: 8 },
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.03,
+        shadowRadius: 8,
+      },
       android: { elevation: 1 },
     }),
   },
   datePillActive: {
-    backgroundColor: '#0B8FAC', 
+    backgroundColor: '#0B8FAC',
     ...Platform.select({
-      ios: { shadowColor: '#0B8FAC', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.3, shadowRadius: 12 },
+      ios: {
+        shadowColor: '#0B8FAC',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+      },
       android: { elevation: 6 },
     }),
   },
@@ -358,8 +710,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginTop: 6,
   },
-
-  // --- BENTO GRID ---
+  noDatesText: {
+    color: '#9CA3AF',
+    paddingHorizontal: 24,
+  },
   scheduleSection: {
     paddingHorizontal: 24,
   },
@@ -377,20 +731,25 @@ const styles = StyleSheet.create({
   bentoGrid: {
     flexDirection: 'row',
     gap: 16,
+    flexWrap: 'wrap',
   },
   bentoCard: {
-    borderRadius: 28, 
+    borderRadius: 28,
     padding: 20,
     ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.04, shadowRadius: 12 },
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.04,
+        shadowRadius: 12,
+      },
       android: { elevation: 2 },
     }),
   },
-  
-  // ACTIVITY 2: Left Tall Card
   bentoLeft: {
-    flex: 1.1,
-    backgroundColor: '#F6F0D7', // Soft Sand / Yellow
+    flex: 1,
+    minWidth: width * 0.43,
+    backgroundColor: '#F6F0D7',
     height: 240,
     justifyContent: 'space-between',
   },
@@ -407,8 +766,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  bentoLeftContent: {
-    marginTop: 10,
+  bentoIconTeal: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bentoActivityContent: {
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 8,
   },
   shiftTitle: {
     fontSize: 20,
@@ -422,63 +791,6 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginBottom: 12,
   },
-  locationPill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-    gap: 6,
-  },
-  locationText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#1F2937',
-  },
-  bentoLeftFooter: {
-    marginTop: 10,
-  },
-  statusPillPending: {
-    backgroundColor: '#FEF3C7',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 12,
-    alignSelf: 'flex-start',
-  },
-  statusTextPending: {
-    color: '#D97706',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-
-  // Right Column
-  bentoRightCol: {
-    flex: 1,
-    gap: 12,
-    height: 240,
-  },
-  
-  // ACTIVITY 3: Right Top Square
-  bentoRightTop: {
-    flex: 1.4,
-    backgroundColor: '#E6F4F1',
-    justifyContent: 'space-between',
-    padding: 16,
-    overflow: 'hidden',
-  },
-  bentoIconTeal: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bentoRightTopContent: {
-    marginTop: 2,
-  },
   taskTitle: {
     fontSize: 14,
     fontWeight: '800',
@@ -489,45 +801,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     color: '#7BC1B7',
-  },
-  taskLoc: {
-    fontSize: 10,
-    color: '#6B7280',
-    marginTop: 1,
-  },
-  statusSmall: {
-    paddingVertical: 3,
-    paddingHorizontal: 6,
-    marginTop: 4,
-    alignSelf: 'flex-start',
-  },
-  statusTextPendingSmall: {
-    color: '#D97706',
-    fontSize: 9,
-    fontWeight: '700',
-  },
-
-  // ACTIVITY 4: Right Bottom Rectangle
-  bentoRightBottom: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  bentoIconSmallTeal: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#F0F9F8',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  smallCardTextWrapper: {
-    flex: 1,
-    marginLeft: 10,
-    justifyContent: 'center',
+    marginBottom: 6,
   },
   smallCardTitle: {
     fontSize: 13,
@@ -541,9 +815,80 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 4,
   },
-  smallCardStatus: {
-    fontSize: 10,
+  locationPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+    gap: 6,
+    marginTop: 8,
+  },
+  locationText: {
+    fontSize: 12,
     fontWeight: '700',
-    color: '#D97706',
+    color: '#1F2937',
+    maxWidth: width * 0.3,
+  },
+  bentoRightTop: {
+    width: width * 0.42,
+    height: 160,
+    backgroundColor: '#E6F4F1',
+    justifyContent: 'space-between',
+    padding: 16,
+    overflow: 'hidden',
+  },
+  bentoRightBottom: {
+    width: '100%',
+    minHeight: 90,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  emptyHero: {
+    height: 160,
+    borderRadius: 28,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.05,
+        shadowRadius: 12,
+      },
+      android: { elevation: 2 },
+    }),
+  },
+  emptyHeroTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#374151',
+    marginTop: 10,
+  },
+  emptyText: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  emptyActivities: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyActivitiesTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#374151',
+    marginTop: 10,
   },
 });

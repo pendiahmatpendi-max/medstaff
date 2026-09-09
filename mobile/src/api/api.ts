@@ -1,4 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+﻿import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'https://medstaff-6twe.vercel.app/api';
 
@@ -105,19 +105,29 @@ export async function login(
   return result;
 }
 
-export async function register(
-  email: string,
-  password: string,
-) {
+export type RegisterData = {
+  email: string;
+  password: string;
+  employeeId: string;
+  fullName: string;
+  phone: string;
+  birthPlace: string;
+  birthDate: string;
+  gender: string;
+  position: string;
+  identityNumber?: string;
+  address?: string;
+  companyName?: string;
+  profilePhoto?: string;
+};
+
+export async function register(data: RegisterData) {
   const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      email,
-      password,
-    }),
+    body: JSON.stringify(data),
   });
 
   return handleResponse(response);

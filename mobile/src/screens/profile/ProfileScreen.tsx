@@ -1,8 +1,18 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
+﻿import React, { useCallback, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Platform,
+  ActivityIndicator,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import MedStaffIcon, { MedStaffIconName } from '../../components/MedStaffIcon';
-import { useNavigation } from '@react-navigation/native';
+import { getMyProfile, logout, EmployeeProfile } from '../../api/api';
 
 interface MenuItem {
   id: string;
@@ -54,80 +64,150 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
 
-  const handlePress = (id: string) => {
+  const [profile, setProfile] = useState<EmployeeProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const loadProfile = useCallback(async () => {
+    try {
+      setLoading(true);
+
+      const response = await getMyProfile();
+      const data = response?.data ?? response;
+
+      setProfile(data);
+    } catch (error) {
+      console.error('Gagal mengambil profile:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+    }, [loadProfile]),
+  );
+
+  const handlePress = async (id: string) => {
     if (id === 'personal') {
       navigation.navigate('PersonalInformation');
       return;
     }
+
     if (id === 'job') {
       navigation.navigate('WorkInformation');
       return;
     }
+
     if (id === 'emergency') {
       navigation.navigate('EmergencyContact');
       return;
     }
+
     if (id === 'education') {
       navigation.navigate('EducationExperience');
       return;
     }
+
     if (id === 'password') {
       navigation.navigate('ChangePassword');
       return;
     }
+
     if (id === 'pin') {
       navigation.navigate('PIN');
       return;
     }
+
     if (id === 'lang') {
       navigation.navigate('Language');
       return;
     }
+
     if (id === 'help') {
       navigation.navigate('HelpCenter');
       return;
     }
+
     if (id === 'logout') {
+      await logout();
+
       navigation.reset({
         index: 0,
         routes: [{ name: 'Welcome' }],
       });
+
       return;
     }
-    console.log('Navigating to:', id);
   };
 
   return (
     <View style={styles.container}>
-      {/* HEADER BAR (Menyatu dengan Status Bar, sedikit lebih tinggi, title turun) */}
-      <View style={[styles.header, { paddingTop: insets.top + 24 }]}>
+      <View
+        style={[
+          styles.header,
+          {
+            paddingTop: insets.top + 24,
+          },
+        ]}
+      >
         <Text style={styles.headerTitle}>Profile</Text>
       </View>
 
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent} 
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* IDENTITY CARD (Surface terpisah) */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.profileHeader}
           activeOpacity={0.8}
           onPress={() => navigation.navigate('ProfileDetail')}
         >
-          <Image 
-            source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAKG1SeJPJhMiDhdaooqIPg-sdAWEYfJioTiPn3EHYzpTJgjSklPpU-774NqazN_R1V1t6vfv9BERP7ELXPBWZuUuCez-x3rzxMcC1BLUhwH5s5pO1-vAgU70SEApPZ_KuvpCuSzmoAiApSmc4P6XY2PjBU7C5CES9lLxtMpznjHnstRm4UkkEYFMBVLibgQ8QJeYA9Xmi4GG9Tdh6BwNCKeK3Tg0SALwmi-OhjRHf9c9siJQyUB8pvmA' }} 
-            style={styles.avatar} 
-          />
+          {profile?.profilePhoto ? (
+            <Image
+              source={{ uri: profile.profilePhoto }}
+              style={styles.avatar}
+            />
+          ) : (
+            <View style={styles.avatarPlaceholder}>
+              <MedStaffIcon
+                name="profile"
+                size={30}
+                color="#0b8fac"
+              />
+            </View>
+          )}
+
           <View style={styles.profileInfo}>
-            <Text style={styles.userName}>dr. Winter Aespa</Text>
-            <Text style={styles.userRole}>Dokter Umum</Text>
+            {loading ? (
+              <ActivityIndicator
+                size="small"
+                color="#0b8fac"
+                style={styles.loadingIndicator}
+              />
+            ) : (
+              <>
+                <Text style={styles.userName} numberOfLines={1}>
+                  {profile?.fullName || 'Nama belum tersedia'}
+                </Text>
+
+                <Text style={styles.userRole} numberOfLines={1}>
+                  {profile?.position || 'Posisi belum tersedia'}
+                </Text>
+              </>
+            )}
           </View>
         </TouchableOpacity>
 
-        {/* LIST MENU SETTINGS / PROFILE */}
-        {SECTIONS.map((section, sectionIdx) => (
-          <View key={section.title} style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
+        {SECTIONS.map((section) => (
+          <View
+            key={section.title}
+            style={styles.sectionContainer}
+          >
+            <Text style={styles.sectionTitle}>
+              {section.title}
+            </Text>
+
             <View style={styles.groupCard}>
               {section.items.map((item, itemIdx) => {
                 const isLogout = item.id === 'logout';
@@ -135,35 +215,50 @@ export default function ProfileScreen() {
 
                 return (
                   <React.Fragment key={item.id}>
-                    <TouchableOpacity 
-                      style={styles.rowItem} 
+                    <TouchableOpacity
+                      style={styles.rowItem}
                       activeOpacity={0.6}
                       onPress={() => handlePress(item.id)}
                     >
                       <View style={styles.iconWrapper}>
-                        <MedStaffIcon 
-                          name={item.icon} 
-                          size={22} 
-                          color={item.iconColor || '#374151'} 
-                          variant="filled" 
+                        <MedStaffIcon
+                          name={item.icon}
+                          size={22}
+                          color={item.iconColor || '#374151'}
+                          variant="filled"
                         />
                       </View>
-                      
+
                       <View style={styles.rowContent}>
-                        <Text style={[styles.rowTitle, isLogout && styles.logoutTitle]}>
+                        <Text
+                          style={[
+                            styles.rowTitle,
+                            isLogout && styles.logoutTitle,
+                          ]}
+                        >
                           {item.title}
                         </Text>
+
                         {item.subtitle && (
-                          <Text style={styles.rowSubtitle}>{item.subtitle}</Text>
+                          <Text style={styles.rowSubtitle}>
+                            {item.subtitle}
+                          </Text>
                         )}
                       </View>
 
                       <View style={styles.rowRight}>
                         {item.value && (
-                          <Text style={styles.rowValue}>{item.value}</Text>
+                          <Text style={styles.rowValue}>
+                            {item.value}
+                          </Text>
                         )}
+
                         {!isLogout && (
-                          <MedStaffIcon name="chevron-right" size={18} color="#9ca3af" />
+                          <MedStaffIcon
+                            name="chevron-right"
+                            size={18}
+                            color="#9ca3af"
+                          />
                         )}
                       </View>
                     </TouchableOpacity>
@@ -185,24 +280,28 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F9F9F9',
   },
+
   header: {
     backgroundColor: '#ffffff',
     paddingHorizontal: 20,
-    paddingBottom: 20, // Ditambahkan agar area header terasa sedikit lebih tebal/tinggi
+    paddingBottom: 20,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9',
   },
+
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1A1C1C',
   },
+
   scrollContent: {
     paddingHorizontal: 20,
-    paddingTop: 24, 
+    paddingTop: 24,
     paddingBottom: 110,
   },
+
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -211,6 +310,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     marginBottom: 16,
+
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -223,6 +323,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
+
   avatar: {
     width: 56,
     height: 56,
@@ -230,23 +331,42 @@ const styles = StyleSheet.create({
     backgroundColor: '#E2E8F0',
     marginRight: 14,
   },
+
+  avatarPlaceholder: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#E2F4F1',
+    marginRight: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   profileInfo: {
     flex: 1,
   },
+
+  loadingIndicator: {
+    alignSelf: 'flex-start',
+  },
+
   userName: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1A1C1C',
     marginBottom: 3,
   },
+
   userRole: {
     fontSize: 13,
     fontWeight: '600',
     color: '#3C4A42',
   },
+
   sectionContainer: {
     marginBottom: 24,
   },
+
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
@@ -254,10 +374,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginLeft: 4,
   },
+
   groupCard: {
     backgroundColor: '#ffffff',
     borderRadius: 16,
     overflow: 'hidden',
+
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -270,6 +392,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
+
   rowItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -277,39 +400,47 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     minHeight: 56,
   },
+
   iconWrapper: {
     width: 32,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 14,
   },
+
   rowContent: {
     flex: 1,
     justifyContent: 'center',
   },
+
   rowTitle: {
     fontSize: 15,
     fontWeight: '600',
     color: '#1A1C1C',
   },
+
   logoutTitle: {
     color: '#dc2626',
   },
+
   rowSubtitle: {
     fontSize: 12,
     color: '#3C4A42',
     marginTop: 2,
   },
+
   rowRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
+
   rowValue: {
     fontSize: 14,
     fontWeight: '500',
     color: '#3C4A42',
   },
+
   divider: {
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#E2E8F0',

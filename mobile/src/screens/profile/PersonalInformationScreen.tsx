@@ -1,174 +1,140 @@
-import React, { useState } from 'react';
+﻿import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
-  TextInput,
-  Platform,
-  KeyboardAvoidingView
+  ActivityIndicator,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons';
-
-const InfoRow = ({ label, value, isEditing, onChangeText, keyboardType = 'default' }: any) => (
-  <View style={styles.infoRow}>
-    <Text style={styles.infoLabel}>{label}</Text>
-    {isEditing ? (
-      <TextInput
-        style={styles.infoInput}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-      />
-    ) : (
-      <Text style={styles.infoValue}>{value}</Text>
-    )}
-  </View>
-);
+import { useFocusEffect } from '@react-navigation/native';
+import { getMyProfile, EmployeeProfile } from '../../api/api';
 
 export default function PersonalInformationScreen() {
-  const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const [isEditing, setIsEditing] = useState(false);
+  const [profile, setProfile] = useState<EmployeeProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const [profile, setProfile] = useState({
-    fullName: 'dr. Winter Aespa',
-    employeeId: 'MS-0001',
-    email: 'employee@klinikunimus.ac.id',
-    phone: '0812-XXXX-XXXX',
-    dob: '01 January 1995',
-    gender: 'Female',
-    address: 'Klinik Pratama UNIMUS'
-  });
+  const loadProfile = useCallback(async () => {
+    try {
+      setLoading(true);
 
-  const handleSave = () => {
-    setIsEditing(false);
-  };
+      const response = await getMyProfile();
+      const data = response?.data ?? response;
+
+      setProfile(data);
+    } catch (error) {
+      console.error('Gagal mengambil personal information:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadProfile();
+    }, [loadProfile]),
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" color="#0b8fac" />
+        <Text style={styles.loadingText}>Memuat data...</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Feather name="arrow-left" size={24} color="#1F2937" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Personal Information</Text>
-        {!isEditing ? (
-          <TouchableOpacity onPress={() => setIsEditing(true)}>
-            <Text style={styles.editHeaderText}>Edit</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={{ width: 40 }} />
-        )}
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+    >
+      <Text style={styles.title}>Personal Information</Text>
+
+      <View style={styles.card}>
+        <Info label="Full Name" value={profile?.fullName} />
+        <Info label="Employee ID" value={profile?.employeeId} />
+        <Info label="Phone" value={profile?.phone} />
+        <Info label="Birth Place" value={profile?.birthPlace} />
+        <Info label="Birth Date" value={profile?.birthDate} />
+        <Info label="Gender" value={profile?.gender} />
+        <Info
+          label="Identity Number"
+          value={profile?.identityNumber}
+        />
+        <Info label="Address" value={profile?.address} />
       </View>
+    </ScrollView>
+  );
+}
 
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Personal Details</Text>
-            <View style={styles.card}>
-              <InfoRow
-                label="Full Name"
-                value={profile.fullName}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, fullName: text })}
-              />
-              <View style={styles.divider} />
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>Employee ID</Text>
-                <Text style={styles.infoValue}>{profile.employeeId}</Text>
-              </View>
-              <View style={styles.divider} />
-              <InfoRow
-                label="Date of Birth"
-                value={profile.dob}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, dob: text })}
-              />
-              <View style={styles.divider} />
-              <InfoRow
-                label="Gender"
-                value={profile.gender}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, gender: text })}
-              />
-              <View style={styles.divider} />
-              <InfoRow
-                label="Address"
-                value={profile.address}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, address: text })}
-              />
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Contact Information</Text>
-            <View style={styles.card}>
-              <InfoRow
-                label="Email"
-                value={profile.email}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, email: text })}
-                keyboardType="email-address"
-              />
-              <View style={styles.divider} />
-              <InfoRow
-                label="Phone Number"
-                value={profile.phone}
-                isEditing={isEditing}
-                onChangeText={(text: string) => setProfile({ ...profile, phone: text })}
-                keyboardType="phone-pad"
-              />
-            </View>
-          </View>
-        </ScrollView>
-
-        {isEditing && (
-          <View style={[styles.footer, { paddingBottom: insets.bottom + 16 }]}>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save Changes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelButton} onPress={() => setIsEditing(false)}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </KeyboardAvoidingView>
+function Info({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | null;
+}) {
+  return (
+    <View style={styles.info}>
+      <Text style={styles.label}>{label}</Text>
+      <Text style={styles.value}>
+        {value || '-'}
+      </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F9F9F9' },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: '#FFFFFF'
+  container: {
+    flex: 1,
+    backgroundColor: '#F9F9F9',
   },
-  backButton: { padding: 4 },
-  headerTitle: { fontSize: 18, fontWeight: '700', color: '#1F2937' },
-  editHeaderText: { fontSize: 16, color: '#0B8FAC', fontWeight: '600' },
-  scrollContent: { padding: 20, paddingBottom: 40 },
-  section: { marginBottom: 24 },
-  sectionTitle: { fontSize: 14, fontWeight: '700', color: '#6B7280', marginBottom: 12, textTransform: 'uppercase', letterSpacing: 0.5 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 20, paddingHorizontal: 16, ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 10 }, android: { elevation: 2 } }) },
-  infoRow: { paddingVertical: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  infoLabel: { fontSize: 14, color: '#6B7280', flex: 1 },
-  infoValue: { fontSize: 14, fontWeight: '600', color: '#1F2937', flex: 2, textAlign: 'right' },
-  infoInput: { fontSize: 14, fontWeight: '600', color: '#0B8FAC', flex: 2, textAlign: 'right', padding: 0 },
-  divider: { height: 1, backgroundColor: '#F3F4F6' },
-  footer: { padding: 20, backgroundColor: '#FFFFFF', borderTopWidth: 1, borderTopColor: '#F3F4F6' },
-  saveButton: { backgroundColor: '#7BC1B7', borderRadius: 16, height: 56, alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
-  saveButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
-  cancelButton: { height: 56, alignItems: 'center', justifyContent: 'center' },
-  cancelButtonText: { color: '#6B7280', fontSize: 16, fontWeight: '600' }
+
+  content: {
+    padding: 20,
+    paddingBottom: 40,
+  },
+
+  loading: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F9F9F9',
+  },
+
+  loadingText: {
+    marginTop: 10,
+    color: '#64748b',
+  },
+
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#1A1C1C',
+    marginBottom: 20,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 18,
+  },
+
+  info: {
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: '#E2E8F0',
+  },
+
+  label: {
+    fontSize: 12,
+    color: '#94a3b8',
+    marginBottom: 5,
+  },
+
+  value: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1A1C1C',
+  },
 });

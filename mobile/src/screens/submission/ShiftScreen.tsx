@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { getTodaySchedule, getMonthSchedule } from '../../api/api';
 import { Feather, FontAwesome5 } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -26,7 +27,6 @@ import Animated, {
   runOnJS
 } from 'react-native-reanimated';
 
-// --- MOCK DATA ---
 interface Shift {
   id: string;
   shortDate: string;
@@ -38,22 +38,81 @@ interface Shift {
   status: string;
 }
 
-const TODAY_SHIFT: Shift = {
-  id: 'today',
-  shortDate: 'FRI, 4 SEP',
-  fullDate: 'Friday, 4 September 2026',
-  name: 'Morning Shift',
-  hours: '07:00 — 15:00',
-  duration: '8 Hours',
-  location: 'Klinik Pratama UNIMUS',
-  status: 'Scheduled',
+const formatDate = (value: string | Date) => {
+  const date = new Date(value);
+  return date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
 };
 
-const UPCOMING_SHIFTS: Shift[] = [
-  { id: '1', shortDate: 'Sat, 5 Sep', fullDate: 'Saturday, 5 September 2026', name: 'Morning Shift', hours: '07:00 — 15:00', duration: '8 Hours', location: 'Klinik Pratama UNIMUS', status: 'Scheduled' },
-  { id: '2', shortDate: 'Sun, 6 Sep', fullDate: 'Sunday, 6 September 2026', name: 'Evening Shift', hours: '15:00 — 23:00', duration: '8 Hours', location: 'Klinik Pratama UNIMUS', status: 'Scheduled' },
-  { id: '3', shortDate: 'Mon, 7 Sep', fullDate: 'Monday, 7 September 2026', name: 'Night Shift', hours: '23:00 — 07:00', duration: '8 Hours', location: 'Klinik Pratama UNIMUS', status: 'Scheduled' },
-];
+const formatShortDate = (value: string | Date) => {
+  const date = new Date(value);
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
+};
+
+const calculateDuration = (start: string, end: string, crossesMidnight = false) => {
+  const [sh, sm] = start.split(':').map(Number);
+  const [eh, em] = end.split(':').map(Number);
+
+  let minutes = eh * 60 + em - (sh * 60 + sm);
+
+  if (crossesMidnight || minutes < 0) {
+    minutes += 24 * 60;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  if (mins === 0) {
+    return `${hours} Hours`;
+  }
+
+  return `${hours}h ${mins}m`;
+};
+
+const mapSchedule = (item: any): Shift | null => {
+  if (!item) return null;
+
+  const date = item.scheduleDate;
+  const shift = item.shift;
+
+  if (!date) return null;
+
+  if (!shift) {
+    return {
+      id: String(item.id),
+      shortDate: formatShortDate(date),
+      fullDate: formatDate(date),
+      name: item.dayType === 'LIBUR' ? 'Day Off' : 'No Shift',
+      hours: '-',
+      duration: '-',
+      location: 'Klinik Pratama UNIMUS',
+      status: item.dayType === 'LIBUR' ? 'Day Off' : 'Scheduled',
+    };
+  }
+
+  return {
+    id: String(item.id),
+    shortDate: formatShortDate(date),
+    fullDate: formatDate(date),
+    name: shift.name,
+    hours: `${shift.startTime} — ${shift.endTime}`,
+    duration: calculateDuration(
+      shift.startTime,
+      shift.endTime,
+      shift.crossesMidnight,
+    ),
+    location: 'Klinik Pratama UNIMUS',
+    status: 'Scheduled',
+  };
+};
 
 // ==================================================
 // KOMPONEN: DATE CARD (100% UI-THREAD ANIMATION)
@@ -145,10 +204,73 @@ const DayCard = ({ item, index, activeIndex, onPress }: any) => {
 export default function ShiftScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSchedules = async () => {
+      try {
+        setLoading(true);
+
+        const todayResponse = await getTodaySchedule();
+
+        if (mounted) {
+          const todayData = todayResponse?.data ?? null;
+          setTodayShift(mapSchedule(todayData));
+        }
+
+        const now = new Date();
+        const monthResponse = await getMonthSchedule(
+          now.getFullYear(),
+          now.getMonth() + 1,
+        );
+
+        if (mounted) {
+          const monthData = monthResponse?.data;
+          const schedules = Array.isArray(monthData)
+            ? monthData
+            : monthData?.schedules ?? [];
+
+          const mapped = schedules
+            .map(mapSchedule)
+            .filter(Boolean) as Shift[];
+
+          setUpcomingShifts(
+            mapped.filter((item) => {
+              const itemDate = new Date(item.fullDate);
+              const today = new Date();
+              today.setHours(0, 0, 0, 0);
+              itemDate.setHours(0, 0, 0, 0);
+              return itemDate > today;
+            }),
+          );
+        }
+      } catch (error) {
+        console.error('Gagal mengambil jadwal:', error);
+
+        if (mounted) {
+          setTodayShift(null);
+          setUpcomingShifts([]);
+        }
+      } finally {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadSchedules();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const [selectedShift, setSelectedShift] = useState<Shift | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [activeDateId, setActiveDateId] = useState<string>("0"); 
+  const [activeDateId, setActiveDateId] = useState<string>('0');
+  const [todayShift, setTodayShift] = useState<Shift | null>(null);
+  const [upcomingShifts, setUpcomingShifts] = useState<Shift[]>([]);
+  const [loading, setLoading] = useState(true); 
 
   const days = useMemo(() => {
     const namaHari = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -239,21 +361,37 @@ export default function ShiftScreen() {
         </View>
 
         {/* TODAY'S SHIFT */}
-        <Text style={styles.selectedDate}>{TODAY_SHIFT.fullDate}</Text>
-        
+        <Text style={styles.selectedDate}>
+          {todayShift?.fullDate ?? 'No schedule for today'}
+        </Text>
+
         <View style={styles.shiftCardContainer}>
           <LinearGradient colors={['#7BC1B7', '#0B8FAC']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.shiftCard}>
             <View style={[styles.abstractShape, styles.wave1]} />
             <View style={[styles.abstractShape, styles.wave2]} />
+
             <View style={styles.cardContent}>
-              <Text style={styles.shiftNameWhite}>{TODAY_SHIFT.name}</Text>
-              <Text style={styles.shiftTimeWhite}>{TODAY_SHIFT.hours}</Text>
-              <Text style={styles.shiftLocWhite}>{TODAY_SHIFT.location}</Text>
-              <View style={{ alignSelf: 'flex-start', marginTop: 8 }}>
-                <View style={styles.statusPillWhite}>
-                  <Text style={styles.statusTextWhite}>{TODAY_SHIFT.status}</Text>
-                </View>
-              </View>
+              {loading ? (
+                <Text style={styles.shiftNameWhite}>Loading...</Text>
+              ) : todayShift ? (
+                <>
+                  <Text style={styles.shiftNameWhite}>{todayShift.name}</Text>
+                  <Text style={styles.shiftTimeWhite}>{todayShift.hours}</Text>
+                  <Text style={styles.shiftLocWhite}>{todayShift.location}</Text>
+
+                  <View style={{ alignSelf: 'flex-start', marginTop: 8 }}>
+                    <View style={styles.statusPillWhite}>
+                      <Text style={styles.statusTextWhite}>{todayShift.status}</Text>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.shiftNameWhite}>No Schedule</Text>
+                  <Text style={styles.shiftTimeWhite}>No shift assigned today</Text>
+                  <Text style={styles.shiftLocWhite}>Klinik Pratama UNIMUS</Text>
+                </>
+              )}
             </View>
           </LinearGradient>
         </View>
@@ -262,7 +400,7 @@ export default function ShiftScreen() {
         <Text style={styles.upcomingTitle}>Upcoming Shifts</Text>
 
         <View style={styles.upcomingList}>
-          {UPCOMING_SHIFTS.map((shift) => (
+          {upcomingShifts.map((shift) => (
             <TouchableOpacity key={shift.id} style={styles.upcomingCard} onPress={() => openShiftDetail(shift)} activeOpacity={0.7}>
               <View>
                 <Text style={styles.upcomingShortDate}>{shift.shortDate}</Text>

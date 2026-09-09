@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+﻿import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -373,7 +373,7 @@ export default function RiwayatScreen() {
         {!loading && errorMessage !== '' && (
           <View style={styles.messageCard}>
             <MedStaffIcon
-              name="warning"
+              name="error"
               size={30}
               color="#f97316"
             />
