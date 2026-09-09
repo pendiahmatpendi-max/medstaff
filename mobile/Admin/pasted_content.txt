@@ -1,0 +1,1388 @@
+# MEDSTAFF — ADMIN MOBILE WIREFRAME
+
+**Aplikasi Manajemen Kepegawaian Klinik Pratama Unimus**
+
+## 1. ADMIN OVERVIEW
+
+Admin adalah HRD atau pimpinan Klinik Pratama Unimus yang bertugas mengelola data pegawai, shift, jadwal, absensi, kegiatan, pengajuan, pengumuman, dan sistem.
+
+### Admin Navigation
+
+```text
+ADMIN
+│
+├── 🏠 Dashboard
+│
+├── 👥 Manajemen Pegawai
+│
+├── 🕐 Kelola Shift
+│
+├── 📅 Jadwal Bulanan
+│
+├── ✓ Monitoring Absensi
+│
+├── 📋 Kegiatan
+│
+├── 📝 Persetujuan
+│
+├── 📢 Pengumuman
+│
+├── 🔔 Notifikasi
+│
+├── 👤 Profil
+│
+└── ⚙ Pengaturan
+```
+
+---
+
+# 2. ADMIN DASHBOARD
+
+## ADMIN-01 — Dashboard
+
+Dashboard merupakan halaman utama Admin.
+
+Dashboard harus memberikan informasi penting secara cepat tanpa harus membuka halaman detail.
+
+```text
+┌────────────────────────────────────┐
+│ ☰  MEDSTAFF                  🔔 👤│
+├────────────────────────────────────┤
+│                                    │
+│ Selamat Datang, Admin 👋           │
+│ Klinik Pratama Unimus              │
+│ Senin, 31 Agustus 2026             │
+│                                    │
+├────────────────────────────────────┤
+│ RINGKASAN HARI INI                 │
+│                                    │
+│ ┌────────────────┐ ┌─────────────┐ │
+│ │ TOTAL PEGAWAI  │ │ HADIR       │ │
+│ │                │ │             │ │
+│ │      125       │ │     112     │ │
+│ │    Pegawai     │ │   Pegawai   │ │
+│ └────────────────┘ └─────────────┘ │
+│                                    │
+│ ┌────────────────┐ ┌─────────────┐ │
+│ │ TERLAMBAT      │ │ TIDAK HADIR │ │
+│ │                │ │             │ │
+│ │       8        │ │      5      │ │
+│ │    Pegawai     │ │   Pegawai   │ │
+│ └────────────────┘ └─────────────┘ │
+│                                    │
+├────────────────────────────────────┤
+│ JADWAL HARI INI                    │
+│                                    │
+│ Klinik Pagi          45 Pegawai    │
+│ 07:00 - 14:00                      │
+│                                    │
+│ Klinik Siang         40 Pegawai    │
+│ 14:00 - 21:00                      │
+│                                    │
+│ Klinik Malam         20 Pegawai    │
+│ 21:00 - 07:00                      │
+│                                    │
+│ UMC                  15 Pegawai    │
+│ 08:00 - 16:00                      │
+│                                    │
+│ Gigi Pagi             5 Pegawai    │
+│ 08:00 - 12:00                      │
+│                                    │
+│                         Lihat >     │
+│                                    │
+├────────────────────────────────────┤
+│ KEGIATAN HARI INI                  │
+│                                    │
+│ Rapat Bulanan Klinik               │
+│ 🕐 09:00 - 11:00                  │
+│ 👥 Semua Staff                     │
+│                                    │
+│ Hadir             112              │
+│ Belum Absen        13              │
+│                                    │
+│ [ Lihat Detail ]                   │
+│                                    │
+├────────────────────────────────────┤
+│ PENGAJUAN MENUNGGU                 │
+│                                    │
+│ Cuti                         5 >   │
+│ Izin                         3 >   │
+│ Perubahan Profil             2 >   │
+│ Perubahan Dokumen            1 >   │
+│                                    │
+├────────────────────────────────────┤
+│ AKTIVITAS TERBARU                  │
+│                                    │
+│ Ahmad Ibrahim   Clock In   06:58   │
+│ Budi Santoso    Clock In   07:02   │
+│ Citra           Pengajuan  08:15   │
+│                                    │
+│                         Lihat >     │
+└────────────────────────────────────┘
+```
+
+### Dashboard Shortcut
+
+```text
+Dashboard
+│
+├── Total Pegawai
+│      ↓
+│   Manajemen Pegawai
+│
+├── Hadir / Terlambat / Tidak Hadir
+│      ↓
+│   Monitoring Absensi
+│
+├── Jadwal Hari Ini
+│      ↓
+│   Jadwal Bulanan
+│
+├── Kegiatan Hari Ini
+│      ↓
+│   Detail Kegiatan
+│
+└── Pengajuan Menunggu
+       ↓
+    Persetujuan
+```
+
+---
+
+# 3. MANAJEMEN PEGAWAI
+
+## ADMIN-02 — Daftar Pegawai
+
+```text
+┌────────────────────────────────────┐
+│ ←  Manajemen Pegawai          🔍   │
+├────────────────────────────────────┤
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🔍 Cari nama / ID pegawai      │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ [ Semua ▼ ] [ Aktif ▼ ]            │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 👤  Ahmad Ibrahim              │ │
+│ │     EMP001                     │ │
+│ │     Staff Klinik               │ │
+│ │     ✓ Aktif                 >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 👤  Budi Santoso               │ │
+│ │     EMP002                     │ │
+│ │     Staff Klinik               │ │
+│ │     ✓ Aktif                 >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 👤  Citra                      │ │
+│ │     EMP003                     │ │
+│ │     Perawat                    │ │
+│ │     ✓ Aktif                 >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│                    [+ Tambah]      │
+└────────────────────────────────────┘
+```
+
+---
+
+## ADMIN-03 — Detail Pegawai
+
+```text
+┌────────────────────────────────────┐
+│ ←       Detail Pegawai             │
+├────────────────────────────────────┤
+│                                    │
+│              ┌────────┐            │
+│              │  FOTO  │            │
+│              └────────┘            │
+│                                    │
+│ Ahmad Ibrahim                      │
+│ EMP001                             │
+│ ✓ Aktif                            │
+│                                    │
+├────────────────────────────────────┤
+│ DATA PRIBADI                       │
+│                                    │
+│ Nama                 Ahmad Ibrahim │
+│ Email                email         │
+│ Telepon              08xxxxxxxx    │
+│ Tempat Lahir         Semarang      │
+│ Tanggal Lahir        xx/xx/xxxx    │
+│ Jenis Kelamin        Laki-laki     │
+│ Alamat               Semarang      │
+│                                    │
+├────────────────────────────────────┤
+│ DATA PEKERJAAN                     │
+│                                    │
+│ Nomor Pegawai        EMP001        │
+│ Jabatan              Staff         │
+│ Unit                 Klinik        │
+│                                    │
+├────────────────────────────────────┤
+│ DATA TAMBAHAN                      │
+│                                    │
+│ Pendidikan                       > │
+│ Pengalaman                       > │
+│ Kontak Darurat                   > │
+│ Dokumen                          > │
+│                                    │
+│ [ Edit Pegawai ]                   │
+└────────────────────────────────────┘
+```
+
+---
+
+# 4. KELOLA SHIFT
+
+## ADMIN-04 — Daftar Shift
+
+```text
+┌────────────────────────────────────┐
+│ ←          Kelola Shift            │
+├────────────────────────────────────┤
+│                                    │
+│ SHIFT AKTIF                        │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Klinik Pagi                    │ │
+│ │ 07:00 - 14:00                 │ │
+│ │ ✓ Aktif                     >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Klinik Siang                   │ │
+│ │ 14:00 - 21:00                 │ │
+│ │ ✓ Aktif                     >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Klinik Malam                   │ │
+│ │ 21:00 - 07:00                 │ │
+│ │ ✓ Aktif                     >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ UMC                            │ │
+│ │ 08:00 - 16:00                 │ │
+│ │ ✓ Aktif                     >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Gigi Pagi                      │ │
+│ │ 08:00 - 12:00                 │ │
+│ │ ✓ Aktif                     >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│             [+ Tambah Shift]       │
+└────────────────────────────────────┘
+```
+
+---
+
+## ADMIN-05 — Tambah / Edit Shift
+
+```text
+┌────────────────────────────────────┐
+│ ←         Tambah Shift             │
+├────────────────────────────────────┤
+│                                    │
+│ Nama Shift                         │
+│ ┌────────────────────────────────┐ │
+│ │ Klinik Pagi                    │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Jam Mulai                          │
+│ ┌────────────────────────────────┐ │
+│ │ 07:00                       🕐 │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Jam Selesai                        │
+│ ┌────────────────────────────────┐ │
+│ │ 14:00                       🕐 │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Deskripsi                          │
+│ ┌────────────────────────────────┐ │
+│ │ Shift pelayanan pagi           │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Status                             │
+│ ● Aktif       ○ Nonaktif           │
+│                                    │
+│ [ SIMPAN SHIFT ]                   │
+└────────────────────────────────────┘
+```
+
+---
+
+# 5. JADWAL BULANAN
+
+## ADMIN-06 — Jadwal Bulanan
+
+```text
+┌────────────────────────────────────┐
+│ ←         Jadwal Bulanan           │
+├────────────────────────────────────┤
+│                                    │
+│ Bulan                              │
+│ [ Agustus 2026 ▼ ]                 │
+│                                    │
+│ Karyawan                           │
+│ [ Semua Karyawan ▼ ]               │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ SENIN 31                       │ │
+│ │                                │ │
+│ │ Ahmad Ibrahim                  │ │
+│ │ Klinik Pagi                    │ │
+│ │ 07:00 - 14:00                 │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ SELASA 01                      │ │
+│ │                                │ │
+│ │ Ahmad Ibrahim                  │ │
+│ │ Klinik Siang                   │ │
+│ │ 14:00 - 21:00                 │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ RABU 02                        │ │
+│ │                                │ │
+│ │ Ahmad Ibrahim                  │ │
+│ │ LIBUR                          │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│                     [+ Atur]       │
+└────────────────────────────────────┘
+```
+
+---
+
+## ADMIN-07 — Atur Jadwal
+
+```text
+┌────────────────────────────────────┐
+│ ←          Atur Jadwal             │
+├────────────────────────────────────┤
+│                                    │
+│ Karyawan                           │
+│ [ Ahmad Ibrahim ▼ ]                │
+│                                    │
+│ Tanggal                            │
+│ [ 15 Agustus 2026 📅 ]             │
+│                                    │
+│ Jenis Jadwal                       │
+│                                    │
+│ ● Shift                            │
+│ ○ Libur                            │
+│                                    │
+│ Pilih Shift                        │
+│ [ Klinik Pagi ▼ ]                  │
+│                                    │
+│ Jam Kerja                          │
+│ 07:00 - 14:00                     │
+│                                    │
+│ Catatan                            │
+│ ┌────────────────────────────────┐ │
+│ │                                │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ [ SIMPAN JADWAL ]                  │
+└────────────────────────────────────┘
+```
+
+---
+
+# 6. MONITORING ABSENSI
+
+## ADMIN-08 — Monitoring Absensi
+
+```text
+┌────────────────────────────────────┐
+│ ←       Monitoring Absensi         │
+├────────────────────────────────────┤
+│                                    │
+│ [ 31 Agustus 2026 ▼ ]              │
+│ [ Semua Shift ▼ ]                  │
+│                                    │
+├────────────────────────────────────┤
+│ RINGKASAN                          │
+│                                    │
+│ Total       125                    │
+│ Hadir       112                    │
+│ Terlambat     8                    │
+│ Tidak Hadir   5                    │
+│                                    │
+├────────────────────────────────────┤
+│ DAFTAR ABSENSI                     │
+│                                    │
+│ Ahmad Ibrahim                      │
+│ Klinik Pagi                        │
+│ Clock In     06:58                 │
+│ Clock Out    14:02                 │
+│ ✓ Hadir                         >  │
+│                                    │
+│ Budi Santoso                       │
+│ Klinik Pagi                        │
+│ Clock In     07:08                 │
+│ Clock Out    -                     │
+│ ⚠ Terlambat                     > │
+│                                    │
+│ Citra                              │
+│ Klinik Pagi                        │
+│ Clock In     -                     │
+│ Clock Out    -                     │
+│ ○ Tidak Hadir                   >  │
+└────────────────────────────────────┘
+```
+
+---
+
+# 7. DETAIL ABSENSI PEGAWAI
+
+## ADMIN-09 — Detail Absensi
+
+```text
+┌────────────────────────────────────┐
+│ ←        Detail Absensi            │
+├────────────────────────────────────┤
+│                                    │
+│ Ahmad Ibrahim                      │
+│ EMP001                             │
+│                                    │
+│ Tanggal                            │
+│ 31 Agustus 2026                    │
+│                                    │
+│ Shift                              │
+│ Klinik Pagi                        │
+│ 07:00 - 14:00                     │
+│                                    │
+├────────────────────────────────────┤
+│ CLOCK IN                           │
+│                                    │
+│ Waktu              06:58           │
+│ Latitude           -7.xxx          │
+│ Longitude          110.xxx         │
+│ Lokasi             Klinik          │
+│ Foto               [ Lihat ]       │
+│                                    │
+├────────────────────────────────────┤
+│ CLOCK OUT                          │
+│                                    │
+│ Waktu              14:02           │
+│ Lokasi             Klinik          │
+│ Foto               [ Lihat ]       │
+│                                    │
+│ Status             ✓ Hadir         │
+└────────────────────────────────────┘
+```
+
+---
+
+# 8. KEGIATAN
+
+## ADMIN-10 — Daftar Kegiatan
+
+```text
+┌────────────────────────────────────┐
+│ ←           Kegiatan               │
+├────────────────────────────────────┤
+│                                    │
+│ [ Semua ▼ ] [ Mendatang ▼ ]        │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Rapat Bulanan Klinik           │ │
+│ │                                │ │
+│ │ 📅 15 Agustus 2026             │ │
+│ │ 🕐 09:00 - 11:00              │ │
+│ │ 📍 Aula Klinik                 │ │
+│ │ 👥 Semua Staff                 │ │
+│ │                                │ │
+│ │ Hadir 112 / 125                │ │
+│ │                            >   │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Pelatihan K3                   │ │
+│ │                                │ │
+│ │ 📅 20 Agustus 2026             │ │
+│ │ 🕐 13:00 - 15:00              │ │
+│ │ 📍 Ruang Meeting               │ │
+│ │ 👥 Staff Terpilih              │ │
+│ │                                │ │
+│ │ Hadir 20 / 25                  │ │
+│ │                            >   │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│              [+ Buat Kegiatan]     │
+└────────────────────────────────────┘
+```
+
+---
+
+# 9. BUAT KEGIATAN
+
+## ADMIN-11 — Create Activity
+
+```text
+┌────────────────────────────────────┐
+│ ←        Buat Kegiatan             │
+├────────────────────────────────────┤
+│                                    │
+│ Nama Kegiatan                      │
+│ ┌────────────────────────────────┐ │
+│ │ Rapat Bulanan Klinik           │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Tanggal                            │
+│ [ 15 Agustus 2026 📅 ]             │
+│                                    │
+│ Jam Mulai                          │
+│ [ 09:00 🕐 ]                       │
+│                                    │
+│ Jam Selesai                        │
+│ [ 11:00 🕐 ]                       │
+│                                    │
+│ Lokasi                             │
+│ [ Aula Klinik ]                    │
+│                                    │
+│ Peserta                            │
+│                                    │
+│ ● Semua Staff                      │
+│ ○ Staff Terpilih                   │
+│                                    │
+│ Deskripsi                          │
+│ ┌────────────────────────────────┐ │
+│ │ Rapat evaluasi bulanan seluruh │ │
+│ │ staff Klinik Pratama Unimus.   │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ [ SIMPAN KEGIATAN ]                │
+└────────────────────────────────────┘
+```
+
+---
+
+# 10. PILIH PESERTA KEGIATAN
+
+## ADMIN-12 — Activity Participants
+
+Digunakan apabila Admin memilih **Staff Terpilih**.
+
+```text
+┌────────────────────────────────────┐
+│ ←         Pilih Peserta            │
+├────────────────────────────────────┤
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🔍 Cari pegawai                │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ [ Pilih Semua ]                    │
+│                                    │
+│ ☑ Ahmad Ibrahim                    │
+│   EMP001                           │
+│                                    │
+│ ☑ Budi Santoso                     │
+│   EMP002                           │
+│                                    │
+│ ☐ Citra                            │
+│   EMP003                           │
+│                                    │
+│ ☐ Deni                             │
+│   EMP004                           │
+│                                    │
+│ ☐ Eko                              │
+│   EMP005                           │
+│                                    │
+│ 2 Pegawai Dipilih                  │
+│                                    │
+│ [ SIMPAN PESERTA ]                 │
+└────────────────────────────────────┘
+```
+
+---
+
+# 11. DETAIL KEGIATAN
+
+## ADMIN-13 — Detail Kegiatan
+
+```text
+┌────────────────────────────────────┐
+│ ←       Detail Kegiatan            │
+├────────────────────────────────────┤
+│                                    │
+│ Rapat Bulanan Klinik               │
+│                                    │
+│ 📅 15 Agustus 2026                 │
+│ 🕐 09:00 - 11:00                  │
+│ 📍 Aula Klinik                     │
+│ 👥 Semua Staff                     │
+│                                    │
+├────────────────────────────────────┤
+│ DESKRIPSI                          │
+│                                    │
+│ Rapat evaluasi bulanan seluruh     │
+│ staff Klinik Pratama Unimus.       │
+│                                    │
+├────────────────────────────────────┤
+│ KEHADIRAN                           │
+│                                    │
+│ Total Peserta       125            │
+│ Sudah Absen         112            │
+│ Belum Absen          13            │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │       LIHAT KEHADIRAN          │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ [ Edit Kegiatan ]                  │
+│ [ Batalkan Kegiatan ]              │
+└────────────────────────────────────┘
+```
+
+---
+
+# 12. KEHADIRAN KEGIATAN
+
+## ADMIN-14 — Activity Attendance
+
+```text
+┌────────────────────────────────────┐
+│ ←       Kehadiran Kegiatan         │
+├────────────────────────────────────┤
+│                                    │
+│ Rapat Bulanan Klinik               │
+│ 15 Agustus 2026                    │
+│                                    │
+├────────────────────────────────────┤
+│                                    │
+│ ┌──────────────┐ ┌──────────────┐  │
+│ │ PESERTA      │ │ HADIR        │  │
+│ │    125       │ │    112       │  │
+│ └──────────────┘ └──────────────┘  │
+│                                    │
+│ ┌──────────────┐ ┌──────────────┐  │
+│ │ BELUM ABSEN  │ │ TERLAMBAT    │  │
+│ │     13       │ │      5       │  │
+│ └──────────────┘ └──────────────┘  │
+│                                    │
+│ [ Semua ▼ ]                        │
+│                                    │
+│ ✓ Ahmad Ibrahim        08:54       │
+│   Hadir                             │
+│                                    │
+│ ✓ Budi Santoso         09:07       │
+│   Terlambat                         │
+│                                    │
+│ ○ Citra                -           │
+│   Belum Absen                       │
+│                                    │
+│ ○ Deni                 -           │
+│   Belum Absen                       │
+│                                    │
+└────────────────────────────────────┘
+```
+
+---
+
+# 13. DETAIL ABSEN KEGIATAN
+
+## ADMIN-15 — Activity Attendance Detail
+
+```text
+┌────────────────────────────────────┐
+│ ←     Detail Absen Kegiatan        │
+├────────────────────────────────────┤
+│                                    │
+│ Ahmad Ibrahim                      │
+│ EMP001                             │
+│                                    │
+│ Kegiatan                           │
+│ Rapat Bulanan Klinik               │
+│                                    │
+│ Waktu Absen                        │
+│ 08:54 WIB                          │
+│                                    │
+│ Status                             │
+│ ✓ Hadir                            │
+│                                    │
+│ Lokasi                             │
+│ Latitude       -7.xxx              │
+│ Longitude      110.xxx             │
+│                                    │
+│ Foto Selfie                        │
+│ ┌────────────────────────────────┐ │
+│ │                                │ │
+│ │             FOTO               │ │
+│ │                                │ │
+│ └────────────────────────────────┘ │
+│                                    │
+└────────────────────────────────────┘
+```
+
+---
+
+# 14. PERSETUJUAN
+
+## ADMIN-16 — Daftar Persetujuan
+
+```text
+┌────────────────────────────────────┐
+│ ←          Persetujuan             │
+├────────────────────────────────────┤
+│                                    │
+│ [ Semua ▼ ]                        │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🟡 CUTI                        │ │
+│ │ Ahmad Ibrahim                  │ │
+│ │ 10 - 12 Sep 2026               │ │
+│ │ Menunggu                    >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🟡 IZIN                        │ │
+│ │ Budi Santoso                   │ │
+│ │ 05 Sep 2026                    │ │
+│ │ Menunggu                    >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🟡 PERUBAHAN PROFIL            │ │
+│ │ Citra                          │ │
+│ │ Menunggu                    >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ 🟡 PERUBAHAN DOKUMEN           │ │
+│ │ Deni                           │ │
+│ │ Menunggu                    >  │ │
+│ └────────────────────────────────┘ │
+└────────────────────────────────────┘
+```
+
+---
+
+# 15. DETAIL PERSETUJUAN
+
+## ADMIN-17 — Approval Detail
+
+```text
+┌────────────────────────────────────┐
+│ ←       Detail Persetujuan         │
+├────────────────────────────────────┤
+│                                    │
+│ PENGAJUAN CUTI                     │
+│                                    │
+│ Ahmad Ibrahim                      │
+│ EMP001                             │
+│                                    │
+│ Jenis Cuti                         │
+│ Cuti Tahunan                       │
+│                                    │
+│ Tanggal                            │
+│ 10 - 12 September 2026             │
+│                                    │
+│ Alasan                             │
+│ Keperluan pribadi.                 │
+│                                    │
+│ Lampiran                            │
+│ 📄 surat.pdf                   >   │
+│                                    │
+├────────────────────────────────────┤
+│ CATATAN ADMIN                      │
+│ ┌────────────────────────────────┐ │
+│ │                                │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌───────────────┐ ┌──────────────┐ │
+│ │     TOLAK     │ │    SETUJUI   │ │
+│ └───────────────┘ └──────────────┘ │
+└────────────────────────────────────┘
+```
+
+---
+
+# 16. PENGUMUMAN
+
+## ADMIN-18 — Daftar Pengumuman
+
+```text
+┌────────────────────────────────────┐
+│ ←         Pengumuman               │
+├────────────────────────────────────┤
+│                                    │
+│ [ Semua ▼ ]                        │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Informasi Libur Nasional       │ │
+│ │                                │ │
+│ │ 30 Agustus 2026                │ │
+│ │ ✓ Published                    │ │
+│ │                            >   │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Informasi Rapat                │ │
+│ │                                │ │
+│ │ 28 Agustus 2026                │ │
+│ │ ✓ Published                    │ │
+│ │                            >   │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│              [+ Buat Pengumuman]   │
+└────────────────────────────────────┘
+```
+
+---
+
+# 17. BUAT PENGUMUMAN
+
+## ADMIN-19 — Create Announcement
+
+```text
+┌────────────────────────────────────┐
+│ ←       Buat Pengumuman            │
+├────────────────────────────────────┤
+│                                    │
+│ Judul                              │
+│ ┌────────────────────────────────┐ │
+│ │ Informasi Libur Nasional       │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Isi Pengumuman                     │
+│ ┌────────────────────────────────┐ │
+│ │                                │ │
+│ │ Klinik tutup pada tanggal...   │ │
+│ │                                │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Gambar                             │
+│ ┌────────────────────────────────┐ │
+│ │       + Upload Gambar          │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ Status                             │
+│ ● Published                        │
+│ ○ Draft                            │
+│                                    │
+│ [ PUBLIKASIKAN ]                   │
+└────────────────────────────────────┘
+```
+
+---
+
+# 18. NOTIFIKASI ADMIN
+
+## ADMIN-20 — Notification
+
+```text
+┌────────────────────────────────────┐
+│ ←          Notifikasi              │
+├────────────────────────────────────┤
+│                                    │
+│ 🔵 Pengajuan Baru                  │
+│ Ahmad Ibrahim mengajukan cuti      │
+│ 10 menit yang lalu                 │
+│                                    │
+│ 🔵 Absen Kegiatan                  │
+│ 112 staff telah melakukan absen    │
+│ 30 menit yang lalu                 │
+│                                    │
+│ 🔵 Perubahan Jadwal                │
+│ Jadwal Ahmad diperbarui            │
+│ 1 jam yang lalu                    │
+│                                    │
+│ ✓ Semua telah dibaca               │
+└────────────────────────────────────┘
+```
+
+---
+
+# 19. PROFIL ADMIN
+
+## ADMIN-21 — Profile
+
+```text
+┌────────────────────────────────────┐
+│ ←             Profil               │
+├────────────────────────────────────┤
+│                                    │
+│              ┌────────┐            │
+│              │  FOTO  │            │
+│              └────────┘            │
+│                                    │
+│ Administrator                      │
+│ Klinik Pratama Unimus              │
+│                                    │
+│ Email                              │
+│ admin@klinik                       │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Edit Profil                 >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Ubah Password               >  │ │
+│ └────────────────────────────────┘ │
+│                                    │
+│ ┌────────────────────────────────┐ │
+│ │ Logout                      >  │ │
+│ └────────────────────────────────┘ │
+└────────────────────────────────────┘
+```
+
+---
+
+# 20. PENGATURAN
+
+## ADMIN-22 — Settings
+
+```text
+┌────────────────────────────────────┐
+│ ←          Pengaturan              │
+├────────────────────────────────────┤
+│                                    │
+│ KLINIK                             │
+│                                    │
+│ Informasi Klinik               >   │
+│                                    │
+├────────────────────────────────────┤
+│ ABSENSI                            │
+│                                    │
+│ Radius GPS                     >   │
+│ Aturan Absensi                 >   │
+│                                    │
+├────────────────────────────────────┤
+│ NOTIFIKASI                         │
+│                                    │
+│ Pengaturan Notifikasi          >   │
+│                                    │
+├────────────────────────────────────┤
+│ SISTEM                             │
+│                                    │
+│ Versi Aplikasi                 >   │
+│ Tentang MedStaff                >  │
+│                                    │
+└────────────────────────────────────┘
+```
+
+---
+
+# 21. ADMIN COMPLETE FLOW
+
+```text
+                         ADMIN LOGIN
+                              │
+                              ↓
+                       ADMIN DASHBOARD
+                              │
+       ┌──────────────┬───────┼────────┬──────────────┐
+       ↓              ↓       ↓        ↓              ↓
+    PEGAWAI         SHIFT   JADWAL   ABSENSI       KEGIATAN
+       │              │       │        │              │
+       ↓              ↓       ↓        ↓              ↓
+    Kelola         Kelola   Atur     Monitor       Buat
+    Pegawai        Shift    Jadwal   Absensi       Kegiatan
+       │                              │              │
+       ↓                              ↓              ↓
+    Detail                         Detail        Peserta
+    Pegawai                        Absensi           │
+                                                     ↓
+                                                  Detail
+                                                     │
+                                                     ↓
+                                               Kehadiran
+                                                     │
+                                                     ↓
+                                             Absen Kegiatan
+                                             Monitoring
+```
+
+---
+
+# 22. ADMIN REQUEST FLOW
+
+```text
+                     PERSETUJUAN
+                          │
+         ┌────────────────┼────────────────┐
+         ↓                ↓                ↓
+       CUTI              IZIN        PROFILE CHANGE
+         │                │                │
+         └────────────────┼────────────────┘
+                          ↓
+                   DETAIL REQUEST
+                          │
+                ┌─────────┴─────────┐
+                ↓                   ↓
+             APPROVE              REJECT
+                │                   │
+                └─────────┬─────────┘
+                          ↓
+                    NOTIFICATION
+```
+
+---
+
+# 23. ADMIN ACTIVITY FLOW
+
+```text
+ADMIN
+  │
+  ↓
+BUAT KEGIATAN
+  │
+  ├── Nama
+  ├── Tanggal
+  ├── Jam Mulai
+  ├── Jam Selesai
+  ├── Lokasi
+  ├── Peserta
+  └── Deskripsi
+  │
+  ↓
+SIMPAN
+  │
+  ↓
+KEGIATAN AKTIF
+  │
+  ↓
+STAFF MENDAPAT NOTIFIKASI
+  │
+  ↓
+STAFF MELAKUKAN ABSEN
+  │
+  ├── Selfie
+  ├── GPS
+  └── Waktu
+  │
+  ↓
+ACTIVITY ATTENDANCE
+  │
+  ↓
+ADMIN MONITORING
+  │
+  ├── Sudah Absen
+  ├── Belum Absen
+  └── Terlambat
+```
+
+---
+
+# 24. ADMIN SHIFT & SCHEDULE FLOW
+
+```text
+                 KELOLA SHIFT
+                      │
+       ┌──────────────┼──────────────┐
+       ↓              ↓              ↓
+  Klinik Pagi   Klinik Siang   Klinik Malam
+  07-14         14-21          21-07
+       │              │              │
+       └──────────────┼──────────────┘
+                      ↓
+                JADWAL BULANAN
+                      │
+            ┌─────────┴─────────┐
+            ↓                   ↓
+         SHIFT                 LIBUR
+            │
+            ↓
+         STAFF
+```
+
+---
+
+# 25. ADMIN MENU STRUCTURE
+
+```text
+MEDSTAFF
+│
+└── ADMIN
+    │
+    ├── Dashboard
+    │
+    ├── Manajemen Pegawai
+    │   ├── Daftar Pegawai
+    │   ├── Tambah Pegawai
+    │   └── Detail Pegawai
+    │
+    ├── Kelola Shift
+    │   ├── Daftar Shift
+    │   ├── Tambah Shift
+    │   └── Edit Shift
+    │
+    ├── Jadwal Bulanan
+    │   ├── Pilih Bulan
+    │   ├── Pilih Karyawan
+    │   ├── Pilih Tanggal
+    │   └── Shift / Libur
+    │
+    ├── Monitoring Absensi
+    │   ├── Daftar Absensi
+    │   └── Detail Absensi
+    │
+    ├── Kegiatan
+    │   ├── Daftar Kegiatan
+    │   ├── Buat Kegiatan
+    │   ├── Pilih Peserta
+    │   ├── Detail Kegiatan
+    │   ├── Kehadiran Kegiatan
+    │   └── Detail Absen
+    │
+    ├── Persetujuan
+    │   ├── Cuti
+    │   ├── Izin
+    │   ├── Perubahan Profil
+    │   └── Perubahan Dokumen
+    │
+    ├── Pengumuman
+    │   ├── Daftar
+    │   ├── Buat
+    │   └── Edit
+    │
+    ├── Notifikasi
+    │
+    ├── Profil
+    │
+    └── Pengaturan
+```
+
+---
+
+# 26. SCREEN LIST ADMIN
+
+| ID       | Screen                | Fungsi               |
+| -------- | --------------------- | -------------------- |
+| ADMIN-01 | Dashboard             | Ringkasan sistem     |
+| ADMIN-02 | Daftar Pegawai        | Melihat pegawai      |
+| ADMIN-03 | Detail Pegawai        | Detail pegawai       |
+| ADMIN-04 | Kelola Shift          | Melihat shift        |
+| ADMIN-05 | Tambah/Edit Shift     | Mengelola shift      |
+| ADMIN-06 | Jadwal Bulanan        | Melihat jadwal       |
+| ADMIN-07 | Atur Jadwal           | Membuat jadwal       |
+| ADMIN-08 | Monitoring Absensi    | Monitoring kehadiran |
+| ADMIN-09 | Detail Absensi        | Detail absensi       |
+| ADMIN-10 | Daftar Kegiatan       | Melihat kegiatan     |
+| ADMIN-11 | Buat Kegiatan         | Membuat kegiatan     |
+| ADMIN-12 | Pilih Peserta         | Menentukan peserta   |
+| ADMIN-13 | Detail Kegiatan       | Detail kegiatan      |
+| ADMIN-14 | Kehadiran Kegiatan    | Monitoring peserta   |
+| ADMIN-15 | Detail Absen Kegiatan | Detail selfie/GPS    |
+| ADMIN-16 | Persetujuan           | Daftar request       |
+| ADMIN-17 | Detail Persetujuan    | Approve/reject       |
+| ADMIN-18 | Pengumuman            | Daftar announcement  |
+| ADMIN-19 | Buat Pengumuman       | Membuat announcement |
+| ADMIN-20 | Notifikasi            | Notifikasi Admin     |
+| ADMIN-21 | Profil                | Profil Admin         |
+| ADMIN-22 | Pengaturan            | Konfigurasi sistem   |
+
+---
+
+# 27. IMPLEMENTATION RELATION WITH ENTITY LIST
+
+Wireframe Admin harus konsisten dengan Entity List.
+
+```text
+USER
+ │
+ ├── ADMIN
+ │
+ └── NOTIFICATION
+       │
+       └── ADMIN
+
+EMPLOYEE
+ │
+ ├── EMERGENCY CONTACT
+ ├── EDUCATION
+ ├── EXPERIENCE
+ ├── ATTENDANCE
+ ├── LEAVE REQUEST
+ ├── PERMISSION REQUEST
+ ├── PROFILE CHANGE REQUEST
+ └── DOCUMENT
+        │
+        └── DOCUMENT CHANGE REQUEST
+
+SHIFT
+ │
+ └── WORK SCHEDULE
+        │
+        └── EMPLOYEE
+
+ACTIVITY
+ │
+ ├── PARTICIPANTS
+ │      └── EMPLOYEE
+ │
+ └── ACTIVITY ATTENDANCE
+        │
+        └── ACTIVITY ATTENDANCE PHOTO
+
+ADMIN
+ │
+ ├── APPROVAL
+ │
+ └── ANNOUNCEMENT
+```
+
+---
+
+# 28. IMPORTANT UI RULES
+
+AI UI Generator harus mengikuti aturan berikut:
+
+1. Aplikasi adalah **mobile application**.
+2. Semua halaman menggunakan desain yang konsisten.
+3. Admin menggunakan **navigation drawer** atau menu Admin.
+4. Dashboard menjadi halaman utama Admin.
+5. Gunakan card untuk ringkasan statistik.
+6. Gunakan list untuk data pegawai, absensi, kegiatan, dan pengajuan.
+7. Gunakan modal/dialog untuk konfirmasi:
+
+   * Approve
+   * Reject
+   * Delete
+   * Cancel Activity
+8. Status menggunakan indikator visual:
+
+   * Pending
+   * Approved
+   * Rejected
+   * Active
+   * Inactive
+   * Hadir
+   * Terlambat
+   * Tidak Hadir
+   * Belum Absen
+9. Semua form memiliki validasi.
+10. Semua aksi penting memiliki confirmation dialog.
+11. Dashboard harus dapat melakukan navigasi cepat ke halaman detail.
+12. Tampilan harus responsive untuk berbagai ukuran smartphone.
+13. Gunakan bahasa Indonesia.
+14. Nama aplikasi: **MedStaff**.
+15. Nama institusi: **Klinik Pratama Unimus**.
+
+---
+
+# 29. PRIORITAS IMPLEMENTASI ADMIN
+
+Implementasikan Admin secara bertahap:
+
+```text
+PHASE 1
+LOGIN
+  ↓
+DASHBOARD
+  ↓
+PROFIL ADMIN
+```
+
+```text
+PHASE 2
+MANAJEMEN PEGAWAI
+  ↓
+KELOLA SHIFT
+  ↓
+JADWAL BULANAN
+```
+
+```text
+PHASE 3
+MONITORING ABSENSI
+  ↓
+DETAIL ABSENSI
+```
+
+```text
+PHASE 4
+KEGIATAN
+  ↓
+BUAT KEGIATAN
+  ↓
+PESERTA
+  ↓
+KEHADIRAN KEGIATAN
+```
+
+```text
+PHASE 5
+PERSETUJUAN
+  ↓
+CUTI
+  ↓
+IZIN
+  ↓
+PERUBAHAN PROFIL
+  ↓
+PERUBAHAN DOKUMEN
+```
+
+```text
+PHASE 6
+PENGUMUMAN
+  ↓
+NOTIFIKASI
+```
+
+```text
+PHASE 7
+PENGATURAN
+```
+
+# 30. FINAL ADMIN ARCHITECTURE
+
+```text
+                       ┌─────────────────┐
+                       │   ADMIN LOGIN   │
+                       └────────┬────────┘
+                                ↓
+                       ┌─────────────────┐
+                       │ ADMIN DASHBOARD │
+                       └────────┬────────┘
+                                │
+       ┌────────────┬───────────┼───────────┬────────────┐
+       ↓            ↓           ↓           ↓            ↓
+    PEGAWAI       SHIFT       JADWAL     ABSENSI      KEGIATAN
+       │            │           │           │            │
+       ↓            ↓           ↓           ↓            ↓
+    Detail       Kelola      Bulanan     Monitor       Create
+    Pegawai      Shift       Schedule    Attendance    Activity
+                                                        │
+                                                        ↓
+                                                    Participant
+                                                        │
+                                                        ↓
+                                                     Attendance
+                                                        │
+                                                        ↓
+                                                     Monitoring
+
+                                │
+                 ┌──────────────┼──────────────┐
+                 ↓              ↓              ↓
+             PERSETUJUAN   PENGUMUMAN     NOTIFIKASI
+                 │              │              │
+                 ↓              ↓              ↓
+              APPROVE/        CREATE        SYSTEM
+              REJECT          EDIT          NOTIFICATION
+
+                                │
+                                ↓
+                            PROFIL
+                                │
+                                ↓
+                          PENGATURAN
+```
+
+**End of Admin Wireframe Specification**
