@@ -29,32 +29,7 @@ interface Submission {
   iconColors: [string, string];
 }
 
-const MOCK_SUBMISSIONS: Submission[] = [
-  {
-    id: "1",
-    type: "Leave",
-    date: "20–22 August 2026",
-    status: "Pending Approval",
-    iconName: "calendar-day",
-    iconColors: ["#fb923c", "#ea580c"]
-  },
-  {
-    id: "2",
-    type: "Overtime",
-    date: "18 August 2026 · 2 hours",
-    status: "Approved",
-    iconName: "stopwatch",
-    iconColors: ["#fbbf24", "#d97706"]
-  },
-  {
-    id: "3",
-    type: "Attendance",
-    date: "15 August 2026",
-    status: "Rejected",
-    iconName: "user-check",
-    iconColors: ["#4ade80", "#16a34a"]
-  },
-];
+const SUBMISSIONS: any[] = [];
 
 // ==================================================
 // REUSABLE COMPONENT: 3D APP ICON
@@ -142,40 +117,36 @@ export default function SubmissionScreen() {
           </View>
         </LinearGradient>
 
-        {/* --- SECTION: BUAT PENGAJUAN (HORIZONTAL SCROLL) --- */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.horizontalShortcutContent}
-        >
-          <TouchableOpacity style={styles.shortcutItem} activeOpacity={0.7}>
+        {/* --- SECTION: BUAT PENGAJUAN (GRID LAYOUT) --- */}
+        <View style={styles.shortcutRow}>
+          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('LeaveRequest')} activeOpacity={0.7}>
             <AppIcon3D iconName="calendar-day" colors={['#fb923c', '#ea580c']} size={50} iconSize={24} />
             <Text style={styles.shortcutItemText}>Leave</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shortcutItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Adjustment')} activeOpacity={0.7}>
             <AppIcon3D iconName="user-check" colors={['#4ade80', '#16a34a']} size={50} iconSize={24} />
-            <Text style={styles.shortcutItemText}>Attendance</Text>
+            <Text style={styles.shortcutItemText}>Adjustment</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shortcutItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Shift')} activeOpacity={0.7}>
             <AppIcon3D iconName="exchange-alt" colors={['#c084fc', '#7c3aed']} size={50} iconSize={24} />
             <Text style={styles.shortcutItemText}>Shift</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.shortcutItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.shortcutItem} onPress={() => navigation.navigate('Overtime')} activeOpacity={0.7}>
             <AppIcon3D iconName="stopwatch" colors={['#fbbf24', '#d97706']} size={50} iconSize={24} />
             <Text style={styles.shortcutItemText}>Overtime</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </View>
             
         {/* --- SECTION: PENGAJUAN TERBARU (COMPACT LIST) --- */}
         <View style={styles.sectionContainer}>
           <Text style={styles.sectionTitle}>Recent Submissions</Text>
 
-          {MOCK_SUBMISSIONS.length > 0 ? (
+          {SUBMISSIONS.length > 0 ? (
             <View style={styles.recentList}>
-              {MOCK_SUBMISSIONS.map((item) => {
+              {SUBMISSIONS.map((item) => {
                 const statusColors = getStatusColor(item.status);
                 // Keep status labels compact for narrow screens.
                 return (
@@ -207,14 +178,7 @@ export default function SubmissionScreen() {
               })}
             </View>
           ) : (
-            /* --- EMPTY STATE --- */
-            <View style={styles.emptyState}>
-              <View style={styles.emptyIconBg}>
-                <Feather name="file-text" size={28} color="#bbcabf" />
-              </View>
-              <Text style={styles.emptyTitle}>No submissions yet</Text>
-              <Text style={styles.emptySubtitle}>Your submissions will appear here.</Text>
-            </View>
+            <Text style={{ textAlign: 'center', marginTop: 20, color: '#9CA3AF' }}>No submissions yet</Text>
           )}
         </View>
 
@@ -293,10 +257,10 @@ const styles = StyleSheet.create({
   heroStatDivider: { width: 1, height: 24, backgroundColor: 'rgba(255,255,255,0.2)' },
 
   // ==========================================
-  // SHORTCUT GRID (HORIZONTAL SCROLL - MINIMAL)
+  // SHORTCUT GRID (ROW LAYOUT)
   // ==========================================
-  horizontalShortcutContent: { paddingHorizontal: 20, gap: 14, paddingRight: 20, marginBottom: 28 },
-  shortcutItem: { alignItems: 'center', justifyContent: 'flex-start', width: 80 },
+  shortcutRow: { flexDirection: 'row', justifyContent: 'space-between', gap: 10, marginBottom: 28 },
+  shortcutItem: { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
   shortcutItemText: { fontSize: 11, fontWeight: '600', color: '#1A1C1C', textAlign: 'center', marginTop: 6 },
 
   // ==========================================
@@ -304,14 +268,14 @@ const styles = StyleSheet.create({
   // ==========================================
   sectionContainer: { marginBottom: 28 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#1A1C1C', marginBottom: 14 },
-  recentList: { gap: 12 },
+  recentList: { gap: 8 },
   recentCard: { 
     flexDirection: 'row', 
     alignItems: 'center', 
     backgroundColor: '#FFFFFF', 
-    borderRadius: 20, // Diubah dari 18 ke 20 agar lebih soft/rounded, tapi tetap konsisten
-    paddingHorizontal: 12, 
-    paddingVertical: 12, 
+    borderRadius: 20, 
+    paddingHorizontal: 16, 
+    paddingVertical: 16, 
     borderWidth: 0, 
     ...Platform.select({ 
       ios: { shadowColor: '#000000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.03, shadowRadius: 3 }, 

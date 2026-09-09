@@ -14,11 +14,11 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { MainTabParamList } from '../types/navigation';
-import HomeScreen from '../screens/HomeScreen';
-import EmployeesScreen from '../screens/EmployeesScreen';
-import SubmissionScreen from '../screens/SubmissionScreen';
-import NotificationScreen from '../screens/NotificationScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import HomeScreen from '../screens/home/HomeScreen';
+import EmployeesScreen from '../screens/employees/EmployeesScreen';
+import SubmissionScreen from '../screens/submission/SubmissionScreen';
+import NotificationScreen from '../screens/notification/NotificationScreen';
+import ProfileScreen from '../screens/profile/ProfileScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

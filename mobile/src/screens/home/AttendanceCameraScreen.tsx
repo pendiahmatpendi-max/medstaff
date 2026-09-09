@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Location from 'expo-location';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
-import MedStaffIcon from '../components/MedStaffIcon';
-import { RootStackParamList } from '../../App'; // Sesuaikan path jika perlu
+import MedStaffIcon from '../../components/MedStaffIcon';
+import { RootStackParamList } from '../../../App'; // Sesuaikan path jika perlu
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type CameraRouteProp = RouteProp<RootStackParamList, 'AttendanceCamera'>;

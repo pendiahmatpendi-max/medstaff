@@ -127,32 +127,7 @@ const InteractiveDayCard = ({ item, index, activeIndexSV, touchX, isTouched }: a
 // ==================================================
 // MOCK DATA PENGUMUMAN
 // ==================================================
-const MOCK_ANNOUNCEMENTS = [
-  {
-    id: '1',
-    date: '12 Oct 2023',
-    title: 'Clinic Health Protocol Update',
-    desc: 'Please note the latest updates regarding hygiene standards in the outpatient area starting this week...',
-    image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=1000&auto=format&fit=crop',
-    isImportant: true
-  },
-  {
-    id: '2',
-    date: '10 Oct 2023',
-    title: 'Staff Schedule Update',
-    desc: 'The annual medical check-up for all clinic staff will begin next Monday. Please review your schedule.',
-    image: 'https://images.unsplash.com/photo-1581056771107-24ca5f033842?q=80&w=1000&auto=format&fit=crop',
-    isImportant: false
-  },
-  {
-    id: '3',
-    date: '08 Oct 2023',
-    title: 'Employee Health Check',
-    desc: 'Updated triage procedures for the Emergency Room have been published. All ER staff must review them.',
-    image: 'https://images.unsplash.com/photo-1538108149393-fbbd81895907?q=80&w=1000&auto=format&fit=crop',
-    isImportant: true
-  }
-];
+const ANNOUNCEMENTS: any[] = [];
 
 // ==================================================
 // KOMPONEN: STACKED ANNOUNCEMENT CARD
@@ -261,7 +236,7 @@ export default function HomeScreen() {
   // --- Stacked Carousel Logic ---
   const carouselIndexSV = useSharedValue(0);
   const carouselStartX = useSharedValue(0);
-  const TOTAL_ANNOUNCEMENTS = MOCK_ANNOUNCEMENTS.length;
+  const TOTAL_ANNOUNCEMENTS = ANNOUNCEMENTS.length;
 
   const carouselPanGesture = Gesture.Pan()
     .onStart(() => {
@@ -307,8 +282,12 @@ export default function HomeScreen() {
         {/* --- HEADER --- */}
         <View style={styles.header}>
           <View style={styles.logoSection}>
-            <View style={styles.modernLogoCircle}>
-              <FontAwesome5 name="heartbeat" size={20} color="#167A70" />
+            <View style={styles.logoImageContainer}>
+              <Image 
+                source={require('../../assets/logo.png')} 
+                style={{ width: 36, height: 36 }} 
+                resizeMode="contain"
+              />
             </View>
             <Text style={styles.logoText}>MedStaff</Text>
           </View>
@@ -390,22 +369,22 @@ export default function HomeScreen() {
             <Text style={styles.quickMenuText}>History</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quickMenuItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.quickMenuItem} onPress={() => navigation.navigate('LeaveRequest')} activeOpacity={0.7}>
             <AppIcon3D IconFamily={FontAwesome5} iconName="calendar-day" colors={['#fb923c', '#ea580c']} />
             <Text style={styles.quickMenuText}>Leave</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quickMenuItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.quickMenuItem} onPress={() => navigation.navigate('Shift')} activeOpacity={0.7}>
             <AppIcon3D IconFamily={FontAwesome5} iconName="exchange-alt" colors={['#c084fc', '#7c3aed']} />
             <Text style={styles.quickMenuText}>Shift</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quickMenuItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.quickMenuItem} onPress={() => navigation.navigate('Overtime')} activeOpacity={0.7}>
             <AppIcon3D IconFamily={FontAwesome5} iconName="stopwatch" colors={['#fbbf24', '#d97706']} />
             <Text style={styles.quickMenuText}>Overtime</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quickMenuItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.quickMenuItem} onPress={() => navigation.navigate('Activity')} activeOpacity={0.7}>
             <AppIcon3D IconFamily={FontAwesome5} iconName="chart-line" colors={['#f43f5e', '#e11d48']} />
             <Text style={styles.quickMenuText}>Activity</Text>
           </TouchableOpacity>
@@ -430,15 +409,19 @@ export default function HomeScreen() {
           <GestureHandlerRootView style={styles.carouselStackAreaContainer}>
             <GestureDetector gesture={carouselPanGesture}>
               <View style={styles.carouselStackArea}>
-                {MOCK_ANNOUNCEMENTS.map((item, index) => (
-                  <StackedAnnouncementCard 
-                    key={item.id} 
-                    item={item} 
-                    index={index} 
-                    carouselIndexSV={carouselIndexSV} 
-                    totalItems={TOTAL_ANNOUNCEMENTS}
-                  />
-                ))}
+                {ANNOUNCEMENTS.length > 0 ? (
+                  ANNOUNCEMENTS.map((item, index) => (
+                    <StackedAnnouncementCard 
+                      key={item.id} 
+                      item={item} 
+                      index={index} 
+                      carouselIndexSV={carouselIndexSV} 
+                      totalItems={TOTAL_ANNOUNCEMENTS}
+                    />
+                  ))
+                ) : (
+                  <Text style={{ textAlign: 'center', marginTop: 20, color: '#9CA3AF' }}>No announcements</Text>
+                )}
               </View>
             </GestureDetector>
           </GestureHandlerRootView>
@@ -463,7 +446,19 @@ const styles = StyleSheet.create({
   
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, paddingHorizontal: 20 },
   logoSection: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 }, 
-  modernLogoCircle: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#ffffff', justifyContent: 'center', alignItems: 'center', ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 }, android: { elevation: 3 }}) },
+  logoImageContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 },
+      android: { elevation: 3 }
+    })
+  },
   logoText: { fontSize: 24, fontWeight: 'bold', color: '#ffffff', letterSpacing: 0.5 },
   
   calendarHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, paddingHorizontal: 20 },

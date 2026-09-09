@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import MedStaffIcon, { MedStaffIconName } from '../components/MedStaffIcon';
+import MedStaffIcon, { MedStaffIconName } from '../../components/MedStaffIcon';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 
 export type NotificationCategory = 'system' | 'shift' | 'security';

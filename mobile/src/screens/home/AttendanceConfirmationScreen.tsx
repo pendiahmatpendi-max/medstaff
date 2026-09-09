@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import MedStaffIcon from '../components/MedStaffIcon';
+import MedStaffIcon from '../../components/MedStaffIcon';
 import MapView, { Marker } from 'react-native-maps';
-import { RootStackParamList } from '../../App';
+import { RootStackParamList } from '../../../App';
 
 type ConfirmRouteProp = RouteProp<RootStackParamList, 'AttendanceConfirmation'>;
 

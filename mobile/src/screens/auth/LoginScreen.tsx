@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { login } from '../api/api'
+import { login } from '../../api/api'
 
 type LoginScreenProps = {
   onBackPress: () => void

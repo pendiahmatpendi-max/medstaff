@@ -10,22 +10,48 @@ import {
   TouchableOpacity,
   View,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native'
+import { register } from '../../api/api'
 
 type RegisterScreenProps = {
   onBackPress: () => void,
-   onRegisterSuccess?: () => void;
+  onRegisterSuccess?: () => void;
 }
 
 const GOOGLE_ICON_URI = 'https://img.icons8.com/color/96/google-logo.png'
 const APPLE_ICON_URI = 'https://img.icons8.com/ios-filled/100/1a1a1a/apple-logo.png'
 
-export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
+export default function RegisterScreen({
+  onBackPress,
+  onRegisterSuccess,
+}: RegisterScreenProps) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleRegister = async () => {
+    if (!fullName.trim()) return Alert.alert("Validation Error", "Full Name is required.");
+    if (!email.trim()) return Alert.alert("Validation Error", "Email is required.");
+    if (password.length < 8) return Alert.alert("Validation Error", "Password must be at least 8 characters long.");
+
+    setIsLoading(true);
+    try {
+      await register(fullName, email, password);
+
+      Alert.alert("Success", "Account created successfully!");
+      onRegisterSuccess?.();
+    } catch (error: any) {
+      Alert.alert("Registration Failed", error.message || "An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
+
     <SafeAreaView style={styles.container}>
       <StatusBar style="light" />
 
@@ -53,15 +79,16 @@ export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.card}>
-          <Text style={styles.title}>Mulai Daftar</Text>
+          <Text style={styles.title}>Create Account</Text>
 
           <View style={styles.inputGroup}>
-            <Text style={styles.label}>Nama Lengkap</Text>
+            <Text style={styles.label}>Full Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Masukkan Nama"
+              placeholder="Enter your name"
               value={fullName}
               onChangeText={setFullName}
+              editable={!isLoading}
             />
           </View>
 
@@ -69,11 +96,12 @@ export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
             <Text style={styles.label}>Email</Text>
             <TextInput
               style={styles.input}
-              placeholder="Masukkan Email"
+              placeholder="Enter your email"
               keyboardType="email-address"
               autoCapitalize="none"
               value={email}
               onChangeText={setEmail}
+              editable={!isLoading}
             />
           </View>
 
@@ -81,27 +109,39 @@ export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
             <Text style={styles.label}>Password</Text>
             <TextInput
               style={styles.input}
-              placeholder="Masukkan Password"
+              placeholder="Enter your password"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
+              editable={!isLoading}
             />
           </View>
 
-          <TouchableOpacity style={styles.registerButton}>
-            <Text style={styles.registerButtonText}>Daftar</Text>
+          {/* MAIN REGISTRATION BUTTON */}
+          <TouchableOpacity
+            style={[styles.registerButton, isLoading && { opacity: 0.7 }]}
+            onPress={handleRegister}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text style={styles.registerButtonText}>Register</Text>
+            )}
           </TouchableOpacity>
+
+
 
           <View style={styles.dividerContainer}>
             <View style={styles.divider} />
-            <Text style={styles.dividerText}>Atau daftar dengan</Text>
+            <Text style={styles.dividerText}>Or continue with</Text>
             <View style={styles.divider} />
           </View>
 
           <View style={styles.socialContainer}>
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityLabel="Daftar dengan Google"
+              accessibilityLabel="Continue with Google"
               style={styles.socialButton}
             >
               <Image source={{ uri: GOOGLE_ICON_URI }} style={styles.socialIcon} />
@@ -109,7 +149,7 @@ export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
 
             <TouchableOpacity
               accessibilityRole="button"
-              accessibilityLabel="Daftar dengan Apple"
+              accessibilityLabel="Continue with Apple"
               style={styles.socialButton}
             >
               <Image source={{ uri: APPLE_ICON_URI }} style={styles.socialIcon} />
@@ -117,9 +157,9 @@ export default function RegisterScreen({ onBackPress }: RegisterScreenProps) {
           </View>
 
           <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>Sudah punya akun?</Text>
-            <TouchableOpacity>
-              <Text style={styles.loginLink}> Masuk</Text>
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <TouchableOpacity onPress={onBackPress} disabled={isLoading}>
+              <Text style={styles.loginLink}> Log In</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -191,4 +231,8 @@ const styles = StyleSheet.create({
   loginContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center' },
   loginText: { color: '#3f4947', fontSize: 14 },
   loginLink: { color: '#1d6961', fontSize: 14, fontWeight: '700' },
+
+
 })
+
+

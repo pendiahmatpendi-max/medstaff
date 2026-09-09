@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from '
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
-import MedStaffIcon from '../components/MedStaffIcon';
+import MedStaffIcon from '../../components/MedStaffIcon';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { NotificationItem } from './NotificationScreen';
 

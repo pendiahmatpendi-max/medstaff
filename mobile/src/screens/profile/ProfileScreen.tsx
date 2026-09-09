@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import MedStaffIcon, { MedStaffIconName } from '../components/MedStaffIcon';
+import MedStaffIcon, { MedStaffIconName } from '../../components/MedStaffIcon';
 import { useNavigation } from '@react-navigation/native';
 
 interface MenuItem {
@@ -55,6 +55,38 @@ export default function ProfileScreen() {
   const navigation = useNavigation<any>();
 
   const handlePress = (id: string) => {
+    if (id === 'personal') {
+      navigation.navigate('PersonalInformation');
+      return;
+    }
+    if (id === 'job') {
+      navigation.navigate('WorkInformation');
+      return;
+    }
+    if (id === 'emergency') {
+      navigation.navigate('EmergencyContact');
+      return;
+    }
+    if (id === 'education') {
+      navigation.navigate('EducationExperience');
+      return;
+    }
+    if (id === 'password') {
+      navigation.navigate('ChangePassword');
+      return;
+    }
+    if (id === 'pin') {
+      navigation.navigate('PIN');
+      return;
+    }
+    if (id === 'lang') {
+      navigation.navigate('Language');
+      return;
+    }
+    if (id === 'help') {
+      navigation.navigate('HelpCenter');
+      return;
+    }
     if (id === 'logout') {
       navigation.reset({
         index: 0,
@@ -77,7 +109,11 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* IDENTITY CARD (Surface terpisah) */}
-        <View style={styles.profileHeader}>
+        <TouchableOpacity 
+          style={styles.profileHeader}
+          activeOpacity={0.8}
+          onPress={() => navigation.navigate('ProfileDetail')}
+        >
           <Image 
             source={{ uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAKG1SeJPJhMiDhdaooqIPg-sdAWEYfJioTiPn3EHYzpTJgjSklPpU-774NqazN_R1V1t6vfv9BERP7ELXPBWZuUuCez-x3rzxMcC1BLUhwH5s5pO1-vAgU70SEApPZ_KuvpCuSzmoAiApSmc4P6XY2PjBU7C5CES9lLxtMpznjHnstRm4UkkEYFMBVLibgQ8QJeYA9Xmi4GG9Tdh6BwNCKeK3Tg0SALwmi-OhjRHf9c9siJQyUB8pvmA' }} 
             style={styles.avatar} 
@@ -85,9 +121,8 @@ export default function ProfileScreen() {
           <View style={styles.profileInfo}>
             <Text style={styles.userName}>dr. Winter Aespa</Text>
             <Text style={styles.userRole}>Dokter Umum</Text>
-            <Text style={styles.userClinic}>Klinik Pratama UNIMUS</Text>
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* LIST MENU SETTINGS / PROFILE */}
         {SECTIONS.map((section, sectionIdx) => (
@@ -173,9 +208,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 16,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -189,9 +224,9 @@ const styles = StyleSheet.create({
     }),
   },
   avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#E2E8F0',
     marginRight: 14,
   },
@@ -207,11 +242,6 @@ const styles = StyleSheet.create({
   userRole: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#3C4A42',
-    marginBottom: 3,
-  },
-  userClinic: {
-    fontSize: 12,
     color: '#3C4A42',
   },
   sectionContainer: {
