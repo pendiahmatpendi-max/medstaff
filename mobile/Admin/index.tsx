@@ -1,4 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from "react";
+import { getAdminLeaveRequests, approveLeaveRequest, rejectLeaveRequest, getAdminDocumentRequests, reviewDocumentRequest } from "../src/api/api";
 import {
   Alert,
   Image,
@@ -50,7 +51,7 @@ type Shift = { id: string; name: string; start: string; end: string; description
 type ScheduleAssignment = { id: string; date: string; shiftId: string; employeeIds: string[] };
 const normalizeScheduleDate = (value: string) => { const trimmed = value.trim(); const slash = trimmed.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/); if (slash) return `${slash[3]}-${slash[2].padStart(2, "0")}-${slash[1].padStart(2, "0")}`; return trimmed; };
 type Activity = { id: string; title: string; date: string; time: string; place: string; people: string; description: string; ratio: string };
-type Approval = { id: string; type: string; name: string; date: string; detail: string; reason: string; status: "Menunggu" | "Disetujui" | "Ditolak" };
+type Approval = { id: string; type: string; name: string; date: string; detail: string; reason: string; status: "Menunggu" | "Disetujui" | "Ditolak"; source: "leave" | "document"; requestId: string; attachment?: string | null; adminNote?: string | null; };
 type Announcement = { id: string; title: string; audience: string; date: string; body: string; status: "Terbit" | "Draft" };
 
 const initialEmployees: Employee[] = [];
@@ -978,9 +979,275 @@ function ActivityDetail({ activity, go, onEdit }: { activity: Activity; go: (s: 
 function ActivityAttendance({ go }: { go: (s: Screen) => void }) { const [filter, setFilter] = useState("Semua"); const rows: string[][] = []; const filtered = rows.filter(row => filter === "Semua" || row[2] === filter); return <ScreenList title="Kehadiran Kegiatan" back={() => go("activity-detail")}><Text style={styles.pageTitle}>Kehadiran kegiatan</Text><Text style={styles.rowMeta}>Data akan tampil setelah kegiatan dan peserta tersimpan.</Text><View style={styles.metricGrid}><Metric label="Peserta" value="0" tone={C.teal} icon="groups" onPress={() => {}} /><Metric label="Hadir" value="0" tone={C.success} icon="check-circle-outline" onPress={() => {}} /><Metric label="Belum Absen" value="0" tone={C.slate} icon="help-outline" onPress={() => {}} /><Metric label="Terlambat" value="0" tone={C.warning} icon="schedule" onPress={() => {}} /></View><View style={styles.filterRow}>{["Semua", "Hadir", "Terlambat", "Belum Absen"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View><View style={styles.card}><View style={styles.emptyState}><Icon name="fact-check" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada kehadiran kegiatan.</Text></View>{filtered.map(([name, time, status]) => <Pressable key={name} style={styles.attendanceRow} onPress={() => go("activity-attendance-detail")}><View style={styles.attendanceStatus}><Icon name="check" size={17} color={C.success} /></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{name}</Text><Text style={styles.rowMeta}>{status}</Text></View><Text style={styles.rowTitle}>{time}</Text></Pressable>)}</View></ScreenList>; }
 function ActivityAttendanceDetail({ go }: { go: (s: Screen) => void }) { return <ScreenList title="Detail Absen Kegiatan" back={() => go("activity-attendance")}><View style={styles.emptyState}><Icon name="person-outline" color={C.slate} size={30} /><Text style={styles.rowMeta}>Belum ada detail kehadiran.</Text></View></ScreenList>; }
 
-function Approvals({ go, openApproval, approvals }: { go: (s: Screen) => void; openApproval: (a: Approval) => void; approvals: Approval[] }) { const [filter, setFilter] = useState("Semua"); const filtered = approvals.filter(a => filter === "Semua" || a.type === filter); return <ScreenList title="Persetujuan" back={() => go("dashboard")}><Text style={styles.pageIntro}>Tinjau cuti, izin, dan perubahan data pegawai.</Text><View style={styles.filterRow}>{["Semua", "CUTI", "IZIN", "PERUBAHAN PROFIL", "PERUBAHAN DOKUMEN"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="task-alt" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada pengajuan.</Text></View>}{filtered.map(a => <Pressable key={a.id} style={styles.approvalCard} onPress={() => openApproval(a)}><View style={styles.approvalTag}><Text style={styles.approvalTagText}>{a.type}</Text></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{a.name}</Text><Text style={styles.rowMeta}>{a.date}</Text><Text style={[styles.pendingText, a.status !== "Menunggu" && { color: a.status === "Disetujui" ? C.success : C.error }]}>{a.status}</Text></View><Icon name="chevron-right" size={20} color={C.slate} /></Pressable>)}</ScreenList>; }
-function ApprovalDetail({ approval, go, onDecision }: { approval: Approval; go: (s: Screen) => void; onDecision: (id: string, status: "Disetujui" | "Ditolak") => void }) { const [note, setNote] = useState(""); const decide = (status: "Disetujui" | "Ditolak") => { Alert.alert(status === "Disetujui" ? "Setujui pengajuan?" : "Tolak pengajuan?", "Keputusan akan dikirim sebagai notifikasi.", [{ text: "Batal", style: "cancel" }, { text: "Lanjutkan", onPress: () => { onDecision(approval.id, status); Alert.alert("Berhasil", `Pengajuan telah ${status.toLowerCase()}.`); go("approvals"); } }]); }; return <ScreenList title="Detail Persetujuan" back={() => go("approvals")}><View style={styles.approvalHeading}><Text style={styles.eyebrow}>{approval.type}</Text><Text style={styles.pageTitle}>{approval.name}</Text><Text style={styles.rowMeta}>EMP001</Text></View><DetailBlock title="Detail Pengajuan" rows={[["Jenis", approval.detail], ["Tanggal", approval.date], ["Alasan", approval.reason], ["Lampiran", "surat_pengajuan.pdf"]]} /><Field label="Catatan Admin" value={note} onChangeText={setNote} placeholder="Tambahkan catatan (opsional)" multiline /><View style={styles.decisionRow}><Pressable style={[styles.decisionButton, { backgroundColor: C.error }]} onPress={() => decide("Ditolak")}><Icon name="close" color="#fff" /><Text style={styles.primaryButtonText}>Tolak</Text></Pressable><Pressable style={[styles.decisionButton, { backgroundColor: C.success }]} onPress={() => decide("Disetujui")}><Icon name="check" color="#fff" /><Text style={styles.primaryButtonText}>Setujui</Text></Pressable></View></ScreenList>; }
+function Approvals({
+  go,
+  openApproval,
+  approvals,
+}: {
+  go: (s: Screen) => void;
+  openApproval: (a: Approval) => void;
+  approvals: Approval[];
+}) {
+  const [filter, setFilter] = useState("Semua");
 
+  const filtered = approvals.filter((a) => {
+    if (filter === "Semua") return true;
+    return a.type === filter;
+  });
+
+  return (
+    <ScreenList
+      title="Persetujuan"
+      back={() => go("dashboard")}
+    >
+      <Text style={styles.pageIntro}>
+        Tinjau cuti, izin, dan perubahan data pegawai.
+      </Text>
+
+      <View style={styles.filterRow}>
+        {[
+          "Semua",
+          "CUTI",
+          "IZIN",
+          "PERUBAHAN PROFIL",
+          "PERUBAHAN DOKUMEN",
+        ].map((x) => (
+          <Chip
+            key={x}
+            label={x}
+            active={filter === x}
+            onPress={() => setFilter(x)}
+          />
+        ))}
+      </View>
+
+      {filtered.length === 0 && (
+        <View style={styles.emptyState}>
+          <Icon name="task-alt" color={C.slate} size={28} />
+          <Text style={styles.rowMeta}>
+            Belum ada pengajuan.
+          </Text>
+        </View>
+      )}
+
+      {filtered.map((a) => (
+        <Pressable
+          key={a.id}
+          style={styles.approvalCard}
+          onPress={() => openApproval(a)}
+        >
+          <View style={styles.approvalTag}>
+            <Text style={styles.approvalTagText}>
+              {a.type}
+            </Text>
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={styles.rowTitle}>
+              {a.name}
+            </Text>
+
+            <Text style={styles.rowMeta}>
+              {a.date}
+            </Text>
+
+            <Text
+              style={[
+                styles.pendingText,
+                a.status !== "Menunggu" && {
+                  color:
+                    a.status === "Disetujui"
+                      ? C.success
+                      : C.error,
+                },
+              ]}
+            >
+              {a.status}
+            </Text>
+          </View>
+
+          <Icon
+            name="chevron-right"
+            size={20}
+            color={C.slate}
+          />
+        </Pressable>
+      ))}
+    </ScreenList>
+  );
+}
+function ApprovalDetail({
+  approval,
+  go,
+  onDecision,
+}: {
+  approval: Approval;
+  go: (s: Screen) => void;
+  onDecision: (
+    approval: Approval,
+    status: "Disetujui" | "Ditolak",
+    note?: string,
+  ) => Promise<void>;
+}) {
+  const [note, setNote] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const decide = (status: "Disetujui" | "Ditolak") => {
+    if (saving) return;
+
+    Alert.alert(
+      status === "Disetujui"
+        ? "Setujui pengajuan?"
+        : "Tolak pengajuan?",
+      "Keputusan akan disimpan ke server.",
+      [
+        {
+          text: "Batal",
+          style: "cancel",
+        },
+        {
+          text: "Lanjutkan",
+          onPress: () => {
+            void (async () => {
+              try {
+                setSaving(true);
+
+                await onDecision(
+                  approval,
+                  status,
+                  note.trim() || undefined,
+                );
+
+                Alert.alert(
+                  "Berhasil",
+                  `Pengajuan telah ${status.toLowerCase()}.`,
+                  [
+                    {
+                      text: "OK",
+                      onPress: () => go("approvals"),
+                    },
+                  ],
+                );
+              } catch (error) {
+                console.error(
+                  "Gagal memproses persetujuan:",
+                  error,
+                );
+
+                Alert.alert(
+                  "Gagal",
+                  error instanceof Error
+                    ? error.message
+                    : "Pengajuan gagal diproses.",
+                );
+              } finally {
+                setSaving(false);
+              }
+            })();
+          },
+        },
+      ],
+    );
+  };
+
+  return (
+    <ScreenList
+      title="Detail Persetujuan"
+      back={() => go("approvals")}
+    >
+      <View style={styles.approvalHeading}>
+        <Text style={styles.eyebrow}>
+          {approval.type}
+        </Text>
+
+        <Text style={styles.pageTitle}>
+          {approval.name}
+        </Text>
+
+        <Text style={styles.rowMeta}>
+          {approval.date}
+        </Text>
+
+        <Text
+          style={[
+            styles.pendingText,
+            approval.status !== "Menunggu" && {
+              color:
+                approval.status === "Disetujui"
+                  ? C.success
+                  : C.error,
+            },
+          ]}
+        >
+          {approval.status}
+        </Text>
+      </View>
+
+      <DetailBlock
+        title="Detail Pengajuan"
+        rows={[
+          ["Jenis", approval.detail],
+          ["Tanggal", approval.date],
+          ["Alasan", approval.reason || "-"],
+          ["Lampiran", approval.attachment || "-"],
+        ]}
+      />
+
+      <Field
+        label="Catatan Admin"
+        value={note}
+        onChangeText={setNote}
+        placeholder="Tambahkan catatan (opsional)"
+        multiline
+      />
+
+      {approval.status === "Menunggu" ? (
+        <View style={styles.decisionRow}>
+          <Pressable
+            disabled={saving}
+            style={[
+              styles.decisionButton,
+              {
+                backgroundColor: C.error,
+                opacity: saving ? 0.6 : 1,
+              },
+            ]}
+            onPress={() => decide("Ditolak")}
+          >
+            <Icon name="close" color="#fff" />
+            <Text style={styles.primaryButtonText}>
+              Tolak
+            </Text>
+          </Pressable>
+
+          <Pressable
+            disabled={saving}
+            style={[
+              styles.decisionButton,
+              {
+                backgroundColor: C.success,
+                opacity: saving ? 0.6 : 1,
+              },
+            ]}
+            onPress={() => decide("Disetujui")}
+          >
+            <Icon name="check" color="#fff" />
+            <Text style={styles.primaryButtonText}>
+              Setujui
+            </Text>
+          </Pressable>
+        </View>
+      ) : (
+        <View style={styles.emptyState}>
+          <Icon name="task-alt" color={C.slate} size={28} />
+          <Text style={styles.rowMeta}>
+            Pengajuan ini sudah diproses.
+          </Text>
+        </View>
+      )}
+    </ScreenList>
+  );
+}
 function Announcements({ go, openAnnouncement, announcements, createAnnouncement }: { go: (s: Screen) => void; openAnnouncement: (a: Announcement) => void; announcements: Announcement[]; createAnnouncement: () => void }) { const [filter, setFilter] = useState("Semua"); const filtered = announcements.filter(a => filter === "Semua" || a.status === filter); return <ScreenList title="Pengumuman" back={() => go("dashboard")}><Text style={styles.pageIntro}>Bagikan informasi penting kepada staff klinik.</Text><View style={styles.filterRow}>{["Semua", "Terbit", "Draft"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="campaign" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada pengumuman.</Text></View>}{filtered.map(a => <Pressable key={a.id} style={styles.announcementCard} onPress={() => openAnnouncement(a)}><View style={styles.announcementTop}><View style={styles.announcementIcon}><Icon name="campaign" color={C.teal} /></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{a.title}</Text><Text style={styles.rowMeta}>{a.audience}  Â·  {a.date}</Text></View><Text style={[styles.statusText, { color: a.status === "Terbit" ? C.success : C.warning }]}>{a.status}</Text></View><Text style={styles.announcementBody}>{a.body}</Text></Pressable>)}<Button label="Buat Pengumuman" icon="add" onPress={createAnnouncement} /></ScreenList>; }
 function AnnouncementForm({ announcement, go, onSave }: { announcement?: Announcement; go: (s: Screen) => void; onSave: (a: Announcement) => void }) { const [title, setTitle] = useState(announcement?.title ?? ""); const [body, setBody] = useState(announcement?.body ?? ""); const save = (status: "Draft" | "Terbit") => { if (!title.trim() || !body.trim()) { Alert.alert("Data belum lengkap", "Judul dan isi pengumuman wajib diisi."); return; } onSave({ id: announcement?.id ?? `N${Date.now()}`, title, audience: "Semua Staff", date: new Date().toLocaleDateString("id-ID"), body, status }); Alert.alert("Berhasil", status === "Terbit" ? "Pengumuman diterbitkan." : "Draft disimpan."); go("announcements"); }; return <ScreenList title={announcement ? "Edit Pengumuman" : "Buat Pengumuman"} back={() => go("announcements")}><Field label="Judul" value={title} onChangeText={setTitle} placeholder="Masukkan judul pengumuman" /><View style={styles.selectionRow}><Icon name="groups" color={C.teal} /><Text style={[styles.rowTitle, { flex: 1 }]}>Penerima</Text><Text style={styles.tealText}>Semua Staff</Text></View><Field label="Isi Pengumuman" value={body} onChangeText={setBody} placeholder="Tulis informasi yang ingin dibagikan" multiline /><Button label="Terbitkan" icon="campaign" onPress={() => save("Terbit")} /><Button label="Simpan Draft" icon="save" secondary onPress={() => save("Draft")} /></ScreenList>; }
 function Notifications({ go }: { go: (s: Screen) => void }) { return <ScreenList title="Notifikasi" back={() => go("dashboard")}><View style={styles.noticeHeader}><Text style={styles.pageTitle}>Pembaruan terbaru</Text></View><View style={styles.emptyState}><Icon name="notifications-none" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada notifikasi.</Text></View></ScreenList>; }
@@ -991,7 +1258,7 @@ function Settings({ go }: { go: (s: Screen) => void }) { const [push, setPush] =
 function SettingToggle({ icon, label, value, onChange }: { icon: IconName; label: string; value: boolean; onChange: (v: boolean) => void }) { return <View style={styles.switchRow}><View style={styles.settingLabel}><Icon name={icon} color={C.teal} /><Text style={styles.rowTitle}>{label}</Text></View><Switch value={value} onValueChange={onChange} trackColor={{ false: C.line, true: C.aqua }} thumbColor={value ? C.teal : C.slate} /></View>; }
 function ScreenList({ title, back, children }: { title: string; back: () => void; children: React.ReactNode }) { return <><Header title={title} back={back} /><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>{children}</ScrollView></>; }
 
-function Drawer({ go, close }: { go: (s: Screen) => void; close: () => void }) { const items: [IconName, string, Screen][] = [["dashboard", "Dashboard", "dashboard"], ["groups", "Manajemen Pegawai", "employees"], ["schedule", "Kelola Shift", "shifts"], ["calendar-month", "Jadwal Bulanan", "schedule"], ["fact-check", "Monitoring Absensi", "attendance"], ["event", "Kegiatan", "activities"], ["task-alt", "Persetujuan", "approvals"], ["campaign", "Pengumuman", "announcements"], ["notifications", "Notifikasi", "notifications"], ["person-outline", "Profil", "profile"], ["settings", "Pengaturan", "settings"]]; return <View style={styles.drawerOverlay}><Pressable style={styles.drawerBackdrop} onPress={close} /><View style={styles.drawer}><View style={styles.drawerBrand}><View style={styles.drawerLogo}><Icon name="medical-services" color="#fff" size={22} /></View><View><Text style={styles.drawerTitle}>MEDSTAFF</Text><Text style={styles.drawerSub}>ADMINISTRATOR</Text></View><Pressable onPress={close} style={styles.drawerClose}><Icon name="close" color={C.slate} /></Pressable></View>{items.map(([icon, label, screen]) => <Pressable key={label} style={styles.drawerItem} onPress={() => { close(); go(screen); }}><Icon name={icon} color={label === "Dashboard" ? C.teal : C.slate} /><Text style={[styles.drawerItemText, label === "Dashboard" && { color: C.teal, fontWeight: "800" }]}>{label}</Text>{label === "Persetujuan" && <View style={styles.drawerBadge}><Text style={styles.drawerBadgeText}>11</Text></View>}</Pressable>)}</View></View>; }
+function Drawer({ go, close }: { go: (s: Screen) => void; close: () => void }) { const items: [IconName, string, Screen][] = [["dashboard", "Dashboard", "dashboard"], ["groups", "Manajemen Pegawai", "employees"], ["schedule", "Kelola Shift", "shifts"], ["calendar-month", "Jadwal Bulanan", "schedule"], ["fact-check", "Monitoring Absensi", "attendance"], ["event", "Kegiatan", "activities"], ["task-alt", "Persetujuan", "approvals"], ["campaign", "Pengumuman", "announcements"], ["notifications", "Notifikasi", "notifications"], ["person-outline", "Profil", "profile"], ["settings", "Pengaturan", "settings"]]; return <View style={styles.drawerOverlay}><Pressable style={styles.drawerBackdrop} onPress={close} /><View style={styles.drawer}><View style={styles.drawerBrand}><View style={styles.drawerLogo}><Icon name="medical-services" color="#fff" size={22} /></View><View><Text style={styles.drawerTitle}>MEDSTAFF</Text><Text style={styles.drawerSub}>ADMINISTRATOR</Text></View><Pressable onPress={close} style={styles.drawerClose}><Icon name="close" color={C.slate} /></Pressable></View>{items.map(([icon, label, screen]) => <Pressable key={label} style={styles.drawerItem} onPress={() => { close(); go(screen); }}><Icon name={icon} color={label === "Dashboard" ? C.teal : C.slate} /><Text style={[styles.drawerItemText, label === "Dashboard" && { color: C.teal, fontWeight: "800" }]}>{label}</Text></Pressable>)}</View></View>; }
 
 export default function HomeScreen() {
   const [screen, setScreen] = useState<Screen>("dashboard");
@@ -1077,6 +1344,116 @@ export default function HomeScreen() {
   useEffect(() => {
     let mounted = true;
 
+    const loadApprovals = async () => {
+      try {
+        const [leaveResponse, documentResponse] =
+          await Promise.all([
+            getAdminLeaveRequests(),
+            getAdminDocumentRequests(),
+          ]);
+
+        const leaves = Array.isArray(leaveResponse?.data)
+          ? leaveResponse.data
+          : [];
+
+        const documents = Array.isArray(documentResponse?.data)
+          ? documentResponse.data
+          : [];
+
+        const mappedLeaves: Approval[] = leaves
+          .filter((item: any) => item?.id)
+          .map((item: any) => {
+            const leaveType =
+              String(item.leaveType ?? "").toUpperCase();
+
+            return {
+              id: `leave-${item.id}`,
+              requestId: item.id,
+              source: "leave",
+              type:
+                leaveType === "CUTI"
+                  ? "CUTI"
+                  : "IZIN",
+              name:
+                item.employee?.fullName ??
+                item.employee?.employeeId ??
+                "-",
+              date:
+                item.startDate && item.endDate
+                  ? `${new Date(item.startDate).toLocaleDateString("id-ID")} - ${new Date(item.endDate).toLocaleDateString("id-ID")}`
+                  : "-",
+              detail: leaveType || "IZIN",
+              reason: item.reason ?? "-",
+              status:
+                item.status === "APPROVED"
+                  ? "Disetujui"
+                  : item.status === "REJECTED"
+                    ? "Ditolak"
+                    : "Menunggu",
+              attachment:
+                item.attachment ?? null,
+              adminNote:
+                item.adminNote ?? null,
+            };
+          });
+
+        const mappedDocuments: Approval[] = documents
+          .filter((item: any) => item?.id)
+          .map((item: any) => {
+            const requestType =
+              String(item.requestType ?? "").toUpperCase();
+
+            return {
+              id: `document-${item.id}`,
+              requestId: item.id,
+              source: "document",
+              type:
+                requestType.includes("DOKUMEN")
+                  ? "PERUBAHAN DOKUMEN"
+                  : "PERUBAHAN PROFIL",
+              name:
+                item.employee?.fullName ??
+                item.employee?.employeeId ??
+                "-",
+              date: item.createdAt
+                ? new Date(item.createdAt).toLocaleDateString("id-ID")
+                : "-",
+              detail:
+                item.requestType ??
+                "Perubahan data",
+              reason:
+                item.description ??
+                "-",
+              status:
+                item.status === "APPROVED"
+                  ? "Disetujui"
+                  : item.status === "REJECTED"
+                    ? "Ditolak"
+                    : "Menunggu",
+              attachment:
+                item.attachment ?? null,
+              adminNote:
+                item.adminNote ?? null,
+            };
+          });
+
+        if (mounted) {
+          setApprovals([
+            ...mappedLeaves,
+            ...mappedDocuments,
+          ]);
+        }
+      } catch (error) {
+        console.error(
+          "Gagal mengambil data persetujuan:",
+          error,
+        );
+
+        if (mounted) {
+          setApprovals([]);
+        }
+      }
+    };
     const loadEmployees = async () => {
       try {
         setLoadingEmployees(true);
@@ -1312,17 +1689,46 @@ export default function HomeScreen() {
     );
   };
 
-  const onDecision = (
-    id: string,
+  const onDecision = async (
+    approval: Approval,
     status: "Disetujui" | "Ditolak",
+    note?: string,
   ) => {
-    setApprovals(current =>
-      current.map(a =>
-        a.id === id ? { ...a, status } : a,
+    if (approval.source === "leave") {
+      if (status === "Disetujui") {
+        await approveLeaveRequest(
+          approval.requestId,
+        );
+      } else {
+        await rejectLeaveRequest(
+          approval.requestId,
+        );
+      }
+    } else {
+      await reviewDocumentRequest(
+        approval.requestId,
+        {
+          status:
+            status === "Disetujui"
+              ? "APPROVED"
+              : "REJECTED",
+          adminNote: note,
+        },
+      );
+    }
+
+    setApprovals((current) =>
+      current.map((item) =>
+        item.id === approval.id
+          ? {
+              ...item,
+              status,
+              adminNote: note ?? item.adminNote,
+            }
+          : item,
       ),
     );
   };
-
   let body: React.ReactNode;
 
   if (!loggedIn) {
@@ -1674,6 +2080,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 110, gap: 14 }, loginScreen: { flex: 1, backgroundColor: C.navy, padding: 22, alignItems: "center", justifyContent: "center", gap: 10 }, loginLogo: { width: 68, height: 68, borderRadius: 22, backgroundColor: C.teal, alignItems: "center", justifyContent: "center", marginBottom: 4 }, loginTitle: { color: "#fff", fontSize: 28, fontWeight: "900", letterSpacing: 1 }, loginSubtitle: { color: "#C3DDE2", fontSize: 12, marginBottom: 24 }, loginCard: { width: "100%", backgroundColor: C.surface, borderRadius: 22, padding: 18, gap: 13 }, loginHint: { color: "#9DC7D0", fontSize: 11, marginTop: 10 }, header: { height: 64, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, backgroundColor: C.surface, borderBottomWidth: 1, borderBottomColor: C.line }, headerTitle: { fontSize: 17, fontWeight: "800", color: C.navy, letterSpacing: 0.3 }, iconButton: { width: 40, height: 40, alignItems: "center", justifyContent: "center" }, hero: { backgroundColor: C.navy, borderRadius: 22, padding: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }, eyebrow: { color: "#9DC7D0", fontSize: 10, fontWeight: "800", letterSpacing: 1 }, greeting: { color: "#fff", fontSize: 23, fontWeight: "800", marginTop: 8 }, clinic: { color: "#C3DDE2", fontSize: 13, marginTop: 5 }, avatar: { width: 48, height: 48, borderRadius: 16, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, avatarText: { color: "#fff", fontWeight: "800" }, sectionTitleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }, sectionTitle: { fontSize: 15, fontWeight: "800", color: C.ink, textTransform: "uppercase", letterSpacing: 0.8 }, link: { color: C.teal, fontSize: 12, fontWeight: "800" }, metricGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, metricCard: { backgroundColor: C.surface, borderRadius: 18, padding: 14, width: "48%", minHeight: 128, borderWidth: 1, borderColor: C.line }, metricIcon: { width: 32, height: 32, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom: 12 }, metricLabel: { color: C.slate, fontSize: 11, fontWeight: "700" }, metricValue: { color: C.ink, fontSize: 28, fontWeight: "800", marginTop: 2 }, metricCaption: { color: C.slate, fontSize: 11 }, card: { backgroundColor: C.surface, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: C.line }, cardTitle: { fontSize: 15, fontWeight: "800", color: C.ink }, shiftRow: { flexDirection: "row", alignItems: "center", paddingVertical: 10, gap: 10 }, shiftDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: C.teal }, rowTitle: { color: C.ink, fontSize: 14, fontWeight: "700" }, rowMeta: { color: C.slate, fontSize: 12, marginTop: 3 }, count: { color: C.slate, fontSize: 12, marginRight: 2 }, cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, livePill: { flexDirection: "row", gap: 5, alignItems: "center", backgroundColor: "#234563", paddingVertical: 5, paddingHorizontal: 9, borderRadius: 20 }, liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#63E6BE" }, liveText: { color: "#B8F5E6", fontSize: 9, fontWeight: "800" }, activityHeroTitle: { color: "#fff", fontSize: 21, fontWeight: "800", marginTop: 22 }, activityHeroMeta: { color: "#B7D1D6", fontSize: 12, marginTop: 6 }, progressTrack: { height: 7, borderRadius: 4, backgroundColor: "#2A4B66", marginTop: 20, overflow: "hidden" }, progressFill: { height: "100%", borderRadius: 4, backgroundColor: "#63E6BE" }, attendanceLine: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 }, attendanceMain: { color: "#fff", fontWeight: "800", fontSize: 13 }, attendanceMuted: { color: "#B7D1D6", fontSize: 12 }, primaryButton: { backgroundColor: C.teal, borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 4 }, primaryButtonText: { color: "#fff", fontWeight: "800", fontSize: 13 }, secondaryButton: { backgroundColor: C.aqua }, secondaryButtonText: { color: C.teal }, approvalRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: C.line }, approvalRight: { flexDirection: "row", alignItems: "center", gap: 9 }, approvalNumber: { color: C.teal, fontWeight: "800", fontSize: 16 }, activityRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8 }, smallAvatar: { width: 32, height: 32, borderRadius: 10, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, smallAvatarText: { color: C.teal, fontWeight: "800" }, pageIntro: { color: C.slate, fontSize: 13, lineHeight: 19 }, pageTitle: { color: C.ink, fontSize: 22, fontWeight: "800" }, searchBox: { flexDirection: "row", alignItems: "center", backgroundColor: C.surface, borderColor: C.line, borderWidth: 1, borderRadius: 14, paddingHorizontal: 13 }, searchInput: { flex: 1, color: C.ink, paddingVertical: 13, paddingHorizontal: 10, fontSize: 13 }, filterRow: { flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap" }, chip: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 20 }, chipActive: { backgroundColor: C.aqua, borderColor: C.aqua }, chipText: { color: C.slate, fontSize: 11, fontWeight: "700" }, chipTextActive: { color: C.teal }, listCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "center", gap: 12 }, employeeAvatar: { width: 44, height: 44, borderRadius: 14, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, employeeAvatarText: { color: C.teal, fontWeight: "800" }, statusLine: { flexDirection: "row", gap: 5, alignItems: "center", marginTop: 6 }, statusDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: C.success }, statusText: { color: C.success, fontSize: 11, fontWeight: "700" }, shiftBadge: { width: 42, height: 42, backgroundColor: C.aqua, borderRadius: 13, alignItems: "center", justifyContent: "center" }, activityCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 18, padding: 16 }, activityCardTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 11 }, activityFooter: { borderTopWidth: 1, borderTopColor: C.line, marginTop: 14, paddingTop: 12, flexDirection: "row", justifyContent: "space-between" }, tealText: { color: C.teal, fontWeight: "800" }, approvalCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 17, padding: 14, flexDirection: "row", alignItems: "center", gap: 11 }, approvalTag: { backgroundColor: "#FFF2D8", borderRadius: 9, paddingVertical: 8, paddingHorizontal: 7, width: 74, alignItems: "center" }, approvalTagText: { color: "#A8701D", fontSize: 9, fontWeight: "800", textAlign: "center" }, pendingText: { color: C.warning, fontSize: 11, marginTop: 5, fontWeight: "700" }, noticeHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, notificationRow: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "flex-start", gap: 11 }, notificationIcon: { width: 35, height: 35, borderRadius: 11, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: C.teal }, timeText: { color: C.slate, fontSize: 10, marginTop: 8 }, emptyState: { alignItems: "center", justifyContent: "center", paddingVertical: 90, gap: 13 }, detailHero: { alignItems: "center", paddingVertical: 12 }, profileHero: { alignItems: "center", paddingVertical: 24 }, profileFormPhoto: { alignItems: "center", paddingBottom: 12 }, profilePhotoButton: { position: "relative", alignItems: "center", justifyContent: "center" }, profileImage: { width: "100%", height: "100%", borderRadius: 28 }, profileImageEdit: { position: "absolute", right: -2, bottom: 2, width: 30, height: 30, borderRadius: 15, backgroundColor: C.teal, alignItems: "center", justifyContent: "center", borderWidth: 3, borderColor: C.surface }, profileUploadHint: { color: C.teal, fontSize: 11, fontWeight: "700", marginTop: 8 }, profileAvatar: { width: 86, height: 86, borderRadius: 28, backgroundColor: C.navy, alignItems: "center", justifyContent: "center", marginBottom: 13, overflow: "hidden" }, profileAvatarText: { color: "#fff", fontSize: 25, fontWeight: "800" }, profileName: { fontSize: 23, fontWeight: "800", color: C.ink }, profileRole: { color: C.slate, fontSize: 12, marginTop: 5 }, statusPill: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 7, backgroundColor: C.aqua, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 20 }, detailRow: { flexDirection: "row", justifyContent: "space-between", gap: 10, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: C.line }, field: { gap: 6 }, fieldLabel: { color: C.ink, fontSize: 12, fontWeight: "800" }, fieldHint: { color: C.slate, fontSize: 11, marginTop: -8, marginBottom: 12 }, input: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 13, color: C.ink, padding: 13, fontSize: 13 }, textArea: { minHeight: 100, textAlignVertical: "top" }, switchRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10 }, settingLabel: { flexDirection: "row", alignItems: "center", gap: 12 }, monthHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, monthButton: { backgroundColor: C.aqua, padding: 11, borderRadius: 13 }, dayStrip: { gap: 8 }, dayCell: { width: 48, alignItems: "center", paddingVertical: 10, borderRadius: 13, backgroundColor: C.surface, borderWidth: 1, borderColor: C.line }, dayCellActive: { backgroundColor: C.teal, borderColor: C.teal }, dayNumber: { color: C.ink, fontWeight: "800", fontSize: 16 }, dayName: { color: C.slate, fontSize: 10, marginTop: 3 }, dayNumberActive: { color: "#fff" }, scheduleRow: { flexDirection: "row", gap: 11, alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: C.line }, scheduleTime: { width: 50, height: 42, borderRadius: 12, alignItems: "center", justifyContent: "center" }, scheduleTimeText: { color: C.teal, fontWeight: "800", fontSize: 11 }, dateCard: { backgroundColor: C.aqua, borderRadius: 16, padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, attendanceRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: C.line }, attendanceStatus: { width: 32, height: 32, borderRadius: 10, alignItems: "center", justifyContent: "center" }, locationBox: { backgroundColor: C.canvas, padding: 14, borderRadius: 14, flexDirection: "row", gap: 12, alignItems: "center" }, photoPlaceholder: { height: 150, backgroundColor: C.canvas, borderRadius: 14, alignItems: "center", justifyContent: "center", gap: 8 }, metaList: { gap: 6 }, attendanceSummary: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }, selectionRow: { backgroundColor: C.aqua, borderRadius: 13, padding: 13, flexDirection: "row", gap: 9, alignItems: "center" }, assignmentPreview: { backgroundColor: C.aqua, borderRadius: 16, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }, participantRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: C.line }, selectAll: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 5 }, selectionCount: { color: C.slate, textAlign: "center", fontSize: 12, marginTop: 4 }, approvalHeading: { backgroundColor: C.navy, borderRadius: 18, padding: 18, gap: 7 }, decisionRow: { flexDirection: "row", gap: 10 }, decisionButton: { flex: 1, borderRadius: 14, padding: 14, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 7 }, announcementCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 17, padding: 15, gap: 12 }, announcementTop: { flexDirection: "row", alignItems: "center", gap: 11 }, announcementIcon: { width: 38, height: 38, borderRadius: 12, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, announcementBody: { color: C.ink, lineHeight: 19, fontSize: 13 }, settingsRow: { backgroundColor: C.surface, borderRadius: 16, borderWidth: 1, borderColor: C.line, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }, headerActions: { flexDirection: "row", alignItems: "center", gap: 2 }, headerAvatar: { width: 32, height: 32, borderRadius: 11, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, headerAvatarText: { color: "#fff", fontSize: 10, fontWeight: "900" }, summaryCard: { backgroundColor: C.surface, borderRadius: 20, padding: 12, borderWidth: 1, borderColor: C.line, flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, overviewCard: { backgroundColor: C.surface, borderRadius: 20, padding: 17, borderWidth: 1, borderColor: C.line }, overviewTitle: { color: C.ink, fontSize: 14, fontWeight: "800" }, overviewPercent: { color: C.navy, fontSize: 32, fontWeight: "900", textAlign: "center", marginTop: 14 }, overviewProgress: { height: 10, borderRadius: 5, backgroundColor: C.aqua, overflow: "hidden", marginTop: 12 }, overviewProgressFill: { width: "87%", height: "100%", borderRadius: 5, backgroundColor: C.teal }, overviewRows: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 }, overviewLabel: { color: C.slate, fontSize: 11, fontWeight: "700" }, overviewValue: { color: C.ink, fontSize: 18, fontWeight: "900", marginTop: 4 }, quickAccessGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, quickAccessItem: { width: "23.5%", minHeight: 84, backgroundColor: C.surface, borderRadius: 15, borderWidth: 1, borderColor: C.line, alignItems: "center", justifyContent: "center", paddingHorizontal: 4, gap: 7 }, quickAccessIcon: { width: 38, height: 38, borderRadius: 13, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, quickAccessLabel: { color: C.ink, fontSize: 10, fontWeight: "800", textAlign: "center" }, upcomingCard: { backgroundColor: C.surface, borderRadius: 20, borderWidth: 1, borderColor: C.line, paddingHorizontal: 16 }, upcomingRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: C.line }, requestsCard: { backgroundColor: C.surface, borderRadius: 20, borderWidth: 1, borderColor: C.line, paddingHorizontal: 16 }, requestRow: { flexDirection: "row", alignItems: "center", gap: 11, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.line }, pendingBadge: { backgroundColor: "#FFF2D8", borderRadius: 9, paddingHorizontal: 9, paddingVertical: 6 }, pendingBadgeText: { color: "#A8701D", fontSize: 10, fontWeight: "800" }, logoutRow: { padding: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9 }, logoutText: { color: C.error, fontWeight: "800" }, tabBar: { position: "absolute", left: 0, right: 0, bottom: 0, height: 78, backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.line, flexDirection: "row", justifyContent: "space-around", paddingTop: 10 }, tabItem: { alignItems: "center", gap: 4, minWidth: 54, flex: 1 }, tabLabel: { color: C.slate, fontSize: 10, fontWeight: "700" }, tabLabelActive: { color: C.teal }, drawerOverlay: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, flexDirection: "row" }, drawerBackdrop: { flex: 1, backgroundColor: "rgba(16,42,67,0.32)" }, drawer: { width: "84%", backgroundColor: C.surface, paddingTop: 28, paddingHorizontal: 18, shadowColor: C.navy, shadowOpacity: 0.2, shadowRadius: 12, elevation: 8 }, drawerBrand: { flexDirection: "row", alignItems: "center", gap: 10, paddingBottom: 22, borderBottomWidth: 1, borderBottomColor: C.line }, drawerLogo: { width: 40, height: 40, borderRadius: 13, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, drawerTitle: { color: C.navy, fontWeight: "900", fontSize: 17, letterSpacing: 0.7 }, drawerSub: { color: C.slate, fontSize: 9, fontWeight: "800", letterSpacing: 1.1, marginTop: 2 }, drawerClose: { marginLeft: "auto", padding: 7 }, drawerItem: { flexDirection: "row", alignItems: "center", gap: 13, paddingVertical: 12 }, drawerItemText: { color: C.ink, fontSize: 13, fontWeight: "700", flex: 1 }, drawerBadge: { backgroundColor: C.error, borderRadius: 12, minWidth: 23, height: 23, alignItems: "center", justifyContent: "center" }, drawerBadgeText: { color: "#fff", fontSize: 11, fontWeight: "800" },
 });
+
+
 
 
 
