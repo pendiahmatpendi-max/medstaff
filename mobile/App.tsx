@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -37,12 +37,15 @@ import HelpCenterScreen from './src/screens/profile/HelpCenterScreen';
 import ActivityScreen from './src/screens/home/ActivityScreen';
 import ProfileDetailScreen from './src/screens/profile/ProfileDetailScreen';
 import AdjustmentScreen from './src/screens/submission/AdjustmentScreen';
+import AdminHomeScreen from './Admin';
+import { getStoredUser } from './src/api/api';
 
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
   Register: undefined;
   MainTabs: undefined;
+  Admin: undefined;
   Attendance: undefined;
   AttendanceCamera: { type: 'in' | 'out' }; 
   AttendanceConfirmation: { photoUri: string; type: 'in' | 'out'; latitude: number; longitude: number }; 
@@ -100,12 +103,13 @@ export default function App() {
             {({ navigation }) => (
               <LoginScreen
                 onBackPress={() => navigation.goBack()}
-                onLoginSuccess={() => navigation.replace('MainTabs')} 
+                onLoginSuccess={async () => { const user = await getStoredUser(); navigation.replace(user?.role === 'ADMIN' ? 'Admin' : 'MainTabs'); }} 
               />
             )}
           </Stack.Screen>
 
           <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <Stack.Screen name="Admin" component={AdminHomeScreen} />
           <Stack.Screen name="Attendance" component={AttendanceScreen} />
           <Stack.Screen name="AttendanceCamera" component={AttendanceCameraScreen} />
           <Stack.Screen name="AttendanceConfirmation" component={AttendanceConfirmationScreen} />
@@ -139,3 +143,9 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+
+
+
+
+
