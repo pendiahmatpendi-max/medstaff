@@ -1,4 +1,4 @@
-﻿import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const API_URL = 'https://medstaff-6twe.vercel.app/api';
 
@@ -293,6 +293,33 @@ export async function getTodayActivities() {
   return handleResponse(response);
 }
 
+export async function getAdminActivityDetail(activityId: string) {
+  const headers = await getAuthHeaders();
+
+  const response = await fetch(
+    `${API_URL}/activities/${activityId}`,
+    {
+      method: "GET",
+      headers,
+    },
+  );
+
+  return handleResponse(response);
+}
+
+export async function getAdminActivityAttendance(activityId: string) {
+  const headers = await getAuthHeaders();
+
+  const response = await fetch(
+    `${API_URL}/activities/${activityId}/attendance`,
+    {
+      method: "GET",
+      headers,
+    },
+  );
+
+  return handleResponse(response);
+}
 export async function getMyActivityAttendance() {
   const headers = await getAuthHeaders();
 
@@ -886,3 +913,4 @@ export async function createActivity(data: {
 
   return handleResponse(response);
 }
+
