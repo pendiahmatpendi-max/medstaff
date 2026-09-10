@@ -634,13 +634,14 @@ export async function createAdminSchedule(
 }
 
 export async function getAdminMonthSchedule(
+  employeeId: string,
   year: number,
   month: number,
 ) {
   const headers = await getAuthHeaders();
 
   const response = await fetch(
-    `${API_URL}/schedule/admin/month?year=${year}&month=${month}`,
+    `${API_URL}/schedule/admin/month?employeeId=${encodeURIComponent(employeeId)}&year=${year}&month=${month}`,
     {
       method: 'GET',
       headers,
@@ -865,3 +866,23 @@ export async function uploadDocument(
 }
 
 export { API_URL };
+export async function createActivity(data: {
+  title: string;
+  description?: string;
+  activityDate: string;
+  startTime?: string;
+  endTime?: string;
+}) {
+  const headers = await getAuthHeaders();
+
+  const response = await fetch(`${API_URL}/activities`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(response);
+}
