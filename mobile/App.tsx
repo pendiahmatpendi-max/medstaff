@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -35,6 +35,7 @@ import PINScreen from './src/screens/profile/PINScreen';
 import LanguageScreen from './src/screens/profile/LanguageScreen';
 import HelpCenterScreen from './src/screens/profile/HelpCenterScreen';
 import ActivityScreen from './src/screens/home/ActivityScreen';
+import ActivityDetailScreen from './src/screens/home/ActivityDetailScreen';
 import ProfileDetailScreen from './src/screens/profile/ProfileDetailScreen';
 import AdjustmentScreen from './src/screens/submission/AdjustmentScreen';
 import AdminHomeScreen from './Admin';
@@ -47,14 +48,20 @@ export type RootStackParamList = {
   MainTabs: undefined;
   Admin: undefined;
   Attendance: undefined;
-  AttendanceCamera: { type: 'in' | 'out' }; 
-  AttendanceConfirmation: { photoUri: string; type: 'in' | 'out'; latitude: number; longitude: number }; 
-  Riwayat: undefined; 
+  AttendanceCamera: { type: 'in' | 'out' };
+  AttendanceConfirmation: {
+    photoUri: string;
+    type: 'in' | 'out';
+    latitude: number;
+    longitude: number;
+  };
+  Riwayat: undefined;
   EmployeeDetail: { employee: any };
   NotificationDetail: { notification: any };
   LeaveRequest: undefined;
   LeaveDetail: undefined;
   Shift: undefined;
+  ShiftRequest: undefined;
   Overtime: undefined;
   RequestOvertime: undefined;
   PersonalInformation: undefined;
@@ -66,13 +73,10 @@ export type RootStackParamList = {
   Language: undefined;
   HelpCenter: undefined;
   Activity: undefined;
+  ActivityDetail: { id: string };
   ProfileDetail: undefined;
   Adjustment: undefined;
-  
-  // --- TAMBAHKAN TIPE ROUTE BARU ---
-  ShiftRequest: undefined;
 };
-
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
@@ -135,6 +139,7 @@ export default function App() {
           <Stack.Screen name="Language" component={LanguageScreen} />
           <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
           <Stack.Screen name="Activity" component={ActivityScreen} />
+          <Stack.Screen name="ActivityDetail" component={ActivityDetailScreen} />
           <Stack.Screen name="ProfileDetail" component={ProfileDetailScreen} />
           <Stack.Screen name="Adjustment" component={AdjustmentScreen} />
           
@@ -143,6 +148,11 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+
+
+
+
 
 
 

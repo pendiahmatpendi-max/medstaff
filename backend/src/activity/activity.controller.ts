@@ -32,9 +32,19 @@ export class ActivityController {
 
   @Get('my-attendance')
   getMyAttendance(@Req() req: any) {
-    return this.activityService.getMyAttendance(
-      req.user.sub,
-    );
+    return this.activityService.getMyAttendance(req.user.sub);
+  }
+
+  @Get(':id')
+  @UseGuards(AdminGuard)
+  getActivityDetail(@Param('id') activityId: string) {
+    return this.activityService.getActivityDetail(activityId);
+  }
+
+  @Get(':id/attendance')
+  @UseGuards(AdminGuard)
+  getActivityAttendance(@Param('id') activityId: string) {
+    return this.activityService.getActivityAttendance(activityId);
   }
 
   @Post(':id/attend')

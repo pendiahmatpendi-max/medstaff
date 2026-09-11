@@ -1,9 +1,13 @@
-import {
+﻿import {
   getAdminLeaveRequests,
   approveLeaveRequest,
   rejectLeaveRequest,
   getAdminDocumentRequests,
   reviewDocumentRequest,
+  getAdminAnnouncements,
+  createAnnouncement,
+  updateAnnouncement,
+  deleteAnnouncement,
 } from "../src/api/api";
 import { useEffect, useMemo, useState } from "react";
 
@@ -118,10 +122,10 @@ function Dashboard({ go, openMenu, employees }: { go: (s: Screen) => void; openM
 function EmployeeList({ go, openEmployee, employees }: { go: (s: Screen) => void; openEmployee: (e: Employee) => void; employees: Employee[] }) {
   const [query, setQuery] = useState(""); const [filter, setFilter] = useState("Semua");
   const filtered = useMemo(() => employees.filter(e => `${e.name} ${e.id}`.toLowerCase().includes(query.toLowerCase()) && (filter === "Semua" || e.status === filter)), [employees, query, filter]);
-  return <ScreenList title="Manajemen Pegawai" back={() => go("dashboard")}><Text style={styles.pageIntro}>Kelola data pribadi, pekerjaan, dan status pegawai.</Text><View style={styles.searchBox}><Icon name="search" size={20} color={C.slate} /><TextInput placeholder="Cari nama / ID pegawai" placeholderTextColor={C.slate} value={query} onChangeText={setQuery} style={styles.searchInput} /></View><View style={styles.filterRow}><Chip label="Semua" active={filter === "Semua"} onPress={() => setFilter("Semua")} /><Chip label="Aktif" active={filter === "Aktif"} onPress={() => setFilter("Aktif")} /><Chip label="Nonaktif" active={filter === "Nonaktif"} onPress={() => setFilter("Nonaktif")} /></View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="groups" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada data pegawai.</Text></View>}{filtered.map(e => <Pressable key={e.id} style={styles.listCard} onPress={() => openEmployee(e)}><View style={styles.employeeAvatar}><Text style={styles.employeeAvatarText}>{e.name.split(" ").map(x => x[0]).join("").slice(0, 2)}</Text></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{e.name}</Text><Text style={styles.rowMeta}>{e.id}  ·  {e.role}</Text><View style={styles.statusLine}><View style={[styles.statusDot, { backgroundColor: e.status === "Aktif" ? C.success : C.slate }]} /><Text style={[styles.statusText, { color: e.status === "Aktif" ? C.success : C.slate }]}>{e.status}</Text></View></View><Icon name="chevron-right" size={20} color={C.slate} /></Pressable>)}</ScreenList>;
+  return <ScreenList title="Manajemen Pegawai" back={() => go("dashboard")}><Text style={styles.pageIntro}>Kelola data pribadi, pekerjaan, dan status pegawai.</Text><View style={styles.searchBox}><Icon name="search" size={20} color={C.slate} /><TextInput placeholder="Cari nama / ID pegawai" placeholderTextColor={C.slate} value={query} onChangeText={setQuery} style={styles.searchInput} /></View><View style={styles.filterRow}><Chip label="Semua" active={filter === "Semua"} onPress={() => setFilter("Semua")} /><Chip label="Aktif" active={filter === "Aktif"} onPress={() => setFilter("Aktif")} /><Chip label="Nonaktif" active={filter === "Nonaktif"} onPress={() => setFilter("Nonaktif")} /></View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="groups" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada data pegawai.</Text></View>}{filtered.map(e => <Pressable key={e.id} style={styles.listCard} onPress={() => openEmployee(e)}><View style={styles.employeeAvatar}><Text style={styles.employeeAvatarText}>{e.name.split(" ").map(x => x[0]).join("").slice(0, 2)}</Text></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{e.name}</Text><Text style={styles.rowMeta}>{e.id}  Â·  {e.role}</Text><View style={styles.statusLine}><View style={[styles.statusDot, { backgroundColor: e.status === "Aktif" ? C.success : C.slate }]} /><Text style={[styles.statusText, { color: e.status === "Aktif" ? C.success : C.slate }]}>{e.status}</Text></View></View><Icon name="chevron-right" size={20} color={C.slate} /></Pressable>)}</ScreenList>;
 }
 
-function EmployeeDetail({ employee, go }: { employee: Employee; go: (s: Screen) => void }) { return <ScreenList title="Detail Pegawai" back={() => go("employees")}><View style={styles.detailHero}><View style={styles.profileAvatar}><Text style={styles.profileAvatarText}>{employee.name.split(" ").map(x => x[0]).join("").slice(0, 2)}</Text></View><Text style={styles.profileName}>{employee.name}</Text><Text style={styles.rowMeta}>{employee.id}  ·  {employee.role}</Text><View style={styles.statusPill}><View style={styles.statusDot} /><Text style={styles.statusText}>Aktif</Text></View></View><DetailBlock title="Data Pribadi" rows={[["Nama", employee.name], ["Email", employee.email], ["Telepon", employee.phone], ["Tempat Lahir", "Semarang"], ["Tanggal Lahir", "12/04/1990"], ["Jenis Kelamin", "Laki-laki"], ["Alamat", "Semarang"]]} /><DetailBlock title="Data Pekerjaan" rows={[["Nomor Pegawai", employee.id], ["Jabatan", employee.role], ["Unit", employee.unit]]} /><View style={styles.card}><SectionTitle title="Data tambahan" />{[["school", "Pendidikan"], ["work-history", "Pengalaman"], ["contact-emergency", "Kontak Darurat"], ["description", "Dokumen"]].map(([icon, label]) => <Pressable key={label} style={styles.settingsRow} onPress={() => Alert.alert(label, `${label} ${employee.name} tersedia untuk ditinjau.`)}><Icon name={icon as IconName} color={C.teal} /><Text style={[styles.rowTitle, { flex: 1 }]}>{label}</Text><Icon name="chevron-right" color={C.slate} /></Pressable>)}</View></ScreenList>; }
+function EmployeeDetail({ employee, go }: { employee: Employee; go: (s: Screen) => void }) { return <ScreenList title="Detail Pegawai" back={() => go("employees")}><View style={styles.detailHero}><View style={styles.profileAvatar}><Text style={styles.profileAvatarText}>{employee.name.split(" ").map(x => x[0]).join("").slice(0, 2)}</Text></View><Text style={styles.profileName}>{employee.name}</Text><Text style={styles.rowMeta}>{employee.id}  Â·  {employee.role}</Text><View style={styles.statusPill}><View style={styles.statusDot} /><Text style={styles.statusText}>Aktif</Text></View></View><DetailBlock title="Data Pribadi" rows={[["Nama", employee.name], ["Email", employee.email], ["Telepon", employee.phone], ["Tempat Lahir", "Semarang"], ["Tanggal Lahir", "12/04/1990"], ["Jenis Kelamin", "Laki-laki"], ["Alamat", "Semarang"]]} /><DetailBlock title="Data Pekerjaan" rows={[["Nomor Pegawai", employee.id], ["Jabatan", employee.role], ["Unit", employee.unit]]} /><View style={styles.card}><SectionTitle title="Data tambahan" />{[["school", "Pendidikan"], ["work-history", "Pengalaman"], ["contact-emergency", "Kontak Darurat"], ["description", "Dokumen"]].map(([icon, label]) => <Pressable key={label} style={styles.settingsRow} onPress={() => Alert.alert(label, `${label} ${employee.name} tersedia untuk ditinjau.`)}><Icon name={icon as IconName} color={C.teal} /><Text style={[styles.rowTitle, { flex: 1 }]}>{label}</Text><Icon name="chevron-right" color={C.slate} /></Pressable>)}</View></ScreenList>; }
 function DetailBlock({ title, rows }: { title: string; rows: string[][] }) { return <View style={styles.card}><SectionTitle title={title} />{rows.map(([label, value]) => <View style={styles.detailRow} key={label}><Text style={styles.rowMeta}>{label}</Text><Text style={[styles.rowTitle, { flex: 1, textAlign: "right" }]}>{value}</Text></View>)}</View>; }
 
 function ShiftList({ go, openShift, shifts }: { go: (s: Screen) => void; openShift: (shift?: Shift) => void; shifts: Shift[] }) {
@@ -430,7 +434,7 @@ function Schedule({
                   </Text>
 
                   <Text style={styles.rowMeta}>
-                    {shift?.start ?? "-"} - {shift?.end ?? "-"} �{" "}
+                    {shift?.start ?? "-"} - {shift?.end ?? "-"} ·{" "}
                     {a.employeeIds.length} karyawan
                   </Text>
                 </View>
@@ -445,7 +449,7 @@ function Schedule({
       <View style={styles.card}>
         <SectionTitle title="Ringkasan" />
         <Text style={styles.rowMeta}>
-          {employees.length} karyawan terdaftar �{" "}
+          {employees.length} karyawan terdaftar ·{" "}
           {activeShifts.length} shift aktif tersedia.
         </Text>
       </View>
@@ -615,7 +619,7 @@ function ScheduleForm({
           activeShifts.map((s) => (
             <Chip
               key={s.id}
-              label={`${s.name} � ${s.start}`}
+              label={`${s.name} · ${s.start}`}
               active={shiftId === s.id}
               onPress={() => setShiftId(s.id)}
             />
@@ -961,7 +965,7 @@ function Attendance({ go }: { go: (s: Screen) => void }) {
                 </Text>
 
                 <Text style={styles.rowMeta}>
-                  {row.employeeId} � {row.status}
+                  {row.employeeId} · {row.status}
                 </Text>
               </View>
 
@@ -983,10 +987,223 @@ function Attendance({ go }: { go: (s: Screen) => void }) {
 }
 function AttendanceDetail({ go }: { go: (s: Screen) => void }) { return <ScreenList title="Detail Absensi" back={() => go("attendance")}><View style={styles.emptyState}><Icon name="fact-check" color={C.slate} size={30} /><Text style={styles.rowMeta}>Belum ada detail absensi.</Text></View></ScreenList>; }
 
-function ActivityList({ go, openActivity, activities, createActivity }: { go: (s: Screen) => void; openActivity: (a: Activity) => void; activities: Activity[]; createActivity: () => void }) { return <ScreenList title="Kegiatan" back={() => go("dashboard")}><Text style={styles.pageIntro}>Buat kegiatan untuk semua staff dan pantau kehadirannya.</Text>{activities.length === 0 && <View style={styles.emptyState}><Icon name="event" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada kegiatan.</Text></View>}{activities.map(a => <Pressable style={styles.activityCard} key={a.id} onPress={() => openActivity(a)}><View style={styles.activityCardTop}><Text style={styles.cardTitle}>{a.title}</Text><Icon name="chevron-right" size={20} color={C.slate} /></View><Text style={styles.rowMeta}>{a.date}  ·  {a.time}</Text><Text style={styles.rowMeta}>{a.place}  ·  {a.people}</Text><View style={styles.activityFooter}><Text style={styles.rowTitle}>Kehadiran</Text><Text style={styles.tealText}>{a.ratio}</Text></View></Pressable>)}<Button label="Buat Kegiatan" icon="add" onPress={createActivity} /></ScreenList>; }
-function ActivityForm({ activity, go, onSave, onDraft }: { activity: Activity; go: (s: Screen) => void; onSave: (a: Activity) => void; onDraft: (activity: Activity) => void }) { const [title, setTitle] = useState(activity.title); const [date, setDate] = useState(activity.date); const [time, setTime] = useState(activity.time); const [place, setPlace] = useState(activity.place); const [description, setDescription] = useState(activity.description); const update = (patch: Partial<Activity>) => onDraft({ ...activity, ...patch, people: "Semua Staff" }); const save = () => { if (!title.trim() || !date.trim() || !time.trim() || !place.trim() || !description.trim()) { Alert.alert("Data belum lengkap", "Semua kolom kegiatan wajib diisi."); return; } onSave({ id: activity.id || `A${Date.now()}`, title, date, time, place, people: "Semua Staff", description, ratio: activity.ratio || "0 / 0" }); Alert.alert("Berhasil", "Kegiatan telah dibuat."); go("activities"); }; return <ScreenList title={activity.id ? "Edit Kegiatan" : "Buat Kegiatan"} back={() => go("activities")}><Field label="Nama Kegiatan" value={title} onChangeText={value => { setTitle(value); update({ title: value }); }} placeholder="Masukkan nama kegiatan" /><Field label="Tanggal" value={date} onChangeText={value => { setDate(value); update({ date: value }); }} placeholder="Masukkan tanggal" /><Field label="Jam" value={time} onChangeText={value => { setTime(value); update({ time: value }); }} placeholder="09:00 - 11:00" /><Field label="Lokasi" value={place} onChangeText={value => { setPlace(value); update({ place: value }); }} placeholder="Masukkan lokasi" /><View style={styles.selectionRow}><Icon name="groups" color={C.teal} /><Text style={[styles.rowTitle, { flex: 1 }]}>Peserta kegiatan</Text><Text style={styles.tealText}>Semua Staff</Text></View><Field label="Deskripsi" value={description} onChangeText={value => { setDescription(value); update({ description: value }); }} placeholder="Deskripsi kegiatan" multiline /><Button label="Simpan Kegiatan" icon="check" onPress={save} /></ScreenList>; }
+function ActivityList({ go, openActivity, activities, createActivity }: { go: (s: Screen) => void; openActivity: (a: Activity) => void; activities: Activity[]; createActivity: () => void }) { return <ScreenList title="Kegiatan" back={() => go("dashboard")}><Text style={styles.pageIntro}>Buat kegiatan untuk semua staff dan pantau kehadirannya.</Text>{activities.length === 0 && <View style={styles.emptyState}><Icon name="event" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada kegiatan.</Text></View>}{activities.map(a => <Pressable style={styles.activityCard} key={a.id} onPress={() => openActivity(a)}><View style={styles.activityCardTop}><Text style={styles.cardTitle}>{a.title}</Text><Icon name="chevron-right" size={20} color={C.slate} /></View><Text style={styles.rowMeta}>{a.date}  Â·  {a.time}</Text><Text style={styles.rowMeta}>{a.place}  Â·  {a.people}</Text><View style={styles.activityFooter}><Text style={styles.rowTitle}>Kehadiran</Text><Text style={styles.tealText}>{a.ratio}</Text></View></Pressable>)}<Button label="Buat Kegiatan" icon="add" onPress={createActivity} /></ScreenList>; }
+function ActivityForm({
+  activity,
+  go,
+  onSave,
+  onDraft,
+}: {
+  activity: Activity;
+  go: (s: Screen) => void;
+  onSave: (a: Activity) => void;
+  onDraft: (activity: Activity) => void;
+}) {
+  const [title, setTitle] = useState(activity.title);
+  const [date, setDate] = useState(activity.date);
+  const [time, setTime] = useState(activity.time);
+  const [place, setPlace] = useState(activity.place);
+  const [description, setDescription] = useState(activity.description);
+  const [saving, setSaving] = useState(false);
+
+  const update = (patch: Partial<Activity>) =>
+    onDraft({
+      ...activity,
+      ...patch,
+      people: "Semua Staff",
+    });
+
+  const save = async () => {
+    if (
+      !title.trim() ||
+      !date.trim() ||
+      !time.trim() ||
+      !description.trim()
+    ) {
+      Alert.alert(
+        "Data belum lengkap",
+        "Nama kegiatan, tanggal, jam, dan deskripsi wajib diisi.",
+      );
+      return;
+    }
+
+    if (saving) return;
+
+    setSaving(true);
+
+    try {
+      const timeParts = time.trim().split(/\s*-\s*/);
+      const startTime = timeParts[0]?.trim() || undefined;
+      const endTime = timeParts[1]?.trim() || undefined;
+
+      const activityDate = date.trim();
+
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(activityDate)) {
+        Alert.alert(
+          "Format tanggal salah",
+          "Tanggal harus menggunakan format YYYY-MM-DD. Contoh: 2026-09-11",
+        );
+        return;
+      }
+
+      if (
+        startTime &&
+        !/^([01]\d|2[0-3]):([0-5]\d)$/.test(startTime)
+      ) {
+        Alert.alert(
+          "Format jam salah",
+          "Jam mulai harus menggunakan format HH:mm. Contoh: 09:00",
+        );
+        return;
+      }
+
+      if (
+        endTime &&
+        !/^([01]\d|2[0-3]):([0-5]\d)$/.test(endTime)
+      ) {
+        Alert.alert(
+          "Format jam salah",
+          "Jam selesai harus menggunakan format HH:mm. Contoh: 11:00",
+        );
+        return;
+      }
+
+      if (activity.id) {
+        Alert.alert(
+          "Belum tersedia",
+          "Edit kegiatan belum tersedia di backend. Buat kegiatan baru terlebih dahulu.",
+        );
+        return;
+      }
+
+      const result = await createActivity({
+        title: title.trim(),
+        description: description.trim(),
+        activityDate,
+        startTime,
+        endTime,
+      });
+
+      if (!result?.success) {
+        throw new Error(
+          result?.message || "Gagal menyimpan kegiatan.",
+        );
+      }
+
+      const saved = result?.data ?? result?.activity ?? result;
+
+      const savedActivity: Activity = {
+        id: saved?.id ?? `A${Date.now()}`,
+        title: saved?.title ?? title.trim(),
+        date: saved?.activityDate
+          ? String(saved.activityDate).slice(0, 10)
+          : activityDate,
+        time:
+          saved?.startTime && saved?.endTime
+            ? `${String(saved.startTime).slice(0, 5)} - ${String(saved.endTime).slice(0, 5)}`
+            : time.trim(),
+        place: place.trim(),
+        people: "Semua Staff",
+        description: saved?.description ?? description.trim(),
+        ratio: "0 / 0",
+      };
+
+      onSave(savedActivity);
+
+      Alert.alert(
+        "Berhasil",
+        "Kegiatan berhasil disimpan ke database.",
+      );
+
+      go("activities");
+    } catch (error: any) {
+      Alert.alert(
+        "Gagal",
+        error?.message || "Kegiatan gagal disimpan.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <ScreenList
+      title={activity.id ? "Edit Kegiatan" : "Buat Kegiatan"}
+      back={() => go("activities")}
+    >
+      <Field
+        label="Nama Kegiatan"
+        value={title}
+        onChangeText={(value) => {
+          setTitle(value);
+          update({ title: value });
+        }}
+        placeholder="Masukkan nama kegiatan"
+      />
+
+      <Field
+        label="Tanggal"
+        value={date}
+        onChangeText={(value) => {
+          setDate(value);
+          update({ date: value });
+        }}
+        placeholder="YYYY-MM-DD"
+      />
+
+      <Field
+        label="Jam"
+        value={time}
+        onChangeText={(value) => {
+          setTime(value);
+          update({ time: value });
+        }}
+        placeholder="09:00 - 11:00"
+      />
+
+      <Field
+        label="Lokasi"
+        value={place}
+        onChangeText={(value) => {
+          setPlace(value);
+          update({ place: value });
+        }}
+        placeholder="Masukkan lokasi"
+      />
+
+      <View style={styles.selectionRow}>
+        <Icon name="groups" color={C.teal} />
+        <Text style={[styles.rowTitle, { flex: 1 }]}>
+          Peserta kegiatan
+        </Text>
+        <Text style={styles.tealText}>
+          Semua Staff
+        </Text>
+      </View>
+
+      <Field
+        label="Deskripsi"
+        value={description}
+        onChangeText={(value) => {
+          setDescription(value);
+          update({ description: value });
+        }}
+        placeholder="Deskripsi kegiatan"
+        multiline
+      />
+
+      <Button
+        label={saving ? "Menyimpan..." : "Simpan Kegiatan"}
+        icon="check"
+        onPress={() => {
+          void save();
+        }}
+      />
+    </ScreenList>
+  );
+}
 function Participants({ go, employees, selected, onChange }: { go: (s: Screen) => void; employees: Employee[]; selected: string[]; onChange: (ids: string[]) => void }) { const [query, setQuery] = useState(""); const rows = employees.filter(e => e.name.toLowerCase().includes(query.toLowerCase())); const toggle = (id: string) => onChange(selected.includes(id) ? selected.filter(x => x !== id) : [...selected, id]); return <ScreenList title="Pilih Peserta" back={() => go("activity-form")}><View style={styles.searchBox}><Icon name="search" size={20} color={C.slate} /><TextInput placeholder="Cari pegawai" placeholderTextColor={C.slate} value={query} onChangeText={setQuery} style={styles.searchInput} /></View><Pressable style={styles.selectAll} onPress={() => onChange(selected.length === employees.length ? [] : employees.map(e => e.id))}><Icon name="select-all" color={C.teal} /><Text style={styles.tealText}>{selected.length === employees.length ? "Batal pilih semua" : "Pilih semua"}</Text></Pressable>{rows.map(e => <Pressable key={e.id} style={styles.participantRow} onPress={() => toggle(e.id)}><Icon name={selected.includes(e.id) ? "check-box" : "check-box-outline-blank"} color={selected.includes(e.id) ? C.teal : C.slate} size={23} /><View><Text style={styles.rowTitle}>{e.name}</Text><Text style={styles.rowMeta}>{e.id}</Text></View></Pressable>)}<Text style={styles.selectionCount}>{selected.length} pegawai dipilih</Text><Button label="Simpan Peserta" icon="check" onPress={() => { Alert.alert("Berhasil", `${selected.length} peserta dipilih.`); go("activity-form"); }} /></ScreenList>; }
-function ActivityDetail({ activity, go, onEdit }: { activity: Activity; go: (s: Screen) => void; onEdit: () => void }) { return <ScreenList title="Detail Kegiatan" back={() => go("activities")}><Text style={styles.pageTitle}>{activity.title || "Kegiatan belum dipilih"}</Text><View style={styles.metaList}><Text style={styles.rowMeta}>{activity.date || "Tanggal belum diisi"}  ·  {activity.time || "Jam belum diisi"}</Text><Text style={styles.rowMeta}>{activity.place || "Lokasi belum diisi"}  ·  Semua Staff</Text></View><View style={styles.card}><SectionTitle title="Deskripsi" /><Text style={styles.announcementBody}>{activity.description || "Deskripsi belum tersedia."}</Text></View><View style={styles.card}><SectionTitle title="Kehadiran" /><View style={styles.attendanceSummary}><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Sudah absen</Text></View><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Belum absen</Text></View><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Terlambat</Text></View></View><Button label="Lihat Kehadiran" onPress={() => go("activity-attendance")} /></View><Button label="Edit Kegiatan" icon="edit" secondary onPress={onEdit} /></ScreenList>; }
+function ActivityDetail({ activity, go, onEdit }: { activity: Activity; go: (s: Screen) => void; onEdit: () => void }) { return <ScreenList title="Detail Kegiatan" back={() => go("activities")}><Text style={styles.pageTitle}>{activity.title || "Kegiatan belum dipilih"}</Text><View style={styles.metaList}><Text style={styles.rowMeta}>{activity.date || "Tanggal belum diisi"}  Â·  {activity.time || "Jam belum diisi"}</Text><Text style={styles.rowMeta}>{activity.place || "Lokasi belum diisi"}  Â·  Semua Staff</Text></View><View style={styles.card}><SectionTitle title="Deskripsi" /><Text style={styles.announcementBody}>{activity.description || "Deskripsi belum tersedia."}</Text></View><View style={styles.card}><SectionTitle title="Kehadiran" /><View style={styles.attendanceSummary}><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Sudah absen</Text></View><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Belum absen</Text></View><View><Text style={styles.metricValue}>0</Text><Text style={styles.rowMeta}>Terlambat</Text></View></View><Button label="Lihat Kehadiran" onPress={() => go("activity-attendance")} /></View><Button label="Edit Kegiatan" icon="edit" secondary onPress={onEdit} /></ScreenList>; }
 function ActivityAttendance({ activityId, go }: { activityId: string; go: (s: Screen) => void }) { const [filter, setFilter] = useState("Semua"); const rows: string[][] = []; const filtered = rows.filter(row => filter === "Semua" || row[2] === filter); return <ScreenList title="Kehadiran Kegiatan" back={() => go("activity-detail")}><Text style={styles.pageTitle}>Kehadiran kegiatan</Text><Text style={styles.rowMeta}>Data akan tampil setelah kegiatan dan peserta tersimpan.</Text><View style={styles.metricGrid}><Metric label="Peserta" value="0" tone={C.teal} icon="groups" onPress={() => {}} /><Metric label="Hadir" value="0" tone={C.success} icon="check-circle-outline" onPress={() => {}} /><Metric label="Belum Absen" value="0" tone={C.slate} icon="help-outline" onPress={() => {}} /><Metric label="Terlambat" value="0" tone={C.warning} icon="schedule" onPress={() => {}} /></View><View style={styles.filterRow}>{["Semua", "Hadir", "Terlambat", "Belum Absen"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View><View style={styles.card}><View style={styles.emptyState}><Icon name="fact-check" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada kehadiran kegiatan.</Text></View>{filtered.map(([name, time, status]) => <Pressable key={name} style={styles.attendanceRow} onPress={() => go("activity-attendance-detail")}><View style={styles.attendanceStatus}><Icon name="check" size={17} color={C.success} /></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{name}</Text><Text style={styles.rowMeta}>{status}</Text></View><Text style={styles.rowTitle}>{time}</Text></Pressable>)}</View></ScreenList>; }
 function ActivityAttendanceDetail({ go }: { go: (s: Screen) => void }) { return <ScreenList title="Detail Absen Kegiatan" back={() => go("activity-attendance")}><View style={styles.emptyState}><Icon name="person-outline" color={C.slate} size={30} /><Text style={styles.rowMeta}>Belum ada detail kehadiran.</Text></View></ScreenList>; }
 
@@ -1259,13 +1476,114 @@ function ApprovalDetail({
     </ScreenList>
   );
 }
-function Announcements({ go, openAnnouncement, announcements, createAnnouncement }: { go: (s: Screen) => void; openAnnouncement: (a: Announcement) => void; announcements: Announcement[]; createAnnouncement: () => void }) { const [filter, setFilter] = useState("Semua"); const filtered = announcements.filter(a => filter === "Semua" || a.status === filter); return <ScreenList title="Pengumuman" back={() => go("dashboard")}><Text style={styles.pageIntro}>Bagikan informasi penting kepada staff klinik.</Text><View style={styles.filterRow}>{["Semua", "Terbit", "Draft"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="campaign" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada pengumuman.</Text></View>}{filtered.map(a => <Pressable key={a.id} style={styles.announcementCard} onPress={() => openAnnouncement(a)}><View style={styles.announcementTop}><View style={styles.announcementIcon}><Icon name="campaign" color={C.teal} /></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{a.title}</Text><Text style={styles.rowMeta}>{a.audience}  ·  {a.date}</Text></View><Text style={[styles.statusText, { color: a.status === "Terbit" ? C.success : C.warning }]}>{a.status}</Text></View><Text style={styles.announcementBody}>{a.body}</Text></Pressable>)}<Button label="Buat Pengumuman" icon="add" onPress={createAnnouncement} /></ScreenList>; }
-function AnnouncementForm({ announcement, go, onSave }: { announcement?: Announcement; go: (s: Screen) => void; onSave: (a: Announcement) => void }) { const [title, setTitle] = useState(announcement?.title ?? ""); const [body, setBody] = useState(announcement?.body ?? ""); const save = (status: "Draft" | "Terbit") => { if (!title.trim() || !body.trim()) { Alert.alert("Data belum lengkap", "Judul dan isi pengumuman wajib diisi."); return; } onSave({ id: announcement?.id ?? `N${Date.now()}`, title, audience: "Semua Staff", date: new Date().toLocaleDateString("id-ID"), body, status }); Alert.alert("Berhasil", status === "Terbit" ? "Pengumuman diterbitkan." : "Draft disimpan."); go("announcements"); }; return <ScreenList title={announcement ? "Edit Pengumuman" : "Buat Pengumuman"} back={() => go("announcements")}><Field label="Judul" value={title} onChangeText={setTitle} placeholder="Masukkan judul pengumuman" /><View style={styles.selectionRow}><Icon name="groups" color={C.teal} /><Text style={[styles.rowTitle, { flex: 1 }]}>Penerima</Text><Text style={styles.tealText}>Semua Staff</Text></View><Field label="Isi Pengumuman" value={body} onChangeText={setBody} placeholder="Tulis informasi yang ingin dibagikan" multiline /><Button label="Terbitkan" icon="campaign" onPress={() => save("Terbit")} /><Button label="Simpan Draft" icon="save" secondary onPress={() => save("Draft")} /></ScreenList>; }
+function Announcements({ go, openAnnouncement, announcements, createAnnouncement }: { go: (s: Screen) => void; openAnnouncement: (a: Announcement) => void; announcements: Announcement[]; createAnnouncement: () => void }) { const [filter, setFilter] = useState("Semua"); const filtered = announcements.filter(a => filter === "Semua" || a.status === filter); return <ScreenList title="Pengumuman" back={() => go("dashboard")}><Text style={styles.pageIntro}>Bagikan informasi penting kepada staff klinik.</Text><View style={styles.filterRow}>{["Semua", "Terbit", "Draft"].map(x => <Chip key={x} label={x} active={filter === x} onPress={() => setFilter(x)} />)}</View>{filtered.length === 0 && <View style={styles.emptyState}><Icon name="campaign" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada pengumuman.</Text></View>}{filtered.map(a => <Pressable key={a.id} style={styles.announcementCard} onPress={() => openAnnouncement(a)}><View style={styles.announcementTop}><View style={styles.announcementIcon}><Icon name="campaign" color={C.teal} /></View><View style={{ flex: 1 }}><Text style={styles.rowTitle}>{a.title}</Text><Text style={styles.rowMeta}>{a.audience}  Â·  {a.date}</Text></View><Text style={[styles.statusText, { color: a.status === "Terbit" ? C.success : C.warning }]}>{a.status}</Text></View><Text style={styles.announcementBody}>{a.body}</Text></Pressable>)}<Button label="Buat Pengumuman" icon="add" onPress={createAnnouncement} /></ScreenList>; }
+function AnnouncementForm({ announcement, go, onSave }: { announcement?: Announcement; go: (s: Screen) => void; onSave: (a: Announcement) => void }) {
+  const [title, setTitle] = useState(announcement?.title ?? "");
+  const [body, setBody] = useState(announcement?.body ?? "");
+  const [saving, setSaving] = useState(false);
+
+  const save = async (status: "Draft" | "Terbit") => {
+    if (!title.trim() || !body.trim()) {
+      Alert.alert("Data belum lengkap", "Judul dan isi pengumuman wajib diisi.");
+      return;
+    }
+
+    if (saving) return;
+    setSaving(true);
+
+    try {
+      const published = status === "Terbit";
+
+      const result = announcement?.id
+        ? await updateAnnouncement(announcement.id, {
+            title: title.trim(),
+            content: body.trim(),
+            published,
+          })
+        : await createAnnouncement({
+            title: title.trim(),
+            content: body.trim(),
+            published,
+          });
+
+      if (!result?.success) {
+        throw new Error(result?.message || "Gagal menyimpan pengumuman.");
+      }
+
+      const saved = result?.data ?? result?.announcement ?? result;
+
+      onSave({
+        id: saved?.id ?? announcement?.id ?? `N${Date.now()}`,
+        title: saved?.title ?? title.trim(),
+        audience: "Semua Staff",
+        date: saved?.publishedAt
+          ? new Date(saved.publishedAt).toLocaleDateString("id-ID")
+          : new Date().toLocaleDateString("id-ID"),
+        body: saved?.content ?? body.trim(),
+        status: saved?.publishedAt ? "Terbit" : status,
+      });
+
+      Alert.alert(
+        "Berhasil",
+        published
+          ? "Pengumuman diterbitkan dan akan tampil di Staff."
+          : "Draft pengumuman berhasil disimpan."
+      );
+
+      go("announcements");
+    } catch (error: any) {
+      Alert.alert(
+        "Gagal",
+        error?.message || "Pengumuman gagal disimpan."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <ScreenList title={announcement ? "Edit Pengumuman" : "Buat Pengumuman"} back={() => go("announcements")}>
+      <Field
+        label="Judul"
+        value={title}
+        onChangeText={setTitle}
+        placeholder="Masukkan judul pengumuman"
+      />
+
+      <View style={styles.selectionRow}>
+        <Icon name="groups" color={C.teal} />
+        <Text style={[styles.rowTitle, { flex: 1 }]}>Penerima</Text>
+        <Text style={styles.tealText}>Semua Staff</Text>
+      </View>
+
+      <Field
+        label="Isi Pengumuman"
+        value={body}
+        onChangeText={setBody}
+        placeholder="Tulis informasi yang ingin dibagikan"
+        multiline
+      />
+
+      <Button
+        label={saving ? "Menyimpan..." : "Terbitkan"}
+        icon="campaign"
+        onPress={() => { void save("Terbit"); }}
+      />
+
+      <Button
+        label={saving ? "Menyimpan..." : "Simpan Draft"}
+        icon="save"
+        secondary
+        onPress={() => { void save("Draft"); }}
+      />
+    </ScreenList>
+  );
+}
 function Notifications({ go }: { go: (s: Screen) => void }) { return <ScreenList title="Notifikasi" back={() => go("dashboard")}><View style={styles.noticeHeader}><Text style={styles.pageTitle}>Pembaruan terbaru</Text></View><View style={styles.emptyState}><Icon name="notifications-none" color={C.slate} size={28} /><Text style={styles.rowMeta}>Belum ada notifikasi.</Text></View></ScreenList>; }
-function LoginScreen({ onLogin }: { onLogin: () => void }) { const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const submit = () => { if (!email.trim() || !password.trim()) { Alert.alert("Login belum lengkap", "Email dan kata sandi wajib diisi."); return; } onLogin(); }; return <View style={styles.loginScreen}><View style={styles.loginLogo}><Icon name="medical-services" color="#fff" size={30} /></View><Text style={styles.loginTitle}>MEDSTAFF</Text><Text style={styles.loginSubtitle}>Administrasi Klinik Pratama Unimus</Text><View style={styles.loginCard}><Text style={styles.pageTitle}>Selamat datang</Text><Text style={styles.pageIntro}>Masuk untuk mengelola operasional klinik.</Text><Field label="Email" value={email} onChangeText={setEmail} placeholder="admin@klinik.id" /><Field label="Kata sandi" value={password} onChangeText={setPassword} placeholder="Masukkan kata sandi" /><Button label="Masuk sebagai Admin" icon="login" onPress={submit} /></View><Text style={styles.loginHint}>Akses admin internal · Versi 1.0.0</Text></View>; }
+function LoginScreen({ onLogin }: { onLogin: () => void }) { const [email, setEmail] = useState(""); const [password, setPassword] = useState(""); const submit = () => { if (!email.trim() || !password.trim()) { Alert.alert("Login belum lengkap", "Email dan kata sandi wajib diisi."); return; } onLogin(); }; return <View style={styles.loginScreen}><View style={styles.loginLogo}><Icon name="medical-services" color="#fff" size={30} /></View><Text style={styles.loginTitle}>MEDSTAFF</Text><Text style={styles.loginSubtitle}>Administrasi Klinik Pratama Unimus</Text><View style={styles.loginCard}><Text style={styles.pageTitle}>Selamat datang</Text><Text style={styles.pageIntro}>Masuk untuk mengelola operasional klinik.</Text><Field label="Email" value={email} onChangeText={setEmail} placeholder="admin@klinik.id" /><Field label="Kata sandi" value={password} onChangeText={setPassword} placeholder="Masukkan kata sandi" /><Button label="Masuk sebagai Admin" icon="login" onPress={submit} /></View><Text style={styles.loginHint}>Akses admin internal Â· Versi 1.0.0</Text></View>; }
 function Profile({ go, onLogout, profileImage, onChangePhoto }: { go: (s: Screen) => void; onLogout: () => void; profileImage: string | null; onChangePhoto: (uri: string) => void }) { return <ScreenList title="Profil" back={() => go("dashboard")}><View style={styles.profileHero}><Pressable onPress={() => { void pickProfilePhoto(onChangePhoto); }} style={styles.profilePhotoButton}><View style={styles.profileAvatar}>{profileImage ? <Image source={{ uri: profileImage }} style={styles.profileImage} /> : <Text style={styles.profileAvatarText}>AD</Text>}</View><View style={styles.profileImageEdit}><Icon name="photo-camera" color="#fff" size={15} /></View></Pressable><Text style={styles.profileName}>Profil Admin</Text><Text style={styles.profileRole}>Data profil akan diisi dari akun nyata</Text><Text style={styles.profileUploadHint}>Ketuk foto untuk mengubah</Text></View><DetailBlock title="Informasi Admin" rows={[["Nama", "Belum diatur"], ["Email", "Belum diatur"], ["Telepon", "Belum diatur"], ["Unit", "Belum diatur"]]} /><Button label="Edit Profil" icon="edit" onPress={() => go("profile-form")} /><Pressable style={styles.settingsRow} onPress={() => go("settings")}><Icon name="settings" color={C.navy} /><Text style={[styles.rowTitle, { flex: 1 }]}>Pengaturan</Text><Icon name="chevron-right" color={C.slate} /></Pressable><Pressable style={styles.logoutRow} onPress={() => Alert.alert("Keluar dari akun?", "Anda perlu login kembali untuk mengakses MEDSTAFF.", [{ text: "Batal", style: "cancel" }, { text: "Keluar", style: "destructive", onPress: onLogout }])}><Icon name="logout" color={C.error} /><Text style={styles.logoutText}>Keluar</Text></Pressable></ScreenList>; }
 function ProfileForm({ go, profileImage, onChangePhoto }: { go: (s: Screen) => void; profileImage: string | null; onChangePhoto: (uri: string) => void }) { const [name, setName] = useState(""); const [email, setEmail] = useState(""); const [phone, setPhone] = useState(""); return <ScreenList title="Edit Profil" back={() => go("profile")}><View style={styles.profileFormPhoto}><Pressable onPress={() => { void pickProfilePhoto(onChangePhoto); }} style={styles.profilePhotoButton}><View style={styles.profileAvatar}>{profileImage ? <Image source={{ uri: profileImage }} style={styles.profileImage} /> : <Text style={styles.profileAvatarText}>AD</Text>}</View><View style={styles.profileImageEdit}><Icon name="photo-camera" color="#fff" size={15} /></View></Pressable><Text style={styles.profileUploadHint}>Pilih foto dari galeri atau kamera</Text></View><Field label="Nama" value={name} onChangeText={setName} /><Field label="Email" value={email} onChangeText={setEmail} /><Field label="Telepon" value={phone} onChangeText={setPhone} /><Button label="Simpan Profil" icon="check" onPress={() => { if (!name.trim() || !email.trim()) { Alert.alert("Data belum lengkap", "Nama dan email wajib diisi."); return; } Alert.alert("Berhasil", "Profil diperbarui."); go("profile"); }} /></ScreenList>; }
-function Settings({ go }: { go: (s: Screen) => void }) { const [push, setPush] = useState(true); const [email, setEmail] = useState(true); return <ScreenList title="Pengaturan" back={() => go("profile")}><Text style={styles.pageIntro}>Atur pengalaman dan keamanan akun admin.</Text><View style={styles.card}><SectionTitle title="Notifikasi" /><SettingToggle icon="notifications" label="Notifikasi push" value={push} onChange={setPush} /><SettingToggle icon="email" label="Ringkasan melalui email" value={email} onChange={setEmail} /></View><View style={styles.card}><SectionTitle title="Keamanan" /><Pressable style={styles.settingsRow} onPress={() => Alert.alert("Ubah kata sandi", "Tautan perubahan kata sandi akan dikirim ke email admin.")}><Icon name="lock-outline" color={C.navy} /><Text style={[styles.rowTitle, { flex: 1 }]}>Ubah kata sandi</Text><Icon name="chevron-right" color={C.slate} /></Pressable></View><View style={styles.card}><SectionTitle title="Tentang" /><Text style={styles.rowTitle}>MEDSTAFF Admin</Text><Text style={styles.rowMeta}>Versi 1.0.0 · Klinik Pratama Unimus</Text></View></ScreenList>; }
+function Settings({ go }: { go: (s: Screen) => void }) { const [push, setPush] = useState(true); const [email, setEmail] = useState(true); return <ScreenList title="Pengaturan" back={() => go("profile")}><Text style={styles.pageIntro}>Atur pengalaman dan keamanan akun admin.</Text><View style={styles.card}><SectionTitle title="Notifikasi" /><SettingToggle icon="notifications" label="Notifikasi push" value={push} onChange={setPush} /><SettingToggle icon="email" label="Ringkasan melalui email" value={email} onChange={setEmail} /></View><View style={styles.card}><SectionTitle title="Keamanan" /><Pressable style={styles.settingsRow} onPress={() => Alert.alert("Ubah kata sandi", "Tautan perubahan kata sandi akan dikirim ke email admin.")}><Icon name="lock-outline" color={C.navy} /><Text style={[styles.rowTitle, { flex: 1 }]}>Ubah kata sandi</Text><Icon name="chevron-right" color={C.slate} /></Pressable></View><View style={styles.card}><SectionTitle title="Tentang" /><Text style={styles.rowTitle}>MEDSTAFF Admin</Text><Text style={styles.rowMeta}>Versi 1.0.0 Â· Klinik Pratama Unimus</Text></View></ScreenList>; }
 function SettingToggle({ icon, label, value, onChange }: { icon: IconName; label: string; value: boolean; onChange: (v: boolean) => void }) { return <View style={styles.switchRow}><View style={styles.settingLabel}><Icon name={icon} color={C.teal} /><Text style={styles.rowTitle}>{label}</Text></View><Switch value={value} onValueChange={onChange} trackColor={{ false: C.line, true: C.aqua }} thumbColor={value ? C.teal : C.slate} /></View>; }
 function ScreenList({ title, back, children }: { title: string; back: () => void; children: React.ReactNode }) { return <><Header title={title} back={back} /><ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>{children}</ScrollView></>; }
 
@@ -2100,6 +2418,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   content: { padding: 18, paddingBottom: 110, gap: 14 }, loginScreen: { flex: 1, backgroundColor: C.navy, padding: 22, alignItems: "center", justifyContent: "center", gap: 10 }, loginLogo: { width: 68, height: 68, borderRadius: 22, backgroundColor: C.teal, alignItems: "center", justifyContent: "center", marginBottom: 4 }, loginTitle: { color: "#fff", fontSize: 28, fontWeight: "900", letterSpacing: 1 }, loginSubtitle: { color: "#C3DDE2", fontSize: 12, marginBottom: 24 }, loginCard: { width: "100%", backgroundColor: C.surface, borderRadius: 22, padding: 18, gap: 13 }, loginHint: { color: "#9DC7D0", fontSize: 11, marginTop: 10 }, header: { height: 64, flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: 14, backgroundColor: C.surface, borderBottomWidth: 1, borderBottomColor: C.line }, headerTitle: { fontSize: 17, fontWeight: "800", color: C.navy, letterSpacing: 0.3 }, iconButton: { width: 40, height: 40, alignItems: "center", justifyContent: "center" }, hero: { backgroundColor: C.navy, borderRadius: 22, padding: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }, eyebrow: { color: "#9DC7D0", fontSize: 10, fontWeight: "800", letterSpacing: 1 }, greeting: { color: "#fff", fontSize: 23, fontWeight: "800", marginTop: 8 }, clinic: { color: "#C3DDE2", fontSize: 13, marginTop: 5 }, avatar: { width: 48, height: 48, borderRadius: 16, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, avatarText: { color: "#fff", fontWeight: "800" }, sectionTitleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }, sectionTitle: { fontSize: 15, fontWeight: "800", color: C.ink, textTransform: "uppercase", letterSpacing: 0.8 }, link: { color: C.teal, fontSize: 12, fontWeight: "800" }, metricGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, metricCard: { backgroundColor: C.surface, borderRadius: 18, padding: 14, width: "48%", minHeight: 128, borderWidth: 1, borderColor: C.line }, metricIcon: { width: 32, height: 32, borderRadius: 10, alignItems: "center", justifyContent: "center", marginBottom: 12 }, metricLabel: { color: C.slate, fontSize: 11, fontWeight: "700" }, metricValue: { color: C.ink, fontSize: 28, fontWeight: "800", marginTop: 2 }, metricCaption: { color: C.slate, fontSize: 11 }, card: { backgroundColor: C.surface, borderRadius: 20, padding: 16, borderWidth: 1, borderColor: C.line }, cardTitle: { fontSize: 15, fontWeight: "800", color: C.ink }, shiftRow: { flexDirection: "row", alignItems: "center", paddingVertical: 10, gap: 10 }, shiftDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: C.teal }, rowTitle: { color: C.ink, fontSize: 14, fontWeight: "700" }, rowMeta: { color: C.slate, fontSize: 12, marginTop: 3 }, count: { color: C.slate, fontSize: 12, marginRight: 2 }, cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, livePill: { flexDirection: "row", gap: 5, alignItems: "center", backgroundColor: "#234563", paddingVertical: 5, paddingHorizontal: 9, borderRadius: 20 }, liveDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: "#63E6BE" }, liveText: { color: "#B8F5E6", fontSize: 9, fontWeight: "800" }, activityHeroTitle: { color: "#fff", fontSize: 21, fontWeight: "800", marginTop: 22 }, activityHeroMeta: { color: "#B7D1D6", fontSize: 12, marginTop: 6 }, progressTrack: { height: 7, borderRadius: 4, backgroundColor: "#2A4B66", marginTop: 20, overflow: "hidden" }, progressFill: { height: "100%", borderRadius: 4, backgroundColor: "#63E6BE" }, attendanceLine: { flexDirection: "row", justifyContent: "space-between", marginTop: 10 }, attendanceMain: { color: "#fff", fontWeight: "800", fontSize: 13 }, attendanceMuted: { color: "#B7D1D6", fontSize: 12 }, primaryButton: { backgroundColor: C.teal, borderRadius: 14, padding: 14, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 4 }, primaryButtonText: { color: "#fff", fontWeight: "800", fontSize: 13 }, secondaryButton: { backgroundColor: C.aqua }, secondaryButtonText: { color: C.teal }, approvalRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: C.line }, approvalRight: { flexDirection: "row", alignItems: "center", gap: 9 }, approvalNumber: { color: C.teal, fontWeight: "800", fontSize: 16 }, activityRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 8 }, smallAvatar: { width: 32, height: 32, borderRadius: 10, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, smallAvatarText: { color: C.teal, fontWeight: "800" }, pageIntro: { color: C.slate, fontSize: 13, lineHeight: 19 }, pageTitle: { color: C.ink, fontSize: 22, fontWeight: "800" }, searchBox: { flexDirection: "row", alignItems: "center", backgroundColor: C.surface, borderColor: C.line, borderWidth: 1, borderRadius: 14, paddingHorizontal: 13 }, searchInput: { flex: 1, color: C.ink, paddingVertical: 13, paddingHorizontal: 10, fontSize: 13 }, filterRow: { flexDirection: "row", gap: 8, alignItems: "center", flexWrap: "wrap" }, chip: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, paddingVertical: 8, paddingHorizontal: 12, borderRadius: 20 }, chipActive: { backgroundColor: C.aqua, borderColor: C.aqua }, chipText: { color: C.slate, fontSize: 11, fontWeight: "700" }, chipTextActive: { color: C.teal }, listCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "center", gap: 12 }, employeeAvatar: { width: 44, height: 44, borderRadius: 14, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, employeeAvatarText: { color: C.teal, fontWeight: "800" }, statusLine: { flexDirection: "row", gap: 5, alignItems: "center", marginTop: 6 }, statusDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: C.success }, statusText: { color: C.success, fontSize: 11, fontWeight: "700" }, shiftBadge: { width: 42, height: 42, backgroundColor: C.aqua, borderRadius: 13, alignItems: "center", justifyContent: "center" }, activityCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 18, padding: 16 }, activityCardTop: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 11 }, activityFooter: { borderTopWidth: 1, borderTopColor: C.line, marginTop: 14, paddingTop: 12, flexDirection: "row", justifyContent: "space-between" }, tealText: { color: C.teal, fontWeight: "800" }, approvalCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 17, padding: 14, flexDirection: "row", alignItems: "center", gap: 11 }, approvalTag: { backgroundColor: "#FFF2D8", borderRadius: 9, paddingVertical: 8, paddingHorizontal: 7, width: 74, alignItems: "center" }, approvalTagText: { color: "#A8701D", fontSize: 9, fontWeight: "800", textAlign: "center" }, pendingText: { color: C.warning, fontSize: 11, marginTop: 5, fontWeight: "700" }, noticeHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, notificationRow: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 16, padding: 14, flexDirection: "row", alignItems: "flex-start", gap: 11 }, notificationIcon: { width: 35, height: 35, borderRadius: 11, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: C.teal }, timeText: { color: C.slate, fontSize: 10, marginTop: 8 }, emptyState: { alignItems: "center", justifyContent: "center", paddingVertical: 90, gap: 13 }, detailHero: { alignItems: "center", paddingVertical: 12 }, profileHero: { alignItems: "center", paddingVertical: 24 }, profileFormPhoto: { alignItems: "center", paddingBottom: 12 }, profilePhotoButton: { position: "relative", alignItems: "center", justifyContent: "center" }, profileImage: { width: "100%", height: "100%", borderRadius: 28 }, profileImageEdit: { position: "absolute", right: -2, bottom: 2, width: 30, height: 30, borderRadius: 15, backgroundColor: C.teal, alignItems: "center", justifyContent: "center", borderWidth: 3, borderColor: C.surface }, profileUploadHint: { color: C.teal, fontSize: 11, fontWeight: "700", marginTop: 8 }, profileAvatar: { width: 86, height: 86, borderRadius: 28, backgroundColor: C.navy, alignItems: "center", justifyContent: "center", marginBottom: 13, overflow: "hidden" }, profileAvatarText: { color: "#fff", fontSize: 25, fontWeight: "800" }, profileName: { fontSize: 23, fontWeight: "800", color: C.ink }, profileRole: { color: C.slate, fontSize: 12, marginTop: 5 }, statusPill: { flexDirection: "row", alignItems: "center", gap: 6, marginTop: 7, backgroundColor: C.aqua, paddingVertical: 6, paddingHorizontal: 10, borderRadius: 20 }, detailRow: { flexDirection: "row", justifyContent: "space-between", gap: 10, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: C.line }, field: { gap: 6 }, fieldLabel: { color: C.ink, fontSize: 12, fontWeight: "800" }, fieldHint: { color: C.slate, fontSize: 11, marginTop: -8, marginBottom: 12 }, input: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 13, color: C.ink, padding: 13, fontSize: 13 }, textArea: { minHeight: 100, textAlignVertical: "top" }, switchRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 10 }, settingLabel: { flexDirection: "row", alignItems: "center", gap: 12 }, monthHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, monthButton: { backgroundColor: C.aqua, padding: 11, borderRadius: 13 }, dayStrip: { gap: 8 }, dayCell: { width: 48, alignItems: "center", paddingVertical: 10, borderRadius: 13, backgroundColor: C.surface, borderWidth: 1, borderColor: C.line }, dayCellActive: { backgroundColor: C.teal, borderColor: C.teal }, dayNumber: { color: C.ink, fontWeight: "800", fontSize: 16 }, dayName: { color: C.slate, fontSize: 10, marginTop: 3 }, dayNumberActive: { color: "#fff" }, scheduleRow: { flexDirection: "row", gap: 11, alignItems: "center", paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: C.line }, scheduleTime: { width: 50, height: 42, borderRadius: 12, alignItems: "center", justifyContent: "center" }, scheduleTimeText: { color: C.teal, fontWeight: "800", fontSize: 11 }, dateCard: { backgroundColor: C.aqua, borderRadius: 16, padding: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }, attendanceRow: { flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 11, borderBottomWidth: 1, borderBottomColor: C.line }, attendanceStatus: { width: 32, height: 32, borderRadius: 10, alignItems: "center", justifyContent: "center" }, locationBox: { backgroundColor: C.canvas, padding: 14, borderRadius: 14, flexDirection: "row", gap: 12, alignItems: "center" }, photoPlaceholder: { height: 150, backgroundColor: C.canvas, borderRadius: 14, alignItems: "center", justifyContent: "center", gap: 8 }, metaList: { gap: 6 }, attendanceSummary: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 }, selectionRow: { backgroundColor: C.aqua, borderRadius: 13, padding: 13, flexDirection: "row", gap: 9, alignItems: "center" }, assignmentPreview: { backgroundColor: C.aqua, borderRadius: 16, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }, participantRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: C.line }, selectAll: { flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 5 }, selectionCount: { color: C.slate, textAlign: "center", fontSize: 12, marginTop: 4 }, approvalHeading: { backgroundColor: C.navy, borderRadius: 18, padding: 18, gap: 7 }, decisionRow: { flexDirection: "row", gap: 10 }, decisionButton: { flex: 1, borderRadius: 14, padding: 14, flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 7 }, announcementCard: { backgroundColor: C.surface, borderWidth: 1, borderColor: C.line, borderRadius: 17, padding: 15, gap: 12 }, announcementTop: { flexDirection: "row", alignItems: "center", gap: 11 }, announcementIcon: { width: 38, height: 38, borderRadius: 12, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, announcementBody: { color: C.ink, lineHeight: 19, fontSize: 13 }, settingsRow: { backgroundColor: C.surface, borderRadius: 16, borderWidth: 1, borderColor: C.line, padding: 16, flexDirection: "row", gap: 12, alignItems: "center" }, headerActions: { flexDirection: "row", alignItems: "center", gap: 2 }, headerAvatar: { width: 32, height: 32, borderRadius: 11, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, headerAvatarText: { color: "#fff", fontSize: 10, fontWeight: "900" }, summaryCard: { backgroundColor: C.surface, borderRadius: 20, padding: 12, borderWidth: 1, borderColor: C.line, flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, overviewCard: { backgroundColor: C.surface, borderRadius: 20, padding: 17, borderWidth: 1, borderColor: C.line }, overviewTitle: { color: C.ink, fontSize: 14, fontWeight: "800" }, overviewPercent: { color: C.navy, fontSize: 32, fontWeight: "900", textAlign: "center", marginTop: 14 }, overviewProgress: { height: 10, borderRadius: 5, backgroundColor: C.aqua, overflow: "hidden", marginTop: 12 }, overviewProgressFill: { width: "87%", height: "100%", borderRadius: 5, backgroundColor: C.teal }, overviewRows: { flexDirection: "row", justifyContent: "space-between", marginTop: 18 }, overviewLabel: { color: C.slate, fontSize: 11, fontWeight: "700" }, overviewValue: { color: C.ink, fontSize: 18, fontWeight: "900", marginTop: 4 }, quickAccessGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", rowGap: 10 }, quickAccessItem: { width: "23.5%", minHeight: 84, backgroundColor: C.surface, borderRadius: 15, borderWidth: 1, borderColor: C.line, alignItems: "center", justifyContent: "center", paddingHorizontal: 4, gap: 7 }, quickAccessIcon: { width: 38, height: 38, borderRadius: 13, backgroundColor: C.aqua, alignItems: "center", justifyContent: "center" }, quickAccessLabel: { color: C.ink, fontSize: 10, fontWeight: "800", textAlign: "center" }, upcomingCard: { backgroundColor: C.surface, borderRadius: 20, borderWidth: 1, borderColor: C.line, paddingHorizontal: 16 }, upcomingRow: { flexDirection: "row", alignItems: "center", gap: 12, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: C.line }, requestsCard: { backgroundColor: C.surface, borderRadius: 20, borderWidth: 1, borderColor: C.line, paddingHorizontal: 16 }, requestRow: { flexDirection: "row", alignItems: "center", gap: 11, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: C.line }, pendingBadge: { backgroundColor: "#FFF2D8", borderRadius: 9, paddingHorizontal: 9, paddingVertical: 6 }, pendingBadgeText: { color: "#A8701D", fontSize: 10, fontWeight: "800" }, logoutRow: { padding: 16, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 9 }, logoutText: { color: C.error, fontWeight: "800" }, tabBar: { position: "absolute", left: 0, right: 0, bottom: 0, height: 78, backgroundColor: C.surface, borderTopWidth: 1, borderTopColor: C.line, flexDirection: "row", justifyContent: "space-around", paddingTop: 10 }, tabItem: { alignItems: "center", gap: 4, minWidth: 54, flex: 1 }, tabLabel: { color: C.slate, fontSize: 10, fontWeight: "700" }, tabLabelActive: { color: C.teal }, drawerOverlay: { position: "absolute", left: 0, right: 0, top: 0, bottom: 0, flexDirection: "row" }, drawerBackdrop: { flex: 1, backgroundColor: "rgba(16,42,67,0.32)" }, drawer: { width: "84%", backgroundColor: C.surface, paddingTop: 28, paddingHorizontal: 18, shadowColor: C.navy, shadowOpacity: 0.2, shadowRadius: 12, elevation: 8 }, drawerBrand: { flexDirection: "row", alignItems: "center", gap: 10, paddingBottom: 22, borderBottomWidth: 1, borderBottomColor: C.line }, drawerLogo: { width: 40, height: 40, borderRadius: 13, backgroundColor: C.teal, alignItems: "center", justifyContent: "center" }, drawerTitle: { color: C.navy, fontWeight: "900", fontSize: 17, letterSpacing: 0.7 }, drawerSub: { color: C.slate, fontSize: 9, fontWeight: "800", letterSpacing: 1.1, marginTop: 2 }, drawerClose: { marginLeft: "auto", padding: 7 }, drawerItem: { flexDirection: "row", alignItems: "center", gap: 13, paddingVertical: 12 }, drawerItemText: { color: C.ink, fontSize: 13, fontWeight: "700", flex: 1 }, drawerBadge: { backgroundColor: C.error, borderRadius: 12, minWidth: 23, height: 23, alignItems: "center", justifyContent: "center" }, drawerBadgeText: { color: "#fff", fontSize: 11, fontWeight: "800" },
 });
+
+
+
 
 
 

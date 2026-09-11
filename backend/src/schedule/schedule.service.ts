@@ -5,10 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class ScheduleService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   // =========================================================
   // TIMEZONE WIB

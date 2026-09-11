@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 
 import { CreateDocumentRequestDto } from './dto/create-document-request.dto';
 import { ReviewDocumentRequestDto } from './dto/review-document-request.dto';
@@ -13,18 +14,13 @@ import { ReviewDocumentRequestDto } from './dto/review-document-request.dto';
 export class DocumentRequestService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
   ) {}
-
-  // =========================
-  // HELPER
-  // =========================
 
   private async getEmployee(userId: string) {
     const employee =
       await this.prisma.employeeProfile.findUnique({
-        where: {
-          userId,
-        },
+        where: { userId },
       });
 
     if (!employee) {
@@ -36,16 +32,12 @@ export class DocumentRequestService {
     return employee;
   }
 
-  // =========================
   // STAFF - CREATE
-  // =========================
-
   async create(
     userId: string,
     dto: CreateDocumentRequestDto,
   ) {
-    const employee =
-      await this.getEmployee(userId);
+    const employee = await this.getEmployee(userId);
 
     const request =
       await this.prisma.documentChangeRequest.create({
@@ -58,7 +50,6 @@ export class DocumentRequestService {
           attachment: dto.attachment,
           status: 'PENDING',
         },
-
         include: {
           employee: {
             select: {
@@ -73,6 +64,27 @@ export class DocumentRequestService {
         },
       });
 
+    const admins = await this.prisma.user.findMany({
+      where: {
+        role: 'ADMIN',
+        isActive: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    for (const admin of admins) {
+      await this.notificationService.createNotification(
+        admin.id,
+        'Permintaan Data Baru',
+        employee.fullName +
+          ' mengajukan permintaan perubahan data.',
+        'DOCUMENT_REQUEST',
+        request.id,
+      );
+    }
+
     return {
       success: true,
       message: 'Permintaan perubahan data berhasil dibuat',
@@ -80,24 +92,18 @@ export class DocumentRequestService {
     };
   }
 
-  // =========================
   // STAFF - MY REQUESTS
-  // =========================
-
   async getMyRequests(userId: string) {
-    const employee =
-      await this.getEmployee(userId);
+    const employee = await this.getEmployee(userId);
 
     const requests =
       await this.prisma.documentChangeRequest.findMany({
         where: {
           employeeId: employee.id,
         },
-
         orderBy: {
           createdAt: 'desc',
         },
-
         include: {
           employee: {
             select: {
@@ -107,7 +113,6 @@ export class DocumentRequestService {
               profilePhoto: true,
             },
           },
-
           reviewer: {
             select: {
               id: true,
@@ -120,21 +125,18 @@ export class DocumentRequestService {
 
     return {
       success: true,
-      message: 'Riwayat permintaan perubahan data berhasil diambil',
+      message:
+        'Riwayat permintaan perubahan data berhasil diambil',
       data: requests,
     };
   }
 
-  // =========================
   // STAFF - DETAIL
-  // =========================
-
   async getMyRequestById(
     userId: string,
     requestId: string,
   ) {
-    const employee =
-      await this.getEmployee(userId);
+    const employee = await this.getEmployee(userId);
 
     const request =
       await this.prisma.documentChangeRequest.findFirst({
@@ -142,7 +144,6 @@ export class DocumentRequestService {
           id: requestId,
           employeeId: employee.id,
         },
-
         include: {
           employee: {
             select: {
@@ -153,7 +154,6 @@ export class DocumentRequestService {
               profilePhoto: true,
             },
           },
-
           reviewer: {
             select: {
               id: true,
@@ -172,22 +172,19 @@ export class DocumentRequestService {
 
     return {
       success: true,
-      message: 'Detail permintaan perubahan data berhasil diambil',
+      message:
+        'Detail permintaan perubahan data berhasil diambil',
       data: request,
     };
   }
 
-  // =========================
   // ADMIN - ALL
-  // =========================
-
   async getAll() {
     const requests =
       await this.prisma.documentChangeRequest.findMany({
         orderBy: {
           createdAt: 'desc',
         },
-
         include: {
           employee: {
             select: {
@@ -199,7 +196,6 @@ export class DocumentRequestService {
               profilePhoto: true,
             },
           },
-
           reviewer: {
             select: {
               id: true,
@@ -212,15 +208,13 @@ export class DocumentRequestService {
 
     return {
       success: true,
-      message: 'Daftar permintaan perubahan data berhasil diambil',
+      message:
+        'Daftar permintaan perubahan data berhasil diambil',
       data: requests,
     };
   }
 
-  // =========================
   // ADMIN - REVIEW
-  // =========================
-
   async review(
     adminUserId: string,
     requestId: string,
@@ -230,6 +224,14 @@ export class DocumentRequestService {
       await this.prisma.documentChangeRequest.findUnique({
         where: {
           id: requestId,
+        },
+        include: {
+          employee: {
+            select: {
+              userId: true,
+              fullName: true,
+            },
+          },
         },
       });
 
@@ -250,14 +252,12 @@ export class DocumentRequestService {
         where: {
           id: requestId,
         },
-
         data: {
           status: dto.status,
           reviewedBy: adminUserId,
           reviewedAt: new Date(),
           adminNote: dto.adminNote,
         },
-
         include: {
           employee: {
             select: {
@@ -269,7 +269,6 @@ export class DocumentRequestService {
               profilePhoto: true,
             },
           },
-
           reviewer: {
             select: {
               id: true,
@@ -280,12 +279,30 @@ export class DocumentRequestService {
         },
       });
 
+    const approved = dto.status === 'APPROVED';
+
+    await this.notificationService.createNotification(
+      request.employee.userId,
+      approved
+        ? 'Permintaan Data Disetujui'
+        : 'Permintaan Data Ditolak',
+      approved
+        ? 'Permintaan perubahan data Anda telah disetujui oleh Admin.'
+        : 'Permintaan perubahan data Anda telah ditolak.' +
+          (dto.adminNote
+            ? ' Catatan Admin: ' + dto.adminNote
+            : ''),
+      approved
+        ? 'DOCUMENT_APPROVED'
+        : 'DOCUMENT_REJECTED',
+      requestId,
+    );
+
     return {
       success: true,
-      message:
-        dto.status === 'APPROVED'
-          ? 'Permintaan perubahan data berhasil disetujui'
-          : 'Permintaan perubahan data berhasil ditolak',
+      message: approved
+        ? 'Permintaan perubahan data berhasil disetujui'
+        : 'Permintaan perubahan data berhasil ditolak',
       data: updated,
     };
   }

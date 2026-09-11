@@ -331,12 +331,20 @@ export async function getMyActivityAttendance() {
   return handleResponse(response);
 }
 
-export async function attendActivity(id: string) {
+export async function attendActivity(
+  id: string,
+  data?: {
+    photo?: string;
+    latitude?: number;
+    longitude?: number;
+  },
+) {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${API_URL}/activities/${id}/attend`, {
     method: 'POST',
     headers,
+    body: JSON.stringify(data ?? {}),
   });
 
   return handleResponse(response);
@@ -911,6 +919,67 @@ export async function createActivity(data: {
     body: JSON.stringify(data),
   });
 
+  return handleResponse(response);
+}
+
+
+export async function getAnnouncements() {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/announcements`, {
+    method: 'GET',
+    headers,
+  });
+  return handleResponse(response);
+}
+
+export async function getAdminAnnouncements() {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/announcements/all`, {
+    method: 'GET',
+    headers,
+  });
+  return handleResponse(response);
+}
+
+export async function createAnnouncement(data: {
+  title: string;
+  content: string;
+  published?: boolean;
+  image?: string;
+}) {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/announcements`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(data),
+  });
+  return handleResponse(response);
+}
+
+export async function updateAnnouncement(
+  id: string,
+  data: {
+    title?: string;
+    content?: string;
+    published?: boolean;
+    image?: string;
+  },
+) {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/announcements/${id}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify(data),
+  });
+  return handleResponse(response);
+}
+
+export async function deleteAnnouncement(id: string) {
+  const headers = await getAuthHeaders();
+  const response = await fetch(`${API_URL}/announcements/${id}`, {
+    method: 'DELETE',
+    headers,
+  });
   return handleResponse(response);
 }
 

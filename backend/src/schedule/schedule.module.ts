@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { ScheduleController } from './schedule.controller';
 import { ScheduleService } from './schedule.service';
 import { PrismaModule } from '../prisma/prisma.module';
+import { NotificationModule } from '../notification/notification.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
+    NotificationModule,
     PrismaModule,
     AuthModule,
   ],
@@ -14,3 +16,4 @@ import { AuthModule } from '../auth/auth.module';
   exports: [ScheduleService],
 })
 export class ScheduleModule {}
+

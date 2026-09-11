@@ -144,6 +144,40 @@ export class NotificationService {
   }
 
   // =====================================================
+  // NOTIFY ALL STAFF
+  // =====================================================
+
+  async notifyAllStaff(
+    title: string,
+    message: string,
+    type: string,
+    referenceId?: string,
+  ) {
+    const staffUsers = await this.prisma.user.findMany({
+      where: {
+        role: 'STAFF',
+        isActive: true,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (staffUsers.length === 0) {
+      return [];
+    }
+
+    return this.prisma.notification.createMany({
+      data: staffUsers.map((user) => ({
+        userId: user.id,
+        title,
+        message,
+        type,
+        referenceId,
+      })),
+    });
+  }
+  // =====================================================
   // GET NOTIFICATION PREFERENCE
   // =====================================================
 

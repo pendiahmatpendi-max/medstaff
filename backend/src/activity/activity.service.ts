@@ -1,110 +1,83 @@
-﻿import {
+import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
+
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { AttendActivityDto } from './dto/attend-activity.dto';
 
 @Injectable()
 export class ActivityService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
-  /**
-   * Mendapatkan tanggal hari ini berdasarkan timezone Indonesia (WIB).
-   * Format: YYYY-MM-DD
-   */
-  private getJakartaDate(): string {
+  private getJakartaDate(date = new Date()) {
     return new Intl.DateTimeFormat('en-CA', {
       timeZone: 'Asia/Jakarta',
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
-    }).format(new Date());
+    }).format(date);
   }
 
-  /**
-   * Mengubah tanggal YYYY-MM-DD menjadi Date UTC midnight.
-   *
-   * Field database menggunakan @db.Date,
-   * sehingga tanggal kalender disimpan sebagai UTC midnight.
-   */
-  private dateOnlyToUtc(dateString: string): Date {
-    const [year, month, day] = dateString.split('-').map(Number);
-
-    return new Date(
-      Date.UTC(year, month - 1, day, 0, 0, 0, 0),
-    );
+  private dateOnlyToUtc(dateOnly: string) {
+    return new Date(`${dateOnly}T00:00:00.000Z`);
   }
 
-  /**
-   * Mengambil YYYY-MM-DD dari Date database.
-   */
-  private getDateOnlyFromUtc(date: Date): string {
+  private getDateOnlyFromUtc(date: Date) {
     return date.toISOString().slice(0, 10);
   }
 
-  /**
-   * Membuat Date UTC berdasarkan tanggal + jam WIB.
-   *
-   * WIB = UTC+7.
-   */
-  private createJakartaTime(
-    dateString: string,
-    timeString: string,
-  ): Date {
-    const [year, month, day] = dateString.split('-').map(Number);
-    const [hours, minutes] = timeString.split(':').map(Number);
-
-    return new Date(
-      Date.UTC(
-        year,
-        month - 1,
-        day,
-        hours - 7,
-        minutes,
-        0,
-        0,
-      ),
-    );
+  private getJakartaNowTime() {
+    return new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Jakarta',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    }).format(new Date());
   }
 
-  /**
-   * Membuat kegiatan baru.
-   */
+  private timeToMinutes(time: string) {
+    const [hour, minute] = time
+      .slice(0, 5)
+      .split(':')
+      .map(Number);
+
+    return hour * 60 + minute;
+  }
+
   async create(
-    userId: string,
+    adminUserId: string,
     dto: CreateActivityDto,
   ) {
-    if (dto.startTime && dto.endTime) {
-      const startTime = this.createJakartaTime(
-        dto.activityDate,
-        dto.startTime,
-      );
-
-      const endTime = this.createJakartaTime(
-        dto.activityDate,
-        dto.endTime,
-      );
-
-      if (endTime <= startTime) {
-        throw new BadRequestException(
-          'endTime harus lebih besar dari startTime',
-        );
-      }
-    }
+    const activityDate = this.dateOnlyToUtc(
+      dto.activityDate,
+    );
 
     const activity = await this.prisma.activity.create({
       data: {
-        title: dto.title.trim(),
-        description: dto.description?.trim(),
-        activityDate: this.dateOnlyToUtc(dto.activityDate),
+        title: dto.title,
+        description: dto.description,
+        activityDate,
         startTime: dto.startTime,
         endTime: dto.endTime,
-        createdBy: userId,
+        createdBy: adminUserId,
       },
     });
+
+    await this.notificationService.notifyAllStaff(
+      'Kegiatan Baru',
+      `Kegiatan baru: ${activity.title}. Silakan buka menu Kegiatan untuk melihat detail.`,
+      'ACTIVITY',
+      activity.id,
+    );
 
     return {
       success: true,
@@ -113,22 +86,12 @@ export class ActivityService {
     };
   }
 
-  /**
-   * Mengambil seluruh kegiatan aktif.
-   */
   async getActivities() {
     const activities =
       await this.prisma.activity.findMany({
-        where: {
-          isActive: true,
-        },
         orderBy: [
-          {
-            activityDate: 'desc',
-          },
-          {
-            startTime: 'asc',
-          },
+          { activityDate: 'desc' },
+          { startTime: 'desc' },
         ],
       });
 
@@ -139,25 +102,13 @@ export class ActivityService {
     };
   }
 
-  /**
-   * Mengambil kegiatan aktif hari ini berdasarkan WIB.
-   */
   async getTodayActivities() {
     const today = this.getJakartaDate();
-
-    const startOfToday = this.dateOnlyToUtc(today);
-
-    const tomorrow = new Date(startOfToday);
-    tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
 
     const activities =
       await this.prisma.activity.findMany({
         where: {
-          isActive: true,
-          activityDate: {
-            gte: startOfToday,
-            lt: tomorrow,
-          },
+          activityDate: this.dateOnlyToUtc(today),
         },
         orderBy: {
           startTime: 'asc',
@@ -171,9 +122,6 @@ export class ActivityService {
     };
   }
 
-  /**
-   * Absen kegiatan oleh STAFF.
-   */
   async attend(
     userId: string,
     activityId: string,
@@ -181,9 +129,7 @@ export class ActivityService {
   ) {
     const employee =
       await this.prisma.employeeProfile.findUnique({
-        where: {
-          userId,
-        },
+        where: { userId },
       });
 
     if (!employee) {
@@ -194,27 +140,22 @@ export class ActivityService {
 
     const activity =
       await this.prisma.activity.findUnique({
-        where: {
-          id: activityId,
-        },
+        where: { id: activityId },
       });
 
-    if (!activity || !activity.isActive) {
+    if (!activity) {
       throw new NotFoundException(
         'Kegiatan tidak ditemukan',
       );
     }
 
     const today = this.getJakartaDate();
-
     const activityDate =
-      this.getDateOnlyFromUtc(
-        activity.activityDate,
-      );
+      this.getDateOnlyFromUtc(activity.activityDate);
 
-    if (today !== activityDate) {
+    if (activityDate !== today) {
       throw new BadRequestException(
-        'Kegiatan hanya dapat diabsen pada tanggal kegiatan',
+        'Absensi kegiatan hanya dapat dilakukan pada tanggal kegiatan',
       );
     }
 
@@ -230,55 +171,48 @@ export class ActivityService {
 
     if (existing) {
       throw new BadRequestException(
-        'Anda sudah melakukan absen kegiatan ini',
+        'Anda sudah melakukan absensi kegiatan ini',
       );
     }
 
-    const now = new Date();
+    const nowMinutes = this.timeToMinutes(
+      this.getJakartaNowTime(),
+    );
 
-    let status = 'HADIR';
-
-    if (activity.startTime) {
-      const startTime = this.createJakartaTime(
-        activityDate,
-        activity.startTime,
+    if (
+      activity.startTime &&
+      nowMinutes < this.timeToMinutes(activity.startTime)
+    ) {
+      throw new BadRequestException(
+        'Absensi kegiatan belum dibuka',
       );
-
-      if (now > startTime) {
-        status = 'TERLAMBAT';
-      }
     }
 
-    /**
-     * Jika endTime tersedia, absen setelah kegiatan
-     * selesai tidak diperbolehkan.
-     */
-    if (activity.endTime) {
-      const endTime = this.createJakartaTime(
-        activityDate,
-        activity.endTime,
+    if (
+      activity.endTime &&
+      nowMinutes > this.timeToMinutes(activity.endTime)
+    ) {
+      throw new BadRequestException(
+        'Waktu absen kegiatan sudah habis',
       );
-
-      if (now > endTime) {
-        throw new BadRequestException(
-          'Waktu absen kegiatan sudah berakhir',
-        );
-      }
     }
+
+    const status =
+      activity.startTime &&
+      nowMinutes > this.timeToMinutes(activity.startTime)
+        ? 'TERLAMBAT'
+        : 'HADIR';
 
     const attendance =
       await this.prisma.activityAttendance.create({
         data: {
           activityId,
           employeeId: employee.id,
-          attendedAt: now,
+          attendedAt: new Date(),
           photo: dto.photo,
           latitude: dto.latitude,
           longitude: dto.longitude,
           status,
-        },
-        include: {
-          activity: true,
         },
       });
 
@@ -286,21 +220,16 @@ export class ActivityService {
       success: true,
       message:
         status === 'TERLAMBAT'
-          ? 'Absen kegiatan berhasil, tetapi Anda terlambat'
-          : 'Absen kegiatan berhasil',
+          ? 'Absensi kegiatan berhasil, tetapi Anda terlambat'
+          : 'Absensi kegiatan berhasil',
       data: attendance,
     };
   }
 
-  /**
-   * Mengambil riwayat absen kegiatan milik STAFF.
-   */
   async getMyAttendance(userId: string) {
     const employee =
       await this.prisma.employeeProfile.findUnique({
-        where: {
-          userId,
-        },
+        where: { userId },
       });
 
     if (!employee) {
@@ -324,7 +253,57 @@ export class ActivityService {
 
     return {
       success: true,
-      message: 'Riwayat absen kegiatan berhasil diambil',
+      message: 'Riwayat absensi kegiatan berhasil diambil',
+      data: records,
+    };
+  }
+
+  async getActivityDetail(activityId: string) {
+    const activity =
+      await this.prisma.activity.findUnique({
+        where: { id: activityId },
+      });
+
+    if (!activity) {
+      throw new NotFoundException(
+        'Kegiatan tidak ditemukan',
+      );
+    }
+
+    return {
+      success: true,
+      message: 'Detail kegiatan berhasil diambil',
+      data: activity,
+    };
+  }
+
+  async getActivityAttendance(activityId: string) {
+    const activity =
+      await this.prisma.activity.findUnique({
+        where: { id: activityId },
+      });
+
+    if (!activity) {
+      throw new NotFoundException(
+        'Kegiatan tidak ditemukan',
+      );
+    }
+
+    const records =
+      await this.prisma.activityAttendance.findMany({
+        where: { activityId },
+        include: {
+          employee: true,
+        },
+        orderBy: {
+          attendedAt: 'asc',
+        },
+      });
+
+    return {
+      success: true,
+      message:
+        'Daftar peserta kegiatan berhasil diambil',
       data: records,
     };
   }

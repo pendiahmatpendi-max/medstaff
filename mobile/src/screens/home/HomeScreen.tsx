@@ -1,9 +1,9 @@
-﻿import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { getTodayAttendance } from '../../api/api';
+import { getTodayAttendance, getAnnouncements } from '../../api/api';
 import { useNavigation } from '@react-navigation/native';
 
 import { GestureHandlerRootView, GestureDetector, Gesture } from 'react-native-gesture-handler';
@@ -127,7 +127,7 @@ const InteractiveDayCard = ({ item, index, activeIndexSV, touchX, isTouched }: a
 
 // ==================================================
 // ==================================================
-const ANNOUNCEMENTS: any[] = [];
+
 
 // ==================================================
 // KOMPONEN: STACKED ANNOUNCEMENT CARD
@@ -200,6 +200,7 @@ export default function HomeScreen() {
   const navigation = useNavigation<any>();
   const [todayAttendance, setTodayAttendance] = useState<any>(null);
   const [attendanceLoading, setAttendanceLoading] = useState(true);
+  const [announcements, setAnnouncements] = useState<any[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -293,7 +294,50 @@ export default function HomeScreen() {
   // --- Stacked Carousel Logic ---
   const carouselIndexSV = useSharedValue(0);
   const carouselStartX = useSharedValue(0);
-  const TOTAL_ANNOUNCEMENTS = ANNOUNCEMENTS.length;
+  useEffect(() => {
+    let mounted = true;
+
+    const loadAnnouncements = async () => {
+      try {
+        const response = await getAnnouncements();
+
+        if (!mounted) return;
+
+        const rows = Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response)
+            ? response
+            : [];
+
+        const mapped = rows.map((item: any) => ({
+          id: item.id,
+          title: item.title ?? "",
+          desc: item.content ?? "",
+          date: new Date(
+            item.publishedAt ?? item.createdAt
+          ).toLocaleDateString("id-ID"),
+          image:
+            item.image ||
+            "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80",
+          isImportant: false,
+        }));
+
+        setAnnouncements(mapped);
+      } catch {
+        if (mounted) {
+          setAnnouncements([]);
+        }
+      }
+    };
+
+    void loadAnnouncements();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const TOTAL_ANNOUNCEMENTS = announcements.length;
 
   const carouselPanGesture = Gesture.Pan()
     .onStart(() => {
@@ -463,8 +507,8 @@ export default function HomeScreen() {
           <GestureHandlerRootView style={styles.carouselStackAreaContainer}>
             <GestureDetector gesture={carouselPanGesture}>
               <View style={styles.carouselStackArea}>
-                {ANNOUNCEMENTS.length > 0 ? (
-                  ANNOUNCEMENTS.map((item, index) => (
+                {announcements.length > 0 ? (
+                  announcements.map((item, index) => (
                     <StackedAnnouncementCard 
                       key={item.id} 
                       item={item} 
@@ -621,5 +665,6 @@ const styles = StyleSheet.create({
   newsTitle: { fontSize: 15, fontWeight: 'bold', color: '#1f2937', marginBottom: 4, lineHeight: 20 },
   newsDesc: { fontSize: 12, color: '#6b7280', lineHeight: 18 },
 });
+
 
 
