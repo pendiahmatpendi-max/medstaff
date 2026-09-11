@@ -17,6 +17,7 @@ import { NotificationModule } from './notification/notification.module';
 import { LanguageModule } from './language/language.module';
 import { HelpModule } from './help/help.module';
 import { UploadModule } from './upload/upload.module';
+import { AnnouncementModule } from './announcement/announcement.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { UploadModule } from './upload/upload.module';
     LanguageModule,
     HelpModule,
     UploadModule,
+    AnnouncementModule,
   ],
 
   controllers: [AppController],
@@ -50,3 +52,4 @@ import { UploadModule } from './upload/upload.module';
   providers: [],
 })
 export class AppModule {}
+
