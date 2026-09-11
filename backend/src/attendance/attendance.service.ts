@@ -235,6 +235,7 @@ export class AttendanceService {
         },
       });
 
+    
     if (!schedule) {
       throw new BadRequestException(
         'Jadwal kerja hari ini belum tersedia',
@@ -245,30 +246,21 @@ export class AttendanceService {
     // Cek hari libur
     // -------------------------------------------------------
 
-    if (
-      schedule.dayType ===
-      'LIBUR'
-    ) {
-      throw new BadRequestException(
-        'Hari ini adalah hari libur. Anda tidak dapat melakukan Clock In.',
-      );
-    }
-
     // -------------------------------------------------------
     // Cek shift
     // -------------------------------------------------------
-
-    if (!schedule.shift) {
-      throw new BadRequestException(
-        'Shift kerja hari ini belum ditentukan',
-      );
-    }
 
     // -------------------------------------------------------
     // Tentukan status HADIR / TERLAMBAT
     // -------------------------------------------------------
 
-    const shiftStart =
+    
+    if (!schedule.shift) {
+      throw new BadRequestException(
+        'Shift kerja hari ini belum ditentukan',
+      );
+    }
+const shiftStart =
       this.createJakartaTime(
         todayString,
         schedule.shift.startTime,
@@ -352,7 +344,7 @@ export class AttendanceService {
 
         shift:
           this.getShiftInfo(
-            schedule.shift,
+            schedule?.shift,
           ),
 
         attendanceStatus:
@@ -576,7 +568,7 @@ export class AttendanceService {
 
         shift:
           this.getShiftInfo(
-            schedule.shift,
+            schedule?.shift,
           ),
 
         serverTime:
@@ -730,7 +722,7 @@ export class AttendanceService {
 
                 shift:
                   this.getShiftInfo(
-                    schedule.shift,
+                    schedule?.shift,
                   ),
               }
             : null,
@@ -772,3 +764,9 @@ export class AttendanceService {
     };
   }
 }
+
+
+
+
+
+
